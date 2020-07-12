@@ -2,12 +2,16 @@ spring:
   application:
     name: config-service
   profiles:
-    active: native
+    active: git
   cloud:
     config:
       server:
-        native:
-          searchLocations: "file://${user.home}/Desktop/dev/config-service"
+        git:
+          uri: "https://github.com/Munoon/Cloud-Movies-List.git"
+          clone-on-start: true
+          force-pull: true
+          search-paths: config
+
 server:
   port: 8010
 

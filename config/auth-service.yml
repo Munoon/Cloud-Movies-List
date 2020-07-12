@@ -1,0 +1,10 @@
+oauth:
+  client:
+    id: testClient
+    secret: "{noop}password"
+    redirectUri: http://localhost:8080/login,http://10.0.114.148:8080/login
+    authorizedGrantTypes: authorization_code,refresh_token
+    scopes: user_info
+    autoApprove: true
+    accessTokenValiditySeconds: 30
+    refreshTokenValiditySeconds: 1800
