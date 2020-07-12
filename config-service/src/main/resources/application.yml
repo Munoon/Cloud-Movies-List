@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: config-service
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          searchLocations: "file://${user.home}/Desktop/dev/config-service"
+server:
+  port: 8010
+

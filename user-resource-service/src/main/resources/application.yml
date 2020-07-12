@@ -1,0 +1,6 @@
+server:
+  port: 8040
+
+spring:
+  application:
+    name: user-resource-service
