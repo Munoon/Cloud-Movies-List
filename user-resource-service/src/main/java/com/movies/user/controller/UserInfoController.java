@@ -1,12 +1,10 @@
 package com.movies.user.controller;
 
+import com.movies.user.user.User;
 import com.movies.user.user.UserService;
 import com.movies.user.user.to.RegisterUserTo;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -24,5 +22,10 @@ public class UserInfoController {
     @PostMapping("/register")
     public void register(@RequestBody @Valid RegisterUserTo registerUserTo) {
         userService.registerUser(registerUserTo);
+    }
+
+    @GetMapping("/login/{username}")
+    public User getUserForLogin(@PathVariable String username) {
+        return userService.getByEmail(username);
     }
 }

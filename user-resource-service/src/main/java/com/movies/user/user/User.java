@@ -1,11 +1,13 @@
 package com.movies.user.user;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @Entity
@@ -27,4 +29,11 @@ public class User {
     private String password;
 
     private LocalDateTime registered;
+
+    @JsonInclude
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "users_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<UserRoles> roles;
 }

@@ -21,7 +21,7 @@ public class ResourceConfigurer extends ResourceServerConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                     .and()
                 .authorizeRequests()
-                    .antMatchers("/register").permitAll()
+                    .antMatchers("/register", "/login/*").permitAll() // TODO change this
                     .anyRequest().authenticated();
     }
 
