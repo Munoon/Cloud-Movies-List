@@ -4,3 +4,12 @@ server:
 spring:
   application:
     name: user-resource-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/movies-users
+    driver-class-name: org.postgresql.Driver
+    username: user
+    password: password
+    initialization-mode: always
+    schema: classpath:db/schema.sql
+    data: classpath:db/data.sql
