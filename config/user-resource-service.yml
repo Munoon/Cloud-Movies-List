@@ -12,3 +12,10 @@ security:
           6aVAsAYMxilZFlJMv2b8N883gdi3LEeOJo8zZr5IWyyROfepdeOL7UkAXddAj+dL
           WQIDAQAB
           -----END PUBLIC KEY-----
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/movies-users
+    username: user
+    password: password
+    initialization-mode: always
