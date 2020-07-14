@@ -3,7 +3,7 @@ package com.movies.auth.user;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Data
 public class User {
@@ -19,5 +19,5 @@ public class User {
 
     private LocalDateTime registered;
 
-    private List<UserRole> roles;
+    private Set<UserRole> roles;
 }

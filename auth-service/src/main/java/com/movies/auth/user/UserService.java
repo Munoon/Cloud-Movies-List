@@ -2,7 +2,6 @@ package com.movies.auth.user;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,7 +14,6 @@ public class UserService implements UserDetailsService {
     private RestTemplate restTemplate;
 
     @Override
-    // TODO test it
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         ResponseEntity<User> response;
         try {
