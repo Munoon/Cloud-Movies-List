@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 
 @Configuration
-@EnableResourceServer // TODO refactor from deprecated
+@EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceConfigurer extends ResourceServerConfigurerAdapter {
     @Override

@@ -1,12 +1,11 @@
 package com.movies.auth.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.movies.auth.user.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -19,14 +18,15 @@ import java.security.KeyPair;
 @Configuration
 @EnableAuthorizationServer
 public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserService userService;
+    private final Environment environment;
+    private final Resource storeFile;
 
-    @Autowired
-    private Environment environment;
-
-    @Value("${jwt.certificate.store.file}")
-    private Resource storeFile;
+    public AuthServerConfig(UserService userService, Environment environment, @Value("${jwt.certificate.store.file}") Resource storeFile) {
+        this.userService = userService;
+        this.environment = environment;
+        this.storeFile = storeFile;
+    }
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -46,7 +46,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
                 .accessTokenConverter(jwtAccessTokenConverter())
-                .userDetailsService(userDetailsService);
+                .userDetailsService(userService);
     }
 
     @Bean
