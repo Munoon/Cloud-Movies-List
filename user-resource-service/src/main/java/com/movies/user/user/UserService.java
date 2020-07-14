@@ -2,12 +2,10 @@ package com.movies.user.user;
 
 import com.movies.user.user.to.RegisterUserTo;
 import com.movies.user.util.exception.NotFoundException;
+import com.movies.user.util.mapper.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.Collections;
 
 @Service
 @AllArgsConstructor
@@ -17,13 +15,7 @@ public class UserService {
 
     public User registerUser(RegisterUserTo registerUserTo) {
         String password = passwordEncoder.encode(registerUserTo.getPassword());
-        User user = new User( // TODO refactor it with library
-                null,
-                registerUserTo.getName(), registerUserTo.getSurname(),
-                registerUserTo.getEmail(), password,
-                LocalDateTime.now(),
-                Collections.singleton(UserRoles.ROLE_USER)
-        );
+        User user = UserMapper.INSTANCE.toUser(registerUserTo, password);
         return userRepository.save(user);
     }
 

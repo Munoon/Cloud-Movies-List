@@ -1,6 +1,6 @@
 package com.movies.user.controller;
 
-import com.movies.user.TestUtils;
+import com.movies.user.util.JsonUtil;
 import com.movies.user.user.User;
 import com.movies.user.user.UserRepository;
 import com.movies.user.user.UserRoles;
@@ -31,7 +31,7 @@ class UserInfoControllerTest extends AbstractWebTest {
         registerUserTo.setPassword("examplePassword");
 
         mockMvc.perform(post("/register")
-                .content(TestUtils.writeValue(registerUserTo))
+                .content(JsonUtil.writeValue(registerUserTo))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 

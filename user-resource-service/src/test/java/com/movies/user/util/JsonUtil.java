@@ -1,9 +1,9 @@
-package com.movies.user;
+package com.movies.user.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
-public class TestUtils {
+public class JsonUtil {
     public static <T> String writeValue(T obj) {
         JsonMapper jsonMapper = new JsonMapper();
         try {
