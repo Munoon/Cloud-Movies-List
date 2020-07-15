@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootswatch/dist/superhero/bootstrap.min.css';
 import HeaderNavBar from './HeaderNavBar';
 import { getMetaProperty, InputField } from './misc';
 import Modal from "react-bootstrap/Modal";
@@ -13,7 +13,9 @@ const Application = ({ body: Body }) => {
     return (
         <>
             <HeaderNavBar {...settings} />
-            <Body {...settings} />
+            <div className='container'>
+                <Body {...settings} />
+            </div>
             <RegisterModal ref={REGISTER_MODAL_INSTANCE} />
         </>
     );

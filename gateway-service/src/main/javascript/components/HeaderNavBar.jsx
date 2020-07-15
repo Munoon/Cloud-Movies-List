@@ -7,14 +7,16 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import Button from "react-bootstrap/Button";
 
 const HeaderNavBar = ({ userAuthenticated }) => (
-    <Navbar bg="light" expand="lg" style={{ padding: '15px' }}>
-        <Navbar.Brand href="/">Movies List</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse>
-            <Nav className="mr-auto">
-                <UserNavBarItem userAuthenticated={userAuthenticated} />
-            </Nav>
-        </Navbar.Collapse>
+    <Navbar bg="dark" expand="lg" className='navbar-dark'>
+        <div className='container'>
+            <Navbar.Brand href="/" className='text-white'>Movies List</Navbar.Brand>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse>
+                <Nav className="mr-auto">
+                    <UserNavBarItem userAuthenticated={userAuthenticated} />
+                </Nav>
+            </Navbar.Collapse>
+        </div>
     </Navbar>
 );
 
@@ -24,9 +26,8 @@ const UserNavBarItem = ({ userAuthenticated }) => userAuthenticated
 
 const ProfileUserNavBarItem = () => {
     return (
-        <NavDropdown title={getMetaProperty('user:name') + ' ' + getMetaProperty('user:surname')} id="userNavbarDropdown">
-            <NavDropdown.Item className='disabled'>{getMetaProperty('user:email')}</NavDropdown.Item>
-            <NavDropdown.Divider />
+        <NavDropdown title={getMetaProperty('user:name') + ' ' + getMetaProperty('user:surname')}
+                     id="userNavbarDropdown" className='text-white'>
             <NavDropdown.Item onClick={() => postForm('/logout')}>Выйти</NavDropdown.Item>
         </NavDropdown>
     );
