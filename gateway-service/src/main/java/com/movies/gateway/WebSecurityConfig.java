@@ -17,29 +17,22 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @EnableZuulProxy
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
-    protected void configure(HttpSecurity http)
-            throws Exception {
-        http.antMatcher("/**")
-                .authorizeRequests()
-                .antMatchers("/", "/webjars/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests()
+                .antMatchers("/", "/webjars/**", "/static/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .logout()
+            .logout()
                 .logoutSuccessUrl("/")
                 .permitAll()
                 .and()
-                .csrf()
-                .csrfTokenRepository(
-                        CookieCsrfTokenRepository
-                                .withHttpOnlyFalse());
+            .csrf()
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
     }
 
     @Bean
-    public OAuth2RestOperations restOperations(
-            OAuth2ProtectedResourceDetails resource,
-            OAuth2ClientContext context) {
+    public OAuth2RestOperations restOperations(OAuth2ProtectedResourceDetails resource, OAuth2ClientContext context) {
         return new OAuth2RestTemplate(resource, context);
     }
 }
