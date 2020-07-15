@@ -1,8 +1,10 @@
 import React from 'react';
-import { getMetaProperty }  from './misc';
+import { getMetaProperty, postForm }  from './misc';
+import { REGISTER_MODAL_INSTANCE } from './Application';
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import Button from "react-bootstrap/Button";
 
 const HeaderNavBar = ({ userAuthenticated }) => (
     <Navbar bg="light" expand="lg" style={{ padding: '15px' }}>
@@ -25,13 +27,20 @@ const ProfileUserNavBarItem = () => {
         <NavDropdown title={getMetaProperty('user:name') + ' ' + getMetaProperty('user:surname')} id="userNavbarDropdown">
             <NavDropdown.Item className='disabled'>{getMetaProperty('user:email')}</NavDropdown.Item>
             <NavDropdown.Divider />
-            <NavDropdown.Item href="/logout">Выйти</NavDropdown.Item>
+            <NavDropdown.Item onClick={() => postForm('/logout')}>Выйти</NavDropdown.Item>
         </NavDropdown>
     );
 }
 
 const LoginUserNavBarItem = () => (
-    <Nav.Link href="/login">Войти</Nav.Link>
+    <>
+        <Nav.Link onClick={() => REGISTER_MODAL_INSTANCE.current.show()}>
+            <Button variant="outline-secondary">Зарегистрироваться</Button>
+        </Nav.Link>
+        <Nav.Link href="/login">
+            <Button variant="outline-primary">Войти</Button>
+        </Nav.Link>
+    </>
 );
 
 export default HeaderNavBar;
