@@ -2,7 +2,5 @@ spring:
   application:
     name: gateway-service
 
-proxy:
-  auth:
-    routes:
-      api: oauth2
+zuul:
+  sensitive-headers: Cookie,Set-Cookie

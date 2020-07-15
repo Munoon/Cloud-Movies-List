@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta property="user:authenticated" th:content="${#authorization.expression('isAuthenticated()')}">
-    <meta property="user:email" th:content="${#authentication.principal}" sec:authorize="isAuthenticated()">
+    <meta property="user:id" th:content="${#authentication.userAuthentication.details.id}" sec:authorize="isAuthenticated()">
+    <meta property="user:name" th:content="${#authentication.userAuthentication.details.name}" sec:authorize="isAuthenticated()">
+    <meta property="user:surname" th:content="${#authentication.userAuthentication.details.surname}" sec:authorize="isAuthenticated()">
+    <meta property="user:email" th:content="${#authentication.userAuthentication.details.email}" sec:authorize="isAuthenticated()">
+    <meta property="user:roles" th:content="${#authentication.userAuthentication.details.roles}" sec:authorize="isAuthenticated()">
 
     <title>Movies List</title>
 

@@ -1,7 +1,8 @@
 import React from 'react';
-import 'bootstrap/js/dist/dropdown'
+import 'bootstrap/js/dist/dropdown';
+import { getMetaProperty }  from './misc';
 
-const HeaderNavBar = ({ userAuthenticated, user }) => (
+const HeaderNavBar = ({ userAuthenticated }) => (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
             <a className="navbar-brand" href="/">Movies List</a>
@@ -10,32 +11,37 @@ const HeaderNavBar = ({ userAuthenticated, user }) => (
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"/>
             </button>
-            <div className="collapse navbar-collapse d-flex" id="navbarSupportedContent">
+            <div className="collapse navbar-collapse d-flex">
                 <ul className="navbar-nav mr-auto mb-2 mb-lg-0">
-                    <UserNavBarItem {...{ userAuthenticated, user }} />
+                    <UserNavBarItem {...{ userAuthenticated }} />
                 </ul>
             </div>
         </div>
     </nav>
 );
 
-const UserNavBarItem = ({ userAuthenticated, user }) => userAuthenticated
-    ? <ProfileUserNavBarItem user={user} />
+const UserNavBarItem = ({ userAuthenticated }) => userAuthenticated
+    ? <ProfileUserNavBarItem />
     : <LoginUserNavBarItem />;
 
-const ProfileUserNavBarItem = ({ user }) => (
-    <li className="nav-item dropdown">
-        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-           data-toggle="dropdown" aria-expanded="false">
-            {user.email}
-        </a>
-        <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li>
-                <a className="dropdown-item" href="/logout">Выйти</a>
-            </li>
-        </ul>
-    </li>
-);
+const ProfileUserNavBarItem = () => {
+    return (
+        <li className="nav-item dropdown">
+            <a className="nav-link dropdown-toggle" href="#" id="userNavbarDropdown" role="button"
+               data-toggle="dropdown" aria-expanded="false">
+                {getMetaProperty('user:name')} {getMetaProperty('user:surname')}
+            </a>
+            <ul className="dropdown-menu" aria-labelledby="userNavbarDropdown">
+                <li>
+                    <a className="dropdown-item disabled" href="#" aria-disabled="true">{getMetaProperty('user:email')}</a>
+                </li>
+                <li>
+                    <a className="dropdown-item" href="/logout">Выйти</a>
+                </li>
+            </ul>
+        </li>
+    );
+}
 
 const LoginUserNavBarItem = () => (
     <li className="nav-item">
