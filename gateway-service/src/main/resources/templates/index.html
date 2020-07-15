@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
+    <meta property="user:authenticated" th:content="${#authorization.expression('isAuthenticated()')}">
+    <meta property="user:email" th:content="${#authentication.principal}" sec:authorize="isAuthenticated()">
+
     <title>Movies List</title>
 
     <script th:src="@{/static/js/index.min.js}" defer></script>

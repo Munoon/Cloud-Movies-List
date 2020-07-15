@@ -1,4 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Application from './components/Application';
 
-ReactDOM.render(<h1>Hello from react!</h1>, document.getElementById('root'));
+const body = ({ userAuthenticated }) => (
+    <h1>userAuthenticated = {userAuthenticated ? 'true' : 'false'}</h1>
+);
+
+ReactDOM.render(<Application body={body} />, document.getElementById('root'));
