@@ -29,6 +29,7 @@
     "bootstrap": "^5.0.0-alpha1",
     "popper.js": "^1.16.1",
     "react": "^16.13.1",
+    "react-bootstrap": "^1.2.2",
     "react-dom": "^16.13.1",
     "swr": "^0.2.3"
   }
