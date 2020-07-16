@@ -11,7 +11,10 @@ spring:
           clone-on-start: true
           force-pull: true
           search-paths: config
+  security:
+    user:
+      name: test
+      password: test
 
 server:
   port: 8010
-

@@ -3,3 +3,5 @@ spring:
     config:
       uri: "http://localhost:8010"
       name: user-resource-service
+      username: test
+      password: test
