@@ -5,6 +5,7 @@ import { getMetaProperty, InputField } from './misc';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { useForm } from "react-hook-form";
+import { fetcher } from "./api";
 
 const Application = ({ body: Body }) => {
     const userAuthenticated = getMetaProperty('user:authenticated') === 'true';
@@ -31,10 +32,17 @@ const RegisterModal = React.forwardRef((props, ref) => {
     };
 
     const submit = formData => {
-        console.log(formData) // TODO send form
+        // TODO add loading animation and better validation on server
+        fetcher('/user-resource-service/register', {
+            method: 'POST',
+            body: JSON.stringify(formData)
+        }).then(() => {
+            setShow(false);
+        });
     };
 
-    const getError = (name, messages) => !errors[name] ? null : messages[errors.name.type];
+    const getErrorMessage = (messages, name) => messages[name] ? messages[name] : '';
+    const getError = (name, messages) => !errors[name] ? null : getErrorMessage(messages, errors[name].type);
 
     return (
         <Modal show={show} onHide={() => setShow(false)}>
