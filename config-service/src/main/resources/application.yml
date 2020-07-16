@@ -1,16 +1,7 @@
 spring:
   application:
     name: config-service
-  profiles:
-    active: git
-  cloud:
-    config:
-      server:
-        git:
-          uri: "https://github.com/Munoon/Cloud-Movies-List.git"
-          clone-on-start: true
-          force-pull: true
-          search-paths: config
+
   security:
     user:
       name: test
@@ -18,3 +9,9 @@ spring:
 
 server:
   port: 8010
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh

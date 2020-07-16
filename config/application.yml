@@ -3,6 +3,13 @@ services:
     username: user
     password: pass
 
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: newPass
+
 eureka:
   client:
     serviceUrl:
