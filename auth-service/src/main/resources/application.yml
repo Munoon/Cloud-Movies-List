@@ -15,3 +15,14 @@ jwt:
 spring:
   application:
     name: auth-service
+  session:
+    store-type: redis
+
+logging:
+  level:
+    org:
+      springframework:
+        security:
+          web:
+            csrf:
+              CsrfFilter: debug

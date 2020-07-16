@@ -9,3 +9,6 @@ spring:
     driver-class-name: org.postgresql.Driver
     schema: classpath:db/schema.sql
     data: classpath:db/data.sql
+
+  session:
+    store-type: redis

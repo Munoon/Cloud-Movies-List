@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const getMetaProperty = name => document.querySelector(`meta[property="${name}"]`).content;
+export const getMetaProperty = name => document.querySelector(`meta[name="${name}"]`).content;
 
 export const Spinner = () => (
     <div className="spinner-border" role="status">
@@ -18,11 +18,12 @@ export const InputField = React.forwardRef((props, ref) => (
     </div>
 ));
 
-export function postForm(path, params) {
+export function postForm(path, params = {}) {
     const form = document.createElement('form');
     form.method = 'post';
     form.action = path;
 
+    params[getMetaProperty('_csrf_parameter')] = getMetaProperty('_csrf');
     for (const key in params) {
         if (params.hasOwnProperty(key)) {
             const hiddenField = document.createElement('input');

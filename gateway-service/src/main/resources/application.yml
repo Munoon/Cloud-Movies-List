@@ -1,6 +1,17 @@
 spring:
   application:
     name: gateway-service
+  session:
+    store-type: redis
 
 zuul:
-  sensitive-headers: Cookie,Set-Cookie
+  sensitive-headers: Authorization,Cookie,Set-Cookie
+
+logging:
+  level:
+    org:
+      springframework:
+        security:
+          web:
+            csrf:
+              CsrfFilter: debug
