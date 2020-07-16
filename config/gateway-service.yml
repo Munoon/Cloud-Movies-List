@@ -1,3 +1,4 @@
+# TODO get urls from discovery service
 security:
   oauth2:
     client:

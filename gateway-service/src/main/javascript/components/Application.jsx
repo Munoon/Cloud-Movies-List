@@ -23,7 +23,7 @@ const Application = ({ body: Body }) => {
 
 const RegisterModal = React.forwardRef((props, ref) => {
     const [show, setShow] = useState(false);
-    const { register, handleSubmit, errors, watch } = useForm();
+    const { register, handleSubmit, errors } = useForm();
 
     ref.current = {
         show: () => setShow(true),

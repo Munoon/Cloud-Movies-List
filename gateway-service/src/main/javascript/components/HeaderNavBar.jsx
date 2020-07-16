@@ -36,7 +36,7 @@ const ProfileUserNavBarItem = () => {
 const LoginUserNavBarItem = () => (
     <>
         <Nav.Link onClick={() => REGISTER_MODAL_INSTANCE.current.show()}>
-            <Button variant="outline-secondary">Зарегистрироваться</Button>
+            <Button variant="outline-success">Зарегистрироваться</Button>
         </Nav.Link>
         <Nav.Link href="/login">
             <Button variant="outline-primary">Войти</Button>
