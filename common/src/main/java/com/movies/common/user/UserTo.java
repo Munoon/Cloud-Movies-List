@@ -1,12 +1,12 @@
-package com.movies.user.user.to;
+package com.movies.common.user;
 
-import com.movies.user.user.UserRoles;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Set;
 
 @Data
-public class UserTo {
+public class UserTo implements Serializable {
     private Integer id;
 
     private String name;

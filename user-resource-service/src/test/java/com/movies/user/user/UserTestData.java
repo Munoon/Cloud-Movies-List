@@ -1,5 +1,8 @@
 package com.movies.user.user;
 
+import com.movies.common.user.User;
+import com.movies.common.user.UserRoles;
+
 import java.util.Arrays;
 import java.util.Set;
 

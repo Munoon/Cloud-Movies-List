@@ -1,8 +1,10 @@
-package com.movies.auth.user;
+package com.movies.common.user;
 
 import org.springframework.security.core.GrantedAuthority;
 
-public enum UserRole implements GrantedAuthority {
+import java.io.Serializable;
+
+public enum UserRoles implements GrantedAuthority, Serializable {
     ROLE_USER, ROLE_ADMIN;
 
     @Override

@@ -1,5 +1,6 @@
 package com.movies.auth.user;
 
+import com.movies.common.user.User;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;

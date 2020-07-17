@@ -1,13 +1,18 @@
 package com.movies.user.user;
 
+import com.movies.common.user.User;
+import com.movies.common.user.UserRoles;
 import com.movies.user.AbstractTest;
 import com.movies.user.user.to.RegisterUserTo;
 import com.movies.user.util.exception.NotFoundException;
+import com.movies.user.util.mapper.LocalUserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.movies.user.user.UserTestData.DEFAULT_USER;
 import static com.movies.user.user.UserTestData.assertMatch;
@@ -32,7 +37,11 @@ class UserServiceTest extends AbstractTest {
         User savedUser = userService.registerUser(registerUserTo);
 
         User expected = new User(savedUser.getId(), "New", "User", "test@example.com", null, null, Collections.singleton(UserRoles.ROLE_USER));
-        assertMatch(userRepository.findAll(), DEFAULT_USER, expected);
+        List<User> allUsers = userRepository.findAll()
+                .stream()
+                .map(LocalUserMapper.INSTANCE::asUser)
+                .collect(Collectors.toList());
+        assertMatch(allUsers, DEFAULT_USER, expected);
     }
 
     @Test

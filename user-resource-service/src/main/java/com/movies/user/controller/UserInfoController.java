@@ -1,10 +1,10 @@
 package com.movies.user.controller;
 
-import com.movies.user.user.User;
+import com.movies.common.user.User;
 import com.movies.user.user.UserService;
 import com.movies.user.user.to.RegisterUserTo;
-import com.movies.user.user.to.UserTo;
-import com.movies.user.util.mapper.UserMapper;
+import com.movies.common.user.UserTo;
+import com.movies.common.user.UserMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

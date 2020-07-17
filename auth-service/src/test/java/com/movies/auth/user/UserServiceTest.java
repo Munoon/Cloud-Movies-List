@@ -1,6 +1,8 @@
 package com.movies.auth.user;
 
 import com.movies.auth.AbstractTest;
+import com.movies.common.user.User;
+import com.movies.common.user.UserRoles;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +32,7 @@ class UserServiceTest extends AbstractTest {
         User result = new User();
         result.setEmail("email@example.com");
         result.setPassword("test");
-        result.setRoles(Collections.singleton(UserRole.ROLE_USER));
+        result.setRoles(Collections.singleton(UserRoles.ROLE_USER));
 
         when(restTemplate.getForEntity("http://user-resource-service/login/email@example.com", User.class))
                 .thenReturn(new ResponseEntity<>(result, HttpStatus.OK));
@@ -40,7 +42,7 @@ class UserServiceTest extends AbstractTest {
         assertThat(userDetails.getPassword()).isEqualTo("test");
         assertThat(userDetails.getAuthorities())
                 .usingDefaultElementComparator()
-                .isEqualTo(unmodifiableSet(Collections.singleton(UserRole.ROLE_USER)));
+                .isEqualTo(unmodifiableSet(Collections.singleton(UserRoles.ROLE_USER)));
     }
 
     @Test
