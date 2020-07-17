@@ -2,12 +2,6 @@ import React from 'react';
 
 export const getMetaProperty = name => document.querySelector(`meta[name="${name}"]`).content;
 
-export const Spinner = () => (
-    <div className="spinner-border" role="status">
-        <span className="sr-only">Loading...</span>
-    </div>
-);
-
 export const InputField = React.forwardRef((props, ref) => (
     <div className="mb-3">
         <label htmlFor={props.id} className="form-label">{props.title}</label>

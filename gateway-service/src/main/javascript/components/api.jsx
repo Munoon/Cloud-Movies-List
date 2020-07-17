@@ -12,23 +12,31 @@ export const fetcher = (...args) => {
     args[1].headers[getMetaProperty('_csrf_header')] = getMetaProperty('_csrf');
     args[1].headers['Content-Type'] = 'application/json';
     args[1].cache = 'no-cache';
-    return new Promise(resolve => {
-        let data;
-        fetch(...args)
-            .then(res => {
-                data = res;
-                return res.text();
-            })
-            .then(text => {
-                let response;
-                try {
-                    response = JSON.parse(text);
-                } catch (e) {
-                    response = '';
-                }
-                resolve(response, data);
-            })
-    });
+
+    let data;
+    return fetch(...args)
+        .then(res => {
+            data = res
+            return res.text();
+        })
+        .then(text => {
+            let json = parseFromJSON(text);
+            if (!data.ok) {
+                throw {
+                    name: 'RequestException',
+                    response: json
+                };
+            }
+            return json;
+        });
+}
+
+function parseFromJSON(text) {
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        return '';
+    }
 }
 
 export function getProfile() {

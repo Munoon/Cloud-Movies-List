@@ -11,9 +11,11 @@ import javax.validation.constraints.Size;
 @ToString(exclude = "password")
 public class RegisterUserTo {
     @NotEmpty
+    @Size(min = 3, max = 30)
     private String name;
 
     @NotEmpty
+    @Size(min = 3, max = 30)
     private String surname;
 
     @Email
@@ -21,6 +23,6 @@ public class RegisterUserTo {
     private String email;
 
     @NotEmpty
-    @Size(min = 5)
+    @Size(min = 8)
     private String password;
 }

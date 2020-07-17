@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import 'bootswatch/dist/superhero/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 import HeaderNavBar from './HeaderNavBar';
 import { getMetaProperty, InputField } from './misc';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { useForm } from "react-hook-form";
 import { fetcher } from "./api";
+import Spinner from "react-bootstrap/Spinner";
+import { ToastContainer, toast } from "react-toastify";
 
 const Application = ({ body: Body }) => {
     const userAuthenticated = getMetaProperty('user:authenticated') === 'true';
@@ -18,12 +21,24 @@ const Application = ({ body: Body }) => {
                 <Body {...settings} />
             </div>
             <RegisterModal ref={REGISTER_MODAL_INSTANCE} />
+            <ToastContainer
+                    position="bottom-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
         </>
     );
 }
 
 const RegisterModal = React.forwardRef((props, ref) => {
     const [show, setShow] = useState(false);
+    const [loading, setLoading] = useState(false);
     const { register, handleSubmit, errors } = useForm();
 
     ref.current = {
@@ -32,12 +47,17 @@ const RegisterModal = React.forwardRef((props, ref) => {
     };
 
     const submit = formData => {
-        // TODO add loading animation and better validation on server
+        setLoading(true);
         fetcher('/user-resource-service/register', {
             method: 'POST',
             body: JSON.stringify(formData)
         }).then(() => {
+            setLoading(false);
             setShow(false);
+            toast.success('Вы успешно зарегистрировались!');
+        }).catch(e => {
+            setLoading(false);
+            toast.error(`Ошибка: ${e.response.error}`); // TODO add better error parsing
         });
     };
 
@@ -94,8 +114,9 @@ const RegisterModal = React.forwardRef((props, ref) => {
                 </form>
             </Modal.Body>
             <Modal.Footer>
+                {loading && <Spinner animation="border" role="status" />}
                 <Button variant="secondary" onClick={() => setShow(false)}>Закрыть</Button>
-                <Button variant="primary" onClick={handleSubmit(submit)}>Зарегистрироваться</Button>
+                <Button variant="primary" disabled={loading} onClick={handleSubmit(submit)}>Зарегистрироваться</Button>
             </Modal.Footer>
         </Modal>
     );

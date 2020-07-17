@@ -12,12 +12,13 @@ CREATE TABLE users (
    surname          VARCHAR                        NOT NULL,
    email            VARCHAR                        NOT NULL,
    password         VARCHAR                        NOT NULL,
-   registered       TIMESTAMP DEFAULT now()        NOT NULL
+   registered       TIMESTAMP DEFAULT now()        NOT NULL,
+   UNIQUE (email)
 );
 
 CREATE TABLE users_role (
     id              INTEGER PRIMARY KEY DEFAULT nextval('users_roles_seq'),
     user_id         INTEGER                         NOT NULL,
     role            VARCHAR                         NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
