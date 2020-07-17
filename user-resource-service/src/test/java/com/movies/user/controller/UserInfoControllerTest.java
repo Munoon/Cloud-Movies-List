@@ -8,19 +8,19 @@ import com.movies.user.util.JsonUtil;
 import com.movies.user.util.mapper.LocalUserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.movies.user.user.UserTestData.DEFAULT_USER;
-import static com.movies.user.user.UserTestData.assertMatchIgnoreId;
+import static com.movies.user.user.UserTestData.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
 class UserInfoControllerTest extends AbstractWebTest {
     @Autowired
     private UserRepository userRepository;
@@ -44,5 +44,16 @@ class UserInfoControllerTest extends AbstractWebTest {
                 .map(LocalUserMapper.INSTANCE::asUser)
                 .collect(Collectors.toList());
         assertMatchIgnoreId(allUsers, DEFAULT_USER, expected);
+    }
+
+    @Test
+    void getUserForLogin() throws Exception {
+        MvcResult result = mockMvc.perform(get("/login/" + DEFAULT_USER_EMAIL))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        User user = JsonUtil.readFromJson(result, User.class);
+        assertMatch(user, DEFAULT_USER);
+        assertThat(DEFAULT_USER.getPassword()).isEqualTo(user.getPassword());
     }
 }

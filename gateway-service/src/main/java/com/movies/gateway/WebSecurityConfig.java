@@ -28,6 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests()
                 .antMatchers("/", "/static/**", "/user-resource-service/register").permitAll()
+                .antMatchers("/user-resource-service/login").denyAll()
                 .anyRequest().authenticated()
                 .and()
             .logout()
