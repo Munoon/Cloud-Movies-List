@@ -40,7 +40,7 @@ function parseFromJSON(text) {
 }
 
 export function getProfile() {
-    const { data, error } = useSWR('/user-resource-service/profile', fetcher)
+    const { data, error } = useSWR('/users/profile', fetcher)
 
     return {
         user: data,

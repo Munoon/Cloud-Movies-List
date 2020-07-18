@@ -50,7 +50,7 @@ const RegisterModal = React.forwardRef((props, ref) => {
 
     const submit = formData => {
         setLoading(true);
-        fetcher('/user-resource-service/register', {
+        fetcher('/users/register', {
             method: 'POST',
             body: JSON.stringify(formData)
         }).then(() => {
@@ -65,7 +65,7 @@ const RegisterModal = React.forwardRef((props, ref) => {
 
     const getErrorMessage = (messages, name) => messages[name] ? messages[name] : '';
     const getError = (name, messages) => !errors[name] ? null : getErrorMessage(messages, errors[name].type);
-    const testEmail = email => fetcher(`/user-resource-service/test/email/${email}`)
+    const testEmail = email => fetcher(`/users/test/email/${email}`)
         .then(response => {
             setEmailErrorMessage(defaultEmailErrorMessage);
             return response;

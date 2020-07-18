@@ -29,9 +29,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
                 .antMatchers(
                         "/", "/static/**",
-                        "/user-resource-service/register", "/user-resource-service/test/email/*"
+                        "/users/register", "/users/test/email/*"
                 ).permitAll()
-                .antMatchers("/user-resource-service/login").denyAll()
+                .antMatchers("/users/login").denyAll()
                 .anyRequest().authenticated()
                 .and()
             .logout()

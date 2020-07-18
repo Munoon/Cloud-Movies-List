@@ -6,6 +6,10 @@ spring:
 
 zuul:
   sensitive-headers: Authorization,Cookie,Set-Cookie
+  routes:
+    users:
+      path: /users/**
+      serviceId: user-resource-service
 
 logging:
   level:
