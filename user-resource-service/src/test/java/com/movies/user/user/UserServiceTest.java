@@ -14,8 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.movies.user.user.UserTestData.DEFAULT_USER;
-import static com.movies.user.user.UserTestData.assertMatch;
+import static com.movies.user.user.UserTestData.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -53,5 +53,11 @@ class UserServiceTest extends AbstractTest {
     @Test
     void getByEmailNotFound() {
         assertThrows(NotFoundException.class, () -> userService.getByEmail("unknonwEmail@example.com"));
+    }
+
+    @Test
+    void testEmail() {
+        assertThat(userService.testEmail(DEFAULT_USER_EMAIL)).isEqualTo(false);
+        assertThat(userService.testEmail("email@example.com")).isEqualTo(true);
     }
 }

@@ -38,4 +38,10 @@ public class UserInfoController {
         log.info("Get login info of user {}", username);
         return userService.getByEmail(username.toLowerCase());
     }
+
+    @GetMapping("/test/email/{email}")
+    public boolean testEmail(@PathVariable String email) {
+        log.info("Checking if user with email '{}' exist", email);
+        return userService.testEmail(email);
+    }
 }

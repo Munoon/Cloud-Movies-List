@@ -37,8 +37,10 @@ const Application = ({ body: Body }) => {
 }
 
 const RegisterModal = React.forwardRef((props, ref) => {
+    let defaultEmailErrorMessage = 'Пользователь с таким Email адресом уже зарегистрирован';
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [emailErrorMessage, setEmailErrorMessage] = useState(defaultEmailErrorMessage);
     const { register, handleSubmit, errors } = useForm();
 
     ref.current = {
@@ -63,6 +65,22 @@ const RegisterModal = React.forwardRef((props, ref) => {
 
     const getErrorMessage = (messages, name) => messages[name] ? messages[name] : '';
     const getError = (name, messages) => !errors[name] ? null : getErrorMessage(messages, errors[name].type);
+    const testEmail = email => fetcher(`/user-resource-service/test/email/${email}`)
+        .then(response => {
+            setEmailErrorMessage(defaultEmailErrorMessage);
+            return response;
+        })
+        .catch(() => {
+            setEmailErrorMessage('Ошибка проверки доступности почты! Пожалуйста, попробуйте позже.');
+            return false;
+        });
+
+    let errorsCount = 0;
+    for (let error in errors) {
+        if (errors.hasOwnProperty(error)) {
+            ++errorsCount;
+        }
+    }
 
     return (
         <Modal show={show} onHide={() => setShow(false)}>
@@ -96,9 +114,11 @@ const RegisterModal = React.forwardRef((props, ref) => {
                         name='email' placeholder='name@example.com' title='Email адрес'
                         ref={register({
                             pattern: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
+                            validate: testEmail,
                             required: true
                         })}
                         error={getError('email', {
+                            validate: emailErrorMessage,
                             pattern: 'Пожалуйста, введите корректную почту'
                         })}
                         />
@@ -116,7 +136,7 @@ const RegisterModal = React.forwardRef((props, ref) => {
             <Modal.Footer>
                 {loading && <Spinner animation="border" role="status" />}
                 <Button variant="secondary" onClick={() => setShow(false)}>Закрыть</Button>
-                <Button variant="primary" disabled={loading} onClick={handleSubmit(submit)}>Зарегистрироваться</Button>
+                <Button variant="primary" disabled={loading || errorsCount !== 0} onClick={handleSubmit(submit)}>Зарегистрироваться</Button>
             </Modal.Footer>
         </Modal>
     );

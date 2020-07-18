@@ -56,4 +56,21 @@ class UserInfoControllerTest extends AbstractWebTest {
         assertMatch(user, DEFAULT_USER);
         assertThat(DEFAULT_USER.getPassword()).isEqualTo(user.getPassword());
     }
+
+    @Test
+    void testEmail() throws Exception {
+        mockMvc.perform(get("/test/email/" + DEFAULT_USER_EMAIL))
+                .andExpect(status().isOk())
+                .andExpect(mvcResult -> {
+                    boolean result = JsonUtil.readFromJson(mvcResult, Boolean.class);
+                    assertThat(result).isEqualTo(false);
+                });
+
+        mockMvc.perform(get("/test/email/email@example.com"))
+                .andExpect(status().isOk())
+                .andExpect(mvcResult -> {
+                    boolean result = JsonUtil.readFromJson(mvcResult, Boolean.class);
+                    assertThat(result).isEqualTo(true);
+                });
+    }
 }

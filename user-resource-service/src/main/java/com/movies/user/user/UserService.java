@@ -27,4 +27,8 @@ public class UserService {
                 .map(LocalUserMapper.INSTANCE::asUser)
                 .orElseThrow(() -> new NotFoundException("User with email " + email + " is not found!"));
     }
+
+    public boolean testEmail(String email) {
+        return userRepository.countAllByEmail(email) == 0;
+    }
 }
