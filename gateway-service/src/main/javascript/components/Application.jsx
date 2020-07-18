@@ -10,18 +10,38 @@ import { fetcher } from "./api";
 import Spinner from "react-bootstrap/Spinner";
 import { ToastContainer, toast } from "react-toastify";
 
-const Application = ({ body: Body }) => {
-    const userAuthenticated = getMetaProperty('user:authenticated') === 'true';
+class Application extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            userAuthenticated: getMetaProperty('user:authenticated') === 'true'
+        }
+        APPLICATION_INSTANCE = this;
+    }
 
-    const settings = { userAuthenticated };
-    return (
-        <>
-            <HeaderNavBar {...settings} />
-            <div className='container'>
-                <Body {...settings} />
-            </div>
-            <RegisterModal ref={REGISTER_MODAL_INSTANCE} />
-            <ToastContainer
+    logout() {
+        let that = this;
+        fetcher('/logout', {
+            method: 'POST',
+            redirect: 'manual'
+        }).then(() => {
+            that.setState({ userAuthenticated: false  });
+        }).catch(() => {
+            that.setState({ userAuthenticated: false  });
+        });
+    }
+
+    render() {
+        const Body = this.props.body;
+        const settings = { userAuthenticated: this.state.userAuthenticated };
+        return (
+            <>
+                <HeaderNavBar {...settings} />
+                <div className='container'>
+                    <Body {...settings} />
+                </div>
+                <RegisterModal ref={REGISTER_MODAL_INSTANCE} />
+                <ToastContainer
                     position="bottom-right"
                     autoClose={5000}
                     hideProgressBar={false}
@@ -32,8 +52,9 @@ const Application = ({ body: Body }) => {
                     draggable
                     pauseOnHover
                 />
-        </>
-    );
+            </>
+        );
+    }
 }
 
 const RegisterModal = React.forwardRef((props, ref) => {
@@ -59,7 +80,7 @@ const RegisterModal = React.forwardRef((props, ref) => {
             toast.success('Вы успешно зарегистрировались!');
         }).catch(e => {
             setLoading(false);
-            toast.error(`Ошибка: ${e.response.error}`); // TODO add better error parsing
+            e.useDefaultErrorParser();
         });
     };
 
@@ -143,5 +164,6 @@ const RegisterModal = React.forwardRef((props, ref) => {
 });
 
 export let REGISTER_MODAL_INSTANCE = React.createRef();
+export let APPLICATION_INSTANCE;
 
 export default Application;

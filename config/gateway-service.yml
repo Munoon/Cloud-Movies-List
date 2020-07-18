@@ -7,4 +7,4 @@ security:
       clientId: testClient
       clientSecret: password
     resource:
-      userInfoUri: http://10.0.114.148:8040/profile
+      userInfoUri: http://localhost:8040/profile

@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import { getMetaProperty } from "./misc";
+import { toast } from "react-toastify";
 
 export const fetcher = (...args) => {
     if (args[1] === undefined) {
@@ -24,11 +25,17 @@ export const fetcher = (...args) => {
             if (!data.ok) {
                 throw {
                     name: 'RequestException',
-                    response: json
+                    response: json,
+                    data,
+                    useDefaultErrorParser: () => parseError(json, data)
                 };
             }
             return json;
         });
+}
+
+function parseError(error, data) {
+    toast.error(`Ошибка: ${error.error}`); // TODO add better error parsing
 }
 
 function parseFromJSON(text) {

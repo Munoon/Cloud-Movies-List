@@ -1,6 +1,6 @@
 import React from 'react';
 import { getMetaProperty, postForm }  from './misc';
-import { REGISTER_MODAL_INSTANCE } from './Application';
+import { REGISTER_MODAL_INSTANCE, APPLICATION_INSTANCE } from './Application';
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
@@ -28,7 +28,7 @@ const ProfileUserNavBarItem = () => {
     return (
         <NavDropdown title={getMetaProperty('user:name') + ' ' + getMetaProperty('user:surname')}
                      id="userNavbarDropdown" className='text-white'>
-            <NavDropdown.Item onClick={() => postForm('/logout')}>Выйти</NavDropdown.Item>
+            <NavDropdown.Item onClick={() => APPLICATION_INSTANCE.logout()}>Выйти</NavDropdown.Item>
         </NavDropdown>
     );
 }
