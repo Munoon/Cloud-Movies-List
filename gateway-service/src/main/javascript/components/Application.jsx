@@ -1,6 +1,5 @@
+import './scss/style.scss';
 import React, { useState } from 'react';
-import 'bootswatch/dist/superhero/bootstrap.min.css';
-import 'react-toastify/dist/ReactToastify.css';
 import HeaderNavBar from './HeaderNavBar';
 import { getMetaProperty, InputField } from './misc';
 import Modal from "react-bootstrap/Modal";
