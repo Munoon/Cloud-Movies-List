@@ -2,7 +2,8 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        index: path.join(__dirname, 'src/main/javascript/index.jsx')
+        index: path.join(__dirname, 'src/main/javascript/index.jsx'),
+        profile: path.join(__dirname, 'src/main/javascript/profile.jsx')
     },
 
     output: {

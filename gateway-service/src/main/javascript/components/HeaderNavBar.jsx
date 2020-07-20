@@ -28,6 +28,8 @@ const ProfileUserNavBarItem = () => {
     return (
         <NavDropdown title={getMetaProperty('user:name') + ' ' + getMetaProperty('user:surname')}
                      id="userNavbarDropdown" className='text-white'>
+            <NavDropdown.Item href='/profile'>Настройки профиля</NavDropdown.Item>
+            <NavDropdown.Divider />
             <NavDropdown.Item onClick={() => APPLICATION_INSTANCE.logout()}>Выйти</NavDropdown.Item>
         </NavDropdown>
     );

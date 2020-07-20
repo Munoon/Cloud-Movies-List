@@ -1,0 +1,16 @@
+<head th:fragment="head()" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <meta charset="UTF-8">
+
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <meta name="_csrf_parameter" th:content="${_csrf.parameterName}">
+
+    <meta name="user:authenticated" th:content="${#authorization.expression('isAuthenticated()')}">
+    <meta name="user:id" th:content="${#authentication.userAuthentication.details.id}" sec:authorize="isAuthenticated()">
+    <meta name="user:name" th:content="${#authentication.userAuthentication.details.name}" sec:authorize="isAuthenticated()">
+    <meta name="user:surname" th:content="${#authentication.userAuthentication.details.surname}" sec:authorize="isAuthenticated()">
+    <meta name="user:email" th:content="${#authentication.userAuthentication.details.email}" sec:authorize="isAuthenticated()">
+    <meta name="user:roles" th:content="${#authentication.userAuthentication.details.roles}" sec:authorize="isAuthenticated()">
+
+    <title>Movies List</title>
+</head>

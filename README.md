@@ -5,10 +5,10 @@ Service, provided movies list with ability for users to add movies to favourites
 ## Used technologies
 Java (11 and 8), Maven, 
 Spring Boot, Spring Security, Spring Cloud, Spring Actuator, Spring Cloud Config, Spring Data JPA,
-oAuth 2, oAuth Authorization Server, oAuth Resource Server, 
+Rest API, oAuth 2, oAuth Authorization Server, oAuth Resource Server, 
 Netflix Eureka, Netflix Zuul, Hibernate, JUnit 5, RabbitMQ, thymeleaf,
 Redis, Spring Cloud Session (with Redis as storage), Postgres, JWT,
-Node JS, npm, Webpack, React, SWR, Bootstrap (and Bootswatch), babel, sass.
+JavaScript (including ES6), Node JS, npm, Webpack, React, React Hook Form, SWR, Bootstrap (and Bootswatch), babel, sass.
 
 ## Microservices
 Launch order | Name | Package | Description

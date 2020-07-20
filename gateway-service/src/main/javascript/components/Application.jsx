@@ -1,13 +1,14 @@
 import './scss/style.scss';
 import React, { useState } from 'react';
 import HeaderNavBar from './HeaderNavBar';
-import { getMetaProperty, InputField } from './misc';
+import { getErrorsCount, getMetaProperty, InputField } from './misc';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { useForm } from "react-hook-form";
 import { fetcher } from "./api";
 import Spinner from "react-bootstrap/Spinner";
 import { ToastContainer, toast } from "react-toastify";
+const AUTHENTICATED_USERS_ONLY_PAGES = ['/profile'];
 
 class Application extends React.Component {
     constructor(props) {
@@ -23,11 +24,16 @@ class Application extends React.Component {
         fetcher('/logout', {
             method: 'POST',
             redirect: 'manual'
-        }).then(() => {
-            that.setState({ userAuthenticated: false  });
-        }).catch(() => {
-            that.setState({ userAuthenticated: false  });
-        });
+        })
+            .then(() => onSuccessLogout())
+            .catch(() => onSuccessLogout());
+        
+        function onSuccessLogout() {
+            that.setState({ userAuthenticated: false });
+            if (AUTHENTICATED_USERS_ONLY_PAGES.includes(location.pathname)) {
+                location.href = '/';
+            }
+        }
     }
 
     render() {
@@ -95,13 +101,6 @@ const RegisterModal = React.forwardRef((props, ref) => {
             return false;
         });
 
-    let errorsCount = 0;
-    for (let error in errors) {
-        if (errors.hasOwnProperty(error)) {
-            ++errorsCount;
-        }
-    }
-
     return (
         <Modal show={show} onHide={() => setShow(false)}>
             <Modal.Header closeButton>
@@ -156,7 +155,7 @@ const RegisterModal = React.forwardRef((props, ref) => {
             <Modal.Footer>
                 {loading && <Spinner animation="border" role="status" />}
                 <Button variant="secondary" onClick={() => setShow(false)}>Закрыть</Button>
-                <Button variant="primary" disabled={loading || errorsCount !== 0} onClick={handleSubmit(submit)}>Зарегистрироваться</Button>
+                <Button variant="primary" disabled={loading || getErrorsCount(errors) !== 0} onClick={handleSubmit(submit)}>Зарегистрироваться</Button>
             </Modal.Footer>
         </Modal>
     );
