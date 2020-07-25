@@ -1,5 +1,5 @@
 import React from 'react';
-import { getMetaProperty, postForm }  from './misc';
+import { getMetaProperty }  from './misc';
 import { REGISTER_MODAL_INSTANCE, APPLICATION_INSTANCE } from './Application';
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
@@ -33,7 +33,7 @@ const ProfileUserNavBarItem = () => {
             <NavDropdown.Item onClick={() => APPLICATION_INSTANCE.logout()}>Выйти</NavDropdown.Item>
         </NavDropdown>
     );
-}
+};
 
 const LoginUserNavBarItem = () => (
     <>

@@ -15,7 +15,7 @@ class Application extends React.Component {
         super(props);
         this.state = {
             userAuthenticated: getMetaProperty('user:authenticated') === 'true'
-        }
+        };
         APPLICATION_INSTANCE = this;
     }
 

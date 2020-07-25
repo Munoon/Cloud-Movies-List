@@ -47,7 +47,7 @@ function parseFromJSON(text) {
 }
 
 export function getProfile() {
-    const { data, error } = useSWR('/users/profile', fetcher)
+    const { data, error } = useSWR('/users/profile', fetcher);
 
     return {
         user: data,

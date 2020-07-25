@@ -1,6 +1,6 @@
 # Cloud Movies List
 Spring Cloud learning project.
-Service, provided movies list with ability for users to add movies to favourites or watch later and mark movies.
+Service, provided movies list with ability for users to add movies to favorites or watch later and mark movies.
 
 ## Used technologies
 Java (11 and 8), Maven, 
@@ -26,3 +26,4 @@ Launch order | Name | Package | Description
 4. Execute `mvn package` in project root folder.
 5. Setup configuration in `config` folder, if needed.
 6. Launch each microservice in order, that showing in Microservices table using command `java -jar ${jar-name}`. Each jar locate in `${microservice-package}/target` folder.
+7. You may open website using url `localhost:8080`.
