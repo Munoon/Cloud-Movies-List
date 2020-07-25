@@ -30,7 +30,8 @@ public class UpdateUserDetailsFilter extends ZuulFilter {
     @Override
     public Object run() throws ZuulException {
         UserTo userTo = ZuulFilterUtils.addResponseBodyAndParseResponseAsUserTo(objectMapper);
-        log.info("Update user details {}", userTo);
+        HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
+        log.info("Update user details {} for servlet path '{}'", userTo, request.getServletPath());
         SecurityUtils.updateUser(userTo);
         return null;
     }
