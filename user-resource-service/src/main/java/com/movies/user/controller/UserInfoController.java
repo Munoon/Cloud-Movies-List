@@ -22,7 +22,7 @@ public class UserInfoController {
 
     @GetMapping("/profile")
     public UserTo getProfile(@AuthenticationPrincipal AuthorizedUser authorizedUser) {
-        int userId = authorizedUser.getUserTo().getId();
+        int userId = authorizedUser.getId();
         log.info("Get profile of user with {}", userId);
         User user = userService.getById(userId);
         return UserMapper.INSTANCE.asTo(user);

@@ -3,8 +3,10 @@ package com.movies.user.util.mapper;
 import com.movies.common.user.User;
 import com.movies.user.user.UserEntity;
 import com.movies.user.user.to.RegisterUserTo;
+import com.movies.user.user.to.UpdateProfileTo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -17,4 +19,6 @@ public interface LocalUserMapper {
     UserEntity toUserEntity(RegisterUserTo registerUserTo, String password);
 
     User asUser(UserEntity userEntity);
+
+    UserEntity updateEntity(UpdateProfileTo updateProfileTo, @MappingTarget UserEntity userEntity);
 }

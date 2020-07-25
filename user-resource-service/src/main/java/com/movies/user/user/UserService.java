@@ -2,6 +2,7 @@ package com.movies.user.user;
 
 import com.movies.common.user.User;
 import com.movies.user.user.to.RegisterUserTo;
+import com.movies.user.user.to.UpdateProfileTo;
 import com.movies.user.util.exception.NotFoundException;
 import com.movies.common.user.UserMapper;
 import com.movies.user.util.mapper.LocalUserMapper;
@@ -29,8 +30,19 @@ public class UserService {
     }
 
     public User getById(int id) {
+        UserEntity userEntity = getUserEntityById(id);
+        return LocalUserMapper.INSTANCE.asUser(userEntity);
+    }
+
+    public User updateUser(int id, UpdateProfileTo updateProfileTo) {
+        UserEntity userEntity = getUserEntityById(id);
+        LocalUserMapper.INSTANCE.updateEntity(updateProfileTo, userEntity);
+        UserEntity updated = userRepository.save(userEntity);
+        return LocalUserMapper.INSTANCE.asUser(updated);
+    }
+
+    private UserEntity getUserEntityById(int id) {
         return userRepository.findById(id)
-                .map(LocalUserMapper.INSTANCE::asUser)
                 .orElseThrow(() -> new NotFoundException("User with id " + id + " is not found!"));
     }
 

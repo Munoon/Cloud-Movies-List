@@ -1,4 +1,4 @@
-package com.movies.gateway;
+package com.movies.gateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

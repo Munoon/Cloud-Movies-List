@@ -1,4 +1,4 @@
-package com.movies.gateway;
+package com.movies.gateway.config;
 
 import com.movies.common.AuthorizedUser;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
