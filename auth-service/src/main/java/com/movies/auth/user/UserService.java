@@ -1,5 +1,6 @@
 package com.movies.auth.user;
 
+import com.movies.common.AuthorizedUser;
 import com.movies.common.user.User;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +32,6 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("Error getting user with username " + username);
         }
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(), user.getPassword(),
-                true, true, true, true,
-                user.getRoles()
-        );
+        return new AuthorizedUser(user);
     }
 }

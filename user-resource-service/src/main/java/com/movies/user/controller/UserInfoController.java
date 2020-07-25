@@ -1,5 +1,6 @@
 package com.movies.user.controller;
 
+import com.movies.common.AuthorizedUser;
 import com.movies.common.user.User;
 import com.movies.user.user.UserService;
 import com.movies.user.user.to.RegisterUserTo;
@@ -20,10 +21,10 @@ public class UserInfoController {
     private UserService userService;
 
     @GetMapping("/profile")
-    public UserTo getProfile(@AuthenticationPrincipal OAuth2Authentication authentication) {
-        String email = (String) authentication.getPrincipal();
-        log.info("Get profile of user with email {}", email);
-        User user = userService.getByEmail(email);
+    public UserTo getProfile(@AuthenticationPrincipal AuthorizedUser authorizedUser) {
+        int userId = authorizedUser.getUserTo().getId();
+        log.info("Get profile of user with {}", userId);
+        User user = userService.getById(userId);
         return UserMapper.INSTANCE.asTo(user);
     }
 

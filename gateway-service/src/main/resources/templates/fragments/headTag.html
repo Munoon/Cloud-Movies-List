@@ -6,11 +6,14 @@
     <meta name="_csrf_parameter" th:content="${_csrf.parameterName}">
 
     <meta name="user:authenticated" th:content="${#authorization.expression('isAuthenticated()')}">
-    <meta name="user:id" th:content="${#authentication.userAuthentication.details.id}" sec:authorize="isAuthenticated()">
-    <meta name="user:name" th:content="${#authentication.userAuthentication.details.name}" sec:authorize="isAuthenticated()">
-    <meta name="user:surname" th:content="${#authentication.userAuthentication.details.surname}" sec:authorize="isAuthenticated()">
-    <meta name="user:email" th:content="${#authentication.userAuthentication.details.email}" sec:authorize="isAuthenticated()">
-    <meta name="user:roles" th:content="${#authentication.userAuthentication.details.roles}" sec:authorize="isAuthenticated()">
+
+    <th:block sec:authorize="isAuthenticated()" th:with="user=${#authentication.principal.userTo}">
+        <meta name="user:id" th:content="${user.id}">
+        <meta name="user:name" th:content="${user.name}">
+        <meta name="user:surname" th:content="${user.surname}">
+        <meta name="user:email" th:content="${user.email}">
+        <meta name="user:roles" th:content="${user.roles}">
+    </th:block>
 
     <title>Movies List</title>
 </head>
