@@ -7,7 +7,7 @@ Java (11 and 8), Maven,
 Spring Boot, Spring Security, Spring Cloud, Spring Actuator, Spring Cloud Config, Spring Data JPA,
 Rest API, oAuth 2, oAuth Authorization Server, oAuth Resource Server, 
 Netflix Eureka, Netflix Zuul, Hibernate, JUnit 5, RabbitMQ, thymeleaf,
-Redis, Spring Cloud Session (with Redis as storage), Postgres, JWT,
+Postgres, JWT,
 JavaScript (including ES6), Node JS, npm, Webpack, React, React Hook Form, SWR, Bootstrap (and Bootswatch), babel, sass.
 
 ## Microservices

@@ -27,17 +27,17 @@ const UpdateProfileForm = () => {
     const onSubmit = data => {
         setLoading(true);
         console.log(data);
-        // fetcher('/users/profile/update', {
-        //     method: 'POST',
-        //     body: JSON.stringify(data)
-        // }).then(() => {
-        //     setLoading(false);
-        //     toast.success('Вы успешно обновили профиль!');
-        // }).catch(e => {
-        //     setLoading(false);
-        //     e.useDefaultErrorParser();
-        // });
-    }
+        fetcher('/users/profile/update', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        }).then(() => {
+            setLoading(false);
+            toast.success('Вы успешно обновили профиль!');
+        }).catch(e => {
+            setLoading(false);
+            e.useDefaultErrorParser();
+        });
+    };
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
