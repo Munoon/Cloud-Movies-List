@@ -8,12 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -70,6 +70,16 @@ public class ExceptionHandlerController {
         });
         log.info("ConstraintViolation exception on request {}", req.getRequestURL(), e);
         return new ErrorInfoField(req.getRequestURL(), errors);
+    }
+
+    @ResponseStatus(HttpStatus.I_AM_A_TEAPOT) // XD
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    public ResponseEntity<ErrorInfo> mediaTypeExceptionHandler(HttpServletRequest req, HttpMediaTypeNotAcceptableException e) {
+        log.warn("HttpMediaTypeNotAcceptable exception on request {}", req.getRequestURL(), e);
+        var errorInfo = new ErrorInfo(req.getRequestURL(), ErrorType.REQUEST_EXCEPTION, "Sorry, but we support only JSON. Tea at our expense!");
+        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(errorInfo);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

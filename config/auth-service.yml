@@ -6,5 +6,5 @@ oauth:
     authorizedGrantTypes: authorization_code,refresh_token
     scopes: user_info
     autoApprove: true
-    accessTokenValiditySeconds: 30
-    refreshTokenValiditySeconds: 1800
+    accessTokenValiditySeconds: 3600
+    refreshTokenValiditySeconds: 86400
