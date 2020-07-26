@@ -25,7 +25,8 @@ import java.util.Map;
 @RestControllerAdvice(annotations = RestController.class)
 public class ExceptionHandlerController {
     private static final Map<String, String> DATABASE_ERROR_MAP = Map.of(
-        "users_email_key", "Пользователь с таким Email адресом уже зарегистрирован"
+            "users_email_key", "Пользователь с таким Email адресом уже зарегистрирован",
+            "users_role_user_id_role_key", "У пользователя уже есть эта роль"
     );
 
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -47,7 +48,7 @@ public class ExceptionHandlerController {
     @ExceptionHandler(BindException.class)
     public ErrorInfo beanValidationExceptionHandler(HttpServletRequest req, BindException e) {
         Map<String, List<String>> errors = ErrorUtils.getErrorsFieldMap(e.getFieldErrors());
-        log.info("Binding exception on request {}", req.getRequestURL(), e);
+        log.warn("Binding exception on request {}", req.getRequestURL(), e);
         return new ErrorInfoField(req.getRequestURL(), errors);
     }
 
@@ -55,7 +56,7 @@ public class ExceptionHandlerController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorInfo argumentNotValidHandler(HttpServletRequest req, MethodArgumentNotValidException e) {
         Map<String, List<String>> errors = ErrorUtils.getErrorsFieldMap(e.getBindingResult().getFieldErrors());
-        log.info("MethodArgumentNotValid exception on request {}", req.getRequestURL(), e);
+        log.warn("MethodArgumentNotValid exception on request {}", req.getRequestURL(), e);
         return new ErrorInfoField(req.getRequestURL(), errors);
     }
 
@@ -68,7 +69,7 @@ public class ExceptionHandlerController {
             errors.computeIfAbsent(key, k -> new ArrayList<>());
             errors.get(key).add(error.getMessage());
         });
-        log.info("ConstraintViolation exception on request {}", req.getRequestURL(), e);
+        log.warn("ConstraintViolation exception on request {}", req.getRequestURL(), e);
         return new ErrorInfoField(req.getRequestURL(), errors);
     }
 

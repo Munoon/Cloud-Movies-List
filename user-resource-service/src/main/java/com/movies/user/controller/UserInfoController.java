@@ -36,7 +36,7 @@ public class UserInfoController {
 
     @GetMapping("/login/{username}")
     public User getUserForLogin(@PathVariable String username) {
-        log.info("Get login info of user {}", username);
+        log.info("Get login info of user '{}'", username);
         return userService.getByEmail(username.toLowerCase());
     }
 

@@ -10,14 +10,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
 @EnableWebMvc
 @Configuration
-public class JacksonConfig implements WebMvcConfigurer {
+public class MvcConfig implements WebMvcConfigurer {
     public static ObjectMapper OBJECT_MAPPER;
 
     @Bean
@@ -39,6 +41,16 @@ public class JacksonConfig implements WebMvcConfigurer {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(new MappingJackson2HttpMessageConverter(objectMapper()));
+    }
+
+    @Override
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        configurer.favorPathExtension(false); // TODO refactor this
+    }
+
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+        configurer.setUseSuffixPatternMatch(false);
     }
 }
 
