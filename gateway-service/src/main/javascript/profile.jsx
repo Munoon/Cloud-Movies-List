@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
-import Application from "./components/Application";
+import Application, { APPLICATION_INSTANCE } from "./components/Application";
 import { useForm } from "react-hook-form";
 import { getErrorsCount, getMetaProperty, InputField, updateMetaProperty } from "./components/misc";
 import Spinner from "react-bootstrap/Spinner";
@@ -26,7 +26,6 @@ const UpdateProfileForm = () => {
     const getError = (name, messages) => !errors[name] ? null : getErrorMessage(messages, errors[name].type);
     const onSubmit = data => {
         setLoading(true);
-        console.log(data);
         fetcher('/users/profile/update', {
             method: 'POST',
             body: JSON.stringify(data)
@@ -92,9 +91,24 @@ const UpdateEmailForm = () => {
             });
 
     const onSubmit = data => {
+        let prompt = confirm('Вы уверены, что хотите изменить Email адрес? После этой операции вам будет необходимо перезайти в систему!');
+        if (!prompt) {
+            return;
+        }
+
         setLoading(true);
-        updateMetaProperty('user:email', data.email);
-        console.log(data);
+        fetcher('/users/profile/update/email', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        }).then(() => {
+            setLoading(false);
+            updateMetaProperty('user:email', data.email);
+            toast.success('Вы успешно обновили Email адрес!');
+            APPLICATION_INSTANCE.instantlyLogout();
+        }).catch(e => {
+            setLoading(false);
+            e.useDefaultErrorParser();
+        });
     };
 
     return (

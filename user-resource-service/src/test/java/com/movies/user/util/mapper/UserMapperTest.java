@@ -4,6 +4,8 @@ import com.movies.common.user.User;
 import com.movies.common.user.UserRoles;
 import com.movies.user.user.UserEntity;
 import com.movies.user.user.to.RegisterUserTo;
+import com.movies.user.user.to.UpdateEmailTo;
+import com.movies.user.user.to.UpdateProfileTo;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -40,5 +42,29 @@ class UserMapperTest {
         assertThat(user.getPassword()).isEqualTo("password");
         assertThat(user.getRegistered()).isEqualTo(LocalDateTime.of(2019, 12, 27, 13, 0));
         assertThat(user.getRoles()).isEqualTo(Collections.singleton(UserRoles.ROLE_USER));
+    }
+
+    @Test
+    void updateEntityProfile() {
+        UpdateProfileTo updateProfileTo = new UpdateProfileTo();
+        updateProfileTo.setName("NewName");
+        updateProfileTo.setSurname("NewSurname");
+
+        UserEntity userEntity = new UserEntity(100, "Test", "User", "email@example.com", "password", LocalDateTime.of(2019, 12, 27, 13, 0), Collections.singleton(UserRoles.ROLE_USER));
+        LocalUserMapper.INSTANCE.updateEntity(updateProfileTo, userEntity);
+
+        assertThat(userEntity.getName()).isEqualTo("NewName");
+        assertThat(userEntity.getSurname()).isEqualTo("NewSurname");
+    }
+
+    @Test
+    void updateEntityEmail() {
+        UpdateEmailTo updateEmailTo = new UpdateEmailTo();
+        updateEmailTo.setEmail("newEmail@example.com");
+
+        UserEntity userEntity = new UserEntity(100, "Test", "User", "email@example.com", "password", LocalDateTime.of(2019, 12, 27, 13, 0), Collections.singleton(UserRoles.ROLE_USER));
+        LocalUserMapper.INSTANCE.updateEntity(updateEmailTo, userEntity);
+
+        assertThat(userEntity.getEmail()).isEqualTo("newemail@example.com");
     }
 }

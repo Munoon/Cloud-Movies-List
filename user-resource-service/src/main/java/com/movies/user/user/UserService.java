@@ -2,6 +2,7 @@ package com.movies.user.user;
 
 import com.movies.common.user.User;
 import com.movies.user.user.to.RegisterUserTo;
+import com.movies.user.user.to.UpdateEmailTo;
 import com.movies.user.user.to.UpdateProfileTo;
 import com.movies.user.util.exception.NotFoundException;
 import com.movies.common.user.UserMapper;
@@ -37,6 +38,13 @@ public class UserService {
     public User updateUser(int id, UpdateProfileTo updateProfileTo) {
         UserEntity userEntity = getUserEntityById(id);
         LocalUserMapper.INSTANCE.updateEntity(updateProfileTo, userEntity);
+        UserEntity updated = userRepository.save(userEntity);
+        return LocalUserMapper.INSTANCE.asUser(updated);
+    }
+
+    public User updateUser(int id, UpdateEmailTo updateEmailTo) {
+        UserEntity userEntity = getUserEntityById(id);
+        LocalUserMapper.INSTANCE.updateEntity(updateEmailTo, userEntity);
         UserEntity updated = userRepository.save(userEntity);
         return LocalUserMapper.INSTANCE.asUser(updated);
     }

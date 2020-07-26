@@ -4,6 +4,8 @@ import com.movies.common.user.User;
 import com.movies.common.user.UserRoles;
 import com.movies.user.AbstractTest;
 import com.movies.user.user.to.RegisterUserTo;
+import com.movies.user.user.to.UpdateEmailTo;
+import com.movies.user.user.to.UpdateProfileTo;
 import com.movies.user.util.exception.NotFoundException;
 import com.movies.user.util.mapper.LocalUserMapper;
 import org.junit.jupiter.api.Test;
@@ -46,7 +48,7 @@ class UserServiceTest extends AbstractTest {
 
     @Test
     void getByEmail() {
-        User actual = userService.getByEmail(DEFAULT_USER.getEmail());
+        User actual = userService.getByEmail(DEFAULT_USER_EMAIL);
         assertMatch(actual, DEFAULT_USER);
     }
 
@@ -59,5 +61,46 @@ class UserServiceTest extends AbstractTest {
     void testEmail() {
         assertThat(userService.testEmail(DEFAULT_USER_EMAIL)).isEqualTo(false);
         assertThat(userService.testEmail("email@example.com")).isEqualTo(true);
+    }
+
+    @Test
+    void getById() {
+        User actual = userService.getById(DEFAULT_USER_ID);
+        assertMatch(actual, DEFAULT_USER);
+    }
+
+    @Test
+    void getByIdNotFound() {
+        assertThrows(NotFoundException.class, () -> userService.getById(100500));
+    }
+
+    @Test
+    void updateUserProfile() {
+        UpdateProfileTo updateProfileTo = new UpdateProfileTo();
+        updateProfileTo.setName("NewName");
+        updateProfileTo.setSurname("NewSurname");
+
+        userService.updateUser(DEFAULT_USER_ID, updateProfileTo);
+
+        User actual = userService.getById(DEFAULT_USER_ID);
+        User expected = new User(DEFAULT_USER);
+        expected.setName("NewName");
+        expected.setSurname("NewSurname");
+
+        assertMatch(actual, expected);
+    }
+
+    @Test
+    void updateUserEmail() {
+        UpdateEmailTo updateEmailTo = new UpdateEmailTo();
+        updateEmailTo.setEmail("newEmail@example.com");
+
+        userService.updateUser(DEFAULT_USER_ID, updateEmailTo);
+
+        User actual = userService.getById(DEFAULT_USER_ID);
+        User expected = new User(DEFAULT_USER);
+        expected.setEmail("newEmail@example.com");
+
+        assertMatch(actual, expected);
     }
 }

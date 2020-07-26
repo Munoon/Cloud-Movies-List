@@ -8,11 +8,14 @@ import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 
 @Slf4j
 public class ZuulFilterUtils {
@@ -50,5 +53,10 @@ public class ZuulFilterUtils {
                     HttpStatus.INTERNAL_SERVER_ERROR.value(), RESPONSE_PARSE_ERROR_MESSAGE
             );
         }
+    }
+
+    public static boolean isRequestMatch(Collection<AntPathRequestMatcher> matchers) {
+        HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
+        return matchers.stream().anyMatch(predicate -> predicate.matches(request));
     }
 }

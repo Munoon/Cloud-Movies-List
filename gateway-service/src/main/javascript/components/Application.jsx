@@ -25,14 +25,14 @@ class Application extends React.Component {
             method: 'POST',
             redirect: 'manual'
         })
-            .then(() => onSuccessLogout())
-            .catch(() => onSuccessLogout());
-        
-        function onSuccessLogout() {
-            that.setState({ userAuthenticated: false });
-            if (AUTHENTICATED_USERS_ONLY_PAGES.includes(location.pathname)) {
-                location.href = '/';
-            }
+            .then(() => that.instantlyLogout())
+            .catch(() => that.instantlyLogout());
+    }
+
+    instantlyLogout() {
+        this.setState({ userAuthenticated: false });
+        if (AUTHENTICATED_USERS_ONLY_PAGES.includes(location.pathname)) {
+            location.href = '/';
         }
     }
 
