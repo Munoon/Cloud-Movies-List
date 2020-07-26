@@ -5,7 +5,9 @@ import com.movies.common.user.UserRoles;
 import com.movies.user.user.UserEntity;
 import com.movies.user.user.to.RegisterUserTo;
 import com.movies.user.user.to.UpdateEmailTo;
+import com.movies.user.user.to.UpdatePasswordTo;
 import com.movies.user.user.to.UpdateProfileTo;
+import com.movies.user.util.TestPasswordEncoder;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -20,14 +22,14 @@ class UserMapperTest {
         registerUserTo.setEmail("TestEmail");
         registerUserTo.setName("New");
         registerUserTo.setSurname("User");
-        registerUserTo.setPassword("123");
+        registerUserTo.setPassword("newPassword");
 
-        UserEntity user = LocalUserMapper.INSTANCE.toUserEntity(registerUserTo, "456");
+        UserEntity user = LocalUserMapper.INSTANCE.toUserEntity(registerUserTo, new TestPasswordEncoder());
         assertThat(user.getId()).isNull();
         assertThat(user.getName()).isEqualTo("New");
         assertThat(user.getSurname()).isEqualTo("User");
-        assertThat(user.getEmail()).isEqualTo("TestEmail");
-        assertThat(user.getPassword()).isEqualTo("456");
+        assertThat(user.getEmail()).isEqualTo("testemail");
+        assertThat(user.getPassword()).isEqualTo(TestPasswordEncoder.PREFIX + "newPassword");
         assertThat(user.getRegistered()).isNotNull();
     }
 
@@ -66,5 +68,17 @@ class UserMapperTest {
         LocalUserMapper.INSTANCE.updateEntity(updateEmailTo, userEntity);
 
         assertThat(userEntity.getEmail()).isEqualTo("newemail@example.com");
+    }
+
+    @Test
+    void updateEntityPassword() {
+        UpdatePasswordTo updatePasswordTo = new UpdatePasswordTo();
+        updatePasswordTo.setOldPassword("password1");
+        updatePasswordTo.setNewPassword("password2");
+
+        UserEntity userEntity = new UserEntity(100, "Test", "User", "email@example.com", "password", LocalDateTime.of(2019, 12, 27, 13, 0), Collections.singleton(UserRoles.ROLE_USER));
+        LocalUserMapper.INSTANCE.updateEntity(updatePasswordTo, userEntity, new TestPasswordEncoder());
+
+        assertThat(userEntity.getPassword()).isEqualTo(TestPasswordEncoder.PREFIX + "password2");
     }
 }

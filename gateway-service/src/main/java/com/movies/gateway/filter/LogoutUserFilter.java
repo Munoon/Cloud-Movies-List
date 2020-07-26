@@ -7,26 +7,33 @@ import com.netflix.zuul.exception.ZuulException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
-import org.springframework.http.HttpStatus;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
 @Component
 public class LogoutUserFilter extends ZuulFilter {
     private static final String LOGOUT_ERROR_MESSAGE = "Error logout user";
-    private static final List<AntPathRequestMatcher> pathMatchers = Collections.singletonList(
-            new AntPathRequestMatcher("/users/profile/update/email", HttpMethod.POST.name(), false)
+    private static final List<AntPathRequestMatcher> pathMatchers = Arrays.asList(
+            new AntPathRequestMatcher("/users/profile/update/email", HttpMethod.POST.name(), false),
+            new AntPathRequestMatcher("/users/profile/update/password", HttpMethod.POST.name(), false)
     );
 
     @Override
     public Object run() throws ZuulException {
-        HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
+        RequestContext context = RequestContext.getCurrentContext();
+
+        if (!(context.getResponseStatusCode() >= 200 && context.getResponseStatusCode() < 400)) {
+            return null;
+        }
+
+        HttpServletRequest request = context.getRequest();
         try {
             request.logout();
         } catch (ServletException e) {

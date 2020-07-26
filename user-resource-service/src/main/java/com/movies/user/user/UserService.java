@@ -3,6 +3,7 @@ package com.movies.user.user;
 import com.movies.common.user.User;
 import com.movies.user.user.to.RegisterUserTo;
 import com.movies.user.user.to.UpdateEmailTo;
+import com.movies.user.user.to.UpdatePasswordTo;
 import com.movies.user.user.to.UpdateProfileTo;
 import com.movies.user.util.exception.NotFoundException;
 import com.movies.common.user.UserMapper;
@@ -18,8 +19,7 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public User registerUser(RegisterUserTo registerUserTo) {
-        String password = passwordEncoder.encode(registerUserTo.getPassword());
-        UserEntity user = LocalUserMapper.INSTANCE.toUserEntity(registerUserTo, password);
+        UserEntity user = LocalUserMapper.INSTANCE.toUserEntity(registerUserTo, passwordEncoder);
         userRepository.save(user);
         return LocalUserMapper.INSTANCE.asUser(user);
     }
@@ -45,6 +45,13 @@ public class UserService {
     public User updateUser(int id, UpdateEmailTo updateEmailTo) {
         UserEntity userEntity = getUserEntityById(id);
         LocalUserMapper.INSTANCE.updateEntity(updateEmailTo, userEntity);
+        UserEntity updated = userRepository.save(userEntity);
+        return LocalUserMapper.INSTANCE.asUser(updated);
+    }
+
+    public User updateUser(int id, UpdatePasswordTo updatePasswordTo) {
+        UserEntity userEntity = getUserEntityById(id);
+        LocalUserMapper.INSTANCE.updateEntity(updatePasswordTo, userEntity, passwordEncoder);
         UserEntity updated = userRepository.save(userEntity);
         return LocalUserMapper.INSTANCE.asUser(updated);
     }

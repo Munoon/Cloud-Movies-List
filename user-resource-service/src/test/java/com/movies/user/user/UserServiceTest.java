@@ -5,12 +5,14 @@ import com.movies.common.user.UserRoles;
 import com.movies.user.AbstractTest;
 import com.movies.user.user.to.RegisterUserTo;
 import com.movies.user.user.to.UpdateEmailTo;
+import com.movies.user.user.to.UpdatePasswordTo;
 import com.movies.user.user.to.UpdateProfileTo;
 import com.movies.user.util.exception.NotFoundException;
 import com.movies.user.util.mapper.LocalUserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 import static com.movies.user.user.UserTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class UserServiceTest extends AbstractTest {
@@ -27,6 +30,9 @@ class UserServiceTest extends AbstractTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Test
     void registerUser() {
@@ -44,6 +50,9 @@ class UserServiceTest extends AbstractTest {
                 .map(LocalUserMapper.INSTANCE::asUser)
                 .collect(Collectors.toList());
         assertMatch(allUsers, DEFAULT_USER, expected);
+
+        User newUser = userService.getById(savedUser.getId());
+        assertTrue(passwordEncoder.matches("examplePassword", newUser.getPassword()));
     }
 
     @Test
@@ -99,8 +108,20 @@ class UserServiceTest extends AbstractTest {
 
         User actual = userService.getById(DEFAULT_USER_ID);
         User expected = new User(DEFAULT_USER);
-        expected.setEmail("newEmail@example.com");
+        expected.setEmail("newemail@example.com");
 
         assertMatch(actual, expected);
+    }
+
+    @Test
+    void updateUserPassword() {
+        UpdatePasswordTo updatePasswordTo = new UpdatePasswordTo();
+        updatePasswordTo.setOldPassword("password1");
+        updatePasswordTo.setNewPassword("password2");
+
+        userService.updateUser(DEFAULT_USER_ID, updatePasswordTo);
+
+        User actual = userService.getById(DEFAULT_USER_ID);
+        assertTrue(passwordEncoder.matches("password2", actual.getPassword()));
     }
 }

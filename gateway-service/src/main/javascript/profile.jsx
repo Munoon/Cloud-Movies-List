@@ -7,6 +7,8 @@ import Spinner from "react-bootstrap/Spinner";
 import { fetcher } from "./components/api";
 import { toast } from "react-toastify";
 
+const getConfirmChangeFiledMessage = field => `Вы уверены, что хотите изменить ${field}? После этой операции вам будет необходимо перезайти в систему!`;
+
 const ProfilePageBody = () => (
     <div className='jumbotron mt-3'>
         <h3>Настройки профиля</h3>
@@ -91,7 +93,7 @@ const UpdateEmailForm = () => {
             });
 
     const onSubmit = data => {
-        let prompt = confirm('Вы уверены, что хотите изменить Email адрес? После этой операции вам будет необходимо перезайти в систему!');
+        let prompt = confirm(getConfirmChangeFiledMessage('Email адрес'));
         if (!prompt) {
             return;
         }
@@ -134,10 +136,10 @@ const UpdateEmailForm = () => {
             </div>
         </form>
     );
-}
+};
 
 const UpdatePasswordForm = () => {
-    const { register, handleSubmit, errors, watch } = useForm();
+    const { register, handleSubmit, errors, watch, setError } = useForm();
     const [loading, setLoading] = useState(false);
 
     const getErrorMessage = (messages, name) => messages[name] ? messages[name] : '';
@@ -149,9 +151,32 @@ const UpdatePasswordForm = () => {
 
     const onSubmit = data => {
         delete data['confirmNewPassword'];
+        let prompt = confirm(getConfirmChangeFiledMessage('пароль'));
+        if (!prompt) {
+            return;
+        }
+
         setLoading(true);
-        console.log(data)
+        fetcher('/users/profile/update/password', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        }).then(() => {
+            setLoading(false);
+            toast.success('Вы успешно обновили пароль адрес!');
+            APPLICATION_INSTANCE.instantlyLogout();
+        }).catch(e => {
+            setLoading(false);
+            if (e.response.type === 'VALIDATION_ERROR') {
+                for (const [field, errors] of Object.entries(e.response.fields)) {
+                    errors.forEach(message => setError(field, { type: 'serverError', message }));
+                }
+            } else {
+                e.useDefaultErrorParser();
+            }
+        });
     };
+
+    console.log(errors);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -160,6 +185,7 @@ const UpdatePasswordForm = () => {
                 id='oldPasswordInput' type='password'
                 name='oldPassword' title='Старый пароль'
                 ref={register({ required: true })}
+                error={errors.oldPassword && errors.oldPassword.type === 'serverError' && errors.oldPassword.message}
             />
 
             <InputField
@@ -186,6 +212,6 @@ const UpdatePasswordForm = () => {
             </div>
         </form>
     );
-}
+};
 
 ReactDOM.render(<Application body={ProfilePageBody} />, document.getElementById('root'));

@@ -6,6 +6,7 @@ import com.movies.common.user.UserMapper;
 import com.movies.common.user.UserTo;
 import com.movies.user.user.UserService;
 import com.movies.user.user.to.UpdateEmailTo;
+import com.movies.user.user.to.UpdatePasswordTo;
 import com.movies.user.user.to.UpdateProfileTo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,14 @@ public class UserProfileController {
                               @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         log.info("User {} update email {}", authorizedUser.getId(), updateEmailTo);
         User user = userService.updateUser(authorizedUser.getId(), updateEmailTo);
+        return UserMapper.INSTANCE.asTo(user);
+    }
+
+    @PostMapping("/update/password")
+    public UserTo updatePassword(@Valid @RequestBody UpdatePasswordTo updatePasswordTo,
+                              @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+        log.info("User {} update password", authorizedUser.getId());
+        User user = userService.updateUser(authorizedUser.getId(), updatePasswordTo);
         return UserMapper.INSTANCE.asTo(user);
     }
 }
