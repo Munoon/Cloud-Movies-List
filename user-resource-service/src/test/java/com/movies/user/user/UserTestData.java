@@ -2,6 +2,9 @@ package com.movies.user.user;
 
 import com.movies.common.user.User;
 import com.movies.common.user.UserRoles;
+import com.movies.common.user.UserTo;
+import com.movies.user.util.JsonUtil;
+import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -35,5 +38,17 @@ public class UserTestData {
 
     public static void assertMatchIgnoreId(Iterable<User> actual, User... expected) {
         assertMatchIgnoreId(actual, Arrays.asList(expected));
+    }
+
+    private static void assertMatch(UserTo actual, UserTo expected) {
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    public static ResultMatcher contentJson(User expected) {
+        return result -> assertMatch(JsonUtil.readFromJson(result, User.class), expected);
+    }
+
+    public static ResultMatcher contentJson(UserTo expected) {
+        return result -> assertMatch(JsonUtil.readFromJson(result, UserTo.class), expected);
     }
 }

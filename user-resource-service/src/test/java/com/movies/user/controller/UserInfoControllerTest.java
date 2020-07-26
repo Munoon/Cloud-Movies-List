@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.movies.user.user.UserTestData.*;
+import static com.movies.user.util.TestUtils.defaultUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,6 +25,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserInfoControllerTest extends AbstractWebTest {
     @Autowired
     private UserRepository userRepository;
+
+    @Test
+    void getProfile() throws Exception {
+        mockMvc.perform(get("/profile")
+                .with(defaultUser())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(contentJson(DEFAULT_USER));
+    }
 
     @Test
     void register() throws Exception {
