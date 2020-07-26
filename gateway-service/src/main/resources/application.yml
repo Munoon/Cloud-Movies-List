@@ -3,6 +3,7 @@ spring:
     name: gateway-service
 
 zuul:
+  ignored-services: "*"
   sensitive-headers: Cookie,Set-Cookie
   routes:
     users:
