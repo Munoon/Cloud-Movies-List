@@ -12,6 +12,8 @@ import com.movies.user.util.mapper.LocalUserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
@@ -123,5 +125,15 @@ class UserServiceTest extends AbstractTest {
 
         User actual = userService.getById(DEFAULT_USER_ID);
         assertTrue(passwordEncoder.matches("password2", actual.getPassword()));
+    }
+
+    @Test
+    void findAll() {
+        PageRequest page = PageRequest.of(0, 1);
+        Page<User> users = userService.findAll(page);
+
+        assertThat(users.getTotalPages()).isEqualTo(1);
+        assertThat(users.getTotalElements()).isEqualTo(1);
+        assertMatch(users.getContent(), DEFAULT_USER);
     }
 }

@@ -1,12 +1,15 @@
 package com.movies.user.user;
 
 import com.movies.common.user.User;
+import com.movies.common.user.UserMapper;
 import com.movies.common.user.UserRoles;
 import com.movies.common.user.UserTo;
 import com.movies.user.util.JsonUtil;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -44,8 +47,23 @@ public class UserTestData {
         assertThat(actual).isEqualTo(expected);
     }
 
+    public static ResultMatcher contentJsonHateos(User... expected) {
+        return result -> {
+            Map<String, Object> resultMap = JsonUtil.readValueAsMap(JsonUtil.getContent(result));
+            List<Map<String, Object>> maps = ((Map<String, List<Map<String, Object>>>) resultMap.get("_embedded")).get("users");
+
+            assertThat(maps).hasSize(expected.length);
+
+            // TODO refactor validation comparing each field
+            for (int i = 0; i < expected.length; i++) {
+                User expectedUser = expected[i];
+                assertThat(expectedUser.getId()).isEqualTo(maps.get(i).get("id"));
+            }
+        };
+    }
+
     public static ResultMatcher contentJson(User expected) {
-        return result -> assertMatch(JsonUtil.readFromJson(result, User.class), expected);
+        return contentJson(UserMapper.INSTANCE.asTo(expected));
     }
 
     public static ResultMatcher contentJson(UserTo expected) {

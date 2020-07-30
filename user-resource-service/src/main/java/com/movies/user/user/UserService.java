@@ -9,6 +9,8 @@ import com.movies.user.util.exception.NotFoundException;
 import com.movies.common.user.UserMapper;
 import com.movies.user.util.mapper.LocalUserMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +61,11 @@ public class UserService {
     private UserEntity getUserEntityById(int id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User with id " + id + " is not found!"));
+    }
+
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(LocalUserMapper.INSTANCE::asUser);
     }
 
     public boolean testEmail(String email) {

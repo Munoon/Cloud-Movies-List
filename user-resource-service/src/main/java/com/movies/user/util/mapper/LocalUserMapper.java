@@ -1,11 +1,9 @@
 package com.movies.user.util.mapper;
 
 import com.movies.common.user.User;
+import com.movies.common.user.UserTo;
 import com.movies.user.user.UserEntity;
-import com.movies.user.user.to.RegisterUserTo;
-import com.movies.user.user.to.UpdateEmailTo;
-import com.movies.user.user.to.UpdatePasswordTo;
-import com.movies.user.user.to.UpdateProfileTo;
+import com.movies.user.user.to.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -31,4 +29,6 @@ public interface LocalUserMapper {
 
     @Mapping(target = "password", expression = "java(passwordEncoder.encode(updatePasswordTo.getNewPassword()))")
     UserEntity updateEntity(UpdatePasswordTo updatePasswordTo, @MappingTarget UserEntity userEntity, PasswordEncoder passwordEncoder);
+
+    UserToRepresentationModel toRepresentationModel(UserTo userTo);
 }

@@ -7,15 +7,18 @@ import com.movies.common.error.ErrorUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ValidationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +56,13 @@ public class ExceptionHandlerController {
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(ValidationException.class)
+    public ErrorInfo validationExceptionHandler(HttpServletRequest req, ValidationException e) {
+        log.warn("Validation exception on request {}", req.getRequestURL(), e);
+        return new ErrorInfo(req.getRequestURL(), ErrorType.VALIDATION_ERROR, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorInfo argumentNotValidHandler(HttpServletRequest req, MethodArgumentNotValidException e) {
         Map<String, List<String>> errors = ErrorUtils.getErrorsFieldMap(e.getBindingResult().getFieldErrors());
@@ -71,6 +81,20 @@ public class ExceptionHandlerController {
         });
         log.warn("ConstraintViolation exception on request {}", req.getRequestURL(), e);
         return new ErrorInfoField(req.getRequestURL(), errors);
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ErrorInfo accessDeniedExceptionHandler(HttpServletRequest req, AccessDeniedException e) {
+        log.warn("Access denied exception on request {}", req.getRequestURL(), e);
+        return new ErrorInfo(req.getRequestURL(), ErrorType.ACCESS_DENIED, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ErrorInfo propertyReferenceExceptionHandler(HttpServletRequest req, PropertyReferenceException e) {
+        log.warn("Property reference exception on request {}", req.getRequestURL(), e);
+        return new ErrorInfo(req.getRequestURL(), ErrorType.VALIDATION_ERROR, "You can't sort by this field");
     }
 
     @ResponseStatus(HttpStatus.I_AM_A_TEAPOT) // XD

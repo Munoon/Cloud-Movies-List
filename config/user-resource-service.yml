@@ -16,6 +16,6 @@ security:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/movies-users
-    username: user
+    username: postgres
     password: password
     initialization-mode: always

@@ -2,16 +2,15 @@ package com.movies.user.util.mapper;
 
 import com.movies.common.user.User;
 import com.movies.common.user.UserRoles;
+import com.movies.common.user.UserTo;
 import com.movies.user.user.UserEntity;
-import com.movies.user.user.to.RegisterUserTo;
-import com.movies.user.user.to.UpdateEmailTo;
-import com.movies.user.user.to.UpdatePasswordTo;
-import com.movies.user.user.to.UpdateProfileTo;
+import com.movies.user.user.to.*;
 import com.movies.user.util.TestPasswordEncoder;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -80,5 +79,17 @@ class UserMapperTest {
         LocalUserMapper.INSTANCE.updateEntity(updatePasswordTo, userEntity, new TestPasswordEncoder());
 
         assertThat(userEntity.getPassword()).isEqualTo(TestPasswordEncoder.PREFIX + "password2");
+    }
+
+    @Test
+    void toRepresentationModel() {
+        UserTo user = new UserTo(100, "Test", "User", "email@example.com", Set.of(UserRoles.ROLE_ADMIN, UserRoles.ROLE_USER));
+        UserToRepresentationModel representationModel = LocalUserMapper.INSTANCE.toRepresentationModel(user);
+
+        assertThat(representationModel.getId()).isEqualTo(100);
+        assertThat(representationModel.getName()).isEqualTo("Test");
+        assertThat(representationModel.getSurname()).isEqualTo("User");
+        assertThat(representationModel.getEmail()).isEqualTo("email@example.com");
+        assertThat(representationModel.getRoles()).isEqualTo(Set.of(UserRoles.ROLE_ADMIN, UserRoles.ROLE_USER));
     }
 }

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration
+@EnableSpringDataWebSupport
 public class MvcConfig implements WebMvcConfigurer {
     public static ObjectMapper OBJECT_MAPPER;
 

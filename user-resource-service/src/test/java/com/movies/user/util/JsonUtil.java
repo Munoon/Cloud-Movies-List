@@ -2,12 +2,16 @@ package com.movies.user.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.movies.user.config.MvcConfig;
+import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 public class JsonUtil {
+    private static final JacksonJsonParser JACKSON_JSON_PARSER = new JacksonJsonParser();
+
     public static <T> String writeValue(T obj) {
         try {
             return MvcConfig.OBJECT_MAPPER.writeValueAsString(obj);
@@ -22,6 +26,10 @@ public class JsonUtil {
         } catch (IOException e) {
             throw new IllegalArgumentException("Invalid read from JSON:\n'" + json + "'", e);
         }
+    }
+
+    public static Map<String, Object> readValueAsMap(String json) {
+        return JACKSON_JSON_PARSER.parseMap(json);
     }
 
     public static <T> T readFromJson(MvcResult result, Class<T> clazz) throws UnsupportedEncodingException {
