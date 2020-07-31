@@ -176,8 +176,6 @@ const UpdatePasswordForm = () => {
         });
     };
 
-    console.log(errors);
-
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <h4>Изменение пароля</h4>

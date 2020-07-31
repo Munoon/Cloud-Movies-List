@@ -1,6 +1,9 @@
 import React from 'react';
 
-export const getMetaProperty = name => document.querySelector(`meta[name="${name}"]`).content;
+export const getMetaProperty = name => {
+    let el = document.querySelector(`meta[name="${name}"]`);
+    return el ? el.content : null;
+}
 export const updateMetaProperty = (name, value) => document.querySelector(`meta[name="${name}"]`).content = value;
 
 export const InputField = React.forwardRef((props, ref) => (
@@ -22,3 +25,13 @@ export const getErrorsCount = errors => {
     }
     return errorsCount;
 };
+
+export const hasRole = role => {
+    let rolesStr = getMetaProperty('user:roles');
+    if (!rolesStr) {
+        return false;
+    }
+
+    let roles = rolesStr.substring(1, rolesStr.length - 1).split(', ');
+    return roles.includes(role);
+}

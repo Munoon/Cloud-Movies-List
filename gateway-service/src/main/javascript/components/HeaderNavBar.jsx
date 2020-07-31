@@ -1,5 +1,5 @@
 import React from 'react';
-import { getMetaProperty }  from './misc';
+import {getMetaProperty, hasRole} from './misc';
 import { REGISTER_MODAL_INSTANCE, APPLICATION_INSTANCE } from './Application';
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
@@ -13,6 +13,7 @@ const HeaderNavBar = ({ userAuthenticated }) => (
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse>
                 <Nav className="mr-auto">
+                    {userAuthenticated && hasRole('ROLE_ADMIN') && <AdminNavItem />}
                     <UserNavBarItem userAuthenticated={userAuthenticated} />
                 </Nav>
             </Navbar.Collapse>
@@ -24,16 +25,14 @@ const UserNavBarItem = ({ userAuthenticated }) => userAuthenticated
     ? <ProfileUserNavBarItem />
     : <LoginUserNavBarItem />;
 
-const ProfileUserNavBarItem = () => {
-    return (
+const ProfileUserNavBarItem = () => (
         <NavDropdown title={getMetaProperty('user:name') + ' ' + getMetaProperty('user:surname')}
                      id="userNavbarDropdown" className='text-white'>
             <NavDropdown.Item href='/profile'>Настройки профиля</NavDropdown.Item>
             <NavDropdown.Divider />
             <NavDropdown.Item onClick={() => APPLICATION_INSTANCE.logout()}>Выйти</NavDropdown.Item>
         </NavDropdown>
-    );
-};
+);
 
 const LoginUserNavBarItem = () => (
     <>
@@ -44,6 +43,12 @@ const LoginUserNavBarItem = () => (
             <Button variant="outline-primary">Войти</Button>
         </Nav.Link>
     </>
+);
+
+const AdminNavItem = () => (
+    <NavDropdown title='Админ панель' id="adminNavbarDropdown" className='text-white'>
+        <NavDropdown.Item href='/admin/users'>Пользователи</NavDropdown.Item>
+    </NavDropdown>
 );
 
 export default HeaderNavBar;
