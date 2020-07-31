@@ -8,5 +8,6 @@ public enum ErrorType implements Serializable {
     DATA_ERROR,
     NOT_UNIQUE_ERROR,
     APPLICATION_EXCEPTION,
-    ACCESS_DENIED
+    ACCESS_DENIED,
+    NOT_FOUND
 }

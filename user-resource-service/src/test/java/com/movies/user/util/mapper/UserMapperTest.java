@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,6 +80,25 @@ class UserMapperTest {
         LocalUserMapper.INSTANCE.updateEntity(updatePasswordTo, userEntity, new TestPasswordEncoder());
 
         assertThat(userEntity.getPassword()).isEqualTo(TestPasswordEncoder.PREFIX + "password2");
+    }
+
+    @Test
+    void updateEntity() {
+        AdminSaveUserTo adminSaveUserTo = new AdminSaveUserTo();
+        adminSaveUserTo.setEmail("Example@example.com");
+        adminSaveUserTo.setName("NewName");
+        adminSaveUserTo.setSurname("NewSurname");
+        adminSaveUserTo.setRoles(Collections.singleton(UserRoles.ROLE_USER));
+
+        Set<UserRoles> roles = new HashSet<>();
+        roles.add(UserRoles.ROLE_ADMIN);
+        roles.add(UserRoles.ROLE_USER);
+
+        UserEntity userEntity = new UserEntity(100, "Test", "User", "email@email.com", "pass", null, roles);
+        LocalUserMapper.INSTANCE.updateEntity(adminSaveUserTo, userEntity);
+
+        UserEntity expected = new UserEntity(100, "NewName", "NewSurname", "example@example.com", "pass", null, Collections.singleton(UserRoles.ROLE_USER));
+        assertThat(userEntity).isEqualToComparingFieldByField(expected);
     }
 
     @Test

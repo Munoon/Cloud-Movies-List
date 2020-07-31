@@ -30,5 +30,8 @@ public interface LocalUserMapper {
     @Mapping(target = "password", expression = "java(passwordEncoder.encode(updatePasswordTo.getNewPassword()))")
     UserEntity updateEntity(UpdatePasswordTo updatePasswordTo, @MappingTarget UserEntity userEntity, PasswordEncoder passwordEncoder);
 
+    @Mapping(target = "email", expression = "java(adminSaveUserTo.getEmail().toLowerCase())")
+    UserEntity updateEntity(AdminSaveUserTo adminSaveUserTo, @MappingTarget UserEntity userEntity);
+
     UserToRepresentationModel toRepresentationModel(UserTo userTo);
 }

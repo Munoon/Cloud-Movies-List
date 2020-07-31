@@ -3,10 +3,7 @@ package com.movies.user.user;
 import com.movies.common.user.User;
 import com.movies.common.user.UserRoles;
 import com.movies.user.AbstractTest;
-import com.movies.user.user.to.RegisterUserTo;
-import com.movies.user.user.to.UpdateEmailTo;
-import com.movies.user.user.to.UpdatePasswordTo;
-import com.movies.user.user.to.UpdateProfileTo;
+import com.movies.user.user.to.*;
 import com.movies.user.util.exception.NotFoundException;
 import com.movies.user.util.mapper.LocalUserMapper;
 import org.junit.jupiter.api.Test;
@@ -125,6 +122,25 @@ class UserServiceTest extends AbstractTest {
 
         User actual = userService.getById(DEFAULT_USER_ID);
         assertTrue(passwordEncoder.matches("password2", actual.getPassword()));
+    }
+
+    @Test
+    void updateUserAdmin() {
+        AdminSaveUserTo adminSaveUserTo = new AdminSaveUserTo();
+        adminSaveUserTo.setEmail("example@example.com");
+        adminSaveUserTo.setName("NewName");
+        adminSaveUserTo.setSurname("NewSurname");
+        adminSaveUserTo.setRoles(Collections.singleton(UserRoles.ROLE_USER));
+
+        userService.updateUser(DEFAULT_USER_ID, adminSaveUserTo);
+
+        User actual = userService.getById(DEFAULT_USER_ID);
+        User expected = new User(DEFAULT_USER);
+        expected.setEmail("example@example.com");
+        expected.setName("NewName");
+        expected.setSurname("NewSurname");
+        expected.setRoles(Collections.singleton(UserRoles.ROLE_USER));
+        assertMatch(actual, expected);
     }
 
     @Test

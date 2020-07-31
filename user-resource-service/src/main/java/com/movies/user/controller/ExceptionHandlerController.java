@@ -4,6 +4,7 @@ import com.movies.common.error.ErrorInfo;
 import com.movies.common.error.ErrorInfoField;
 import com.movies.common.error.ErrorType;
 import com.movies.common.error.ErrorUtils;
+import com.movies.user.util.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -95,6 +96,13 @@ public class ExceptionHandlerController {
     public ErrorInfo propertyReferenceExceptionHandler(HttpServletRequest req, PropertyReferenceException e) {
         log.warn("Property reference exception on request {}", req.getRequestURL(), e);
         return new ErrorInfo(req.getRequestURL(), ErrorType.VALIDATION_ERROR, "You can't sort by this field");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public ErrorInfo notFoundExceptionHandler(HttpServletRequest req, NotFoundException e) {
+        log.warn("Not found exception on request {}", req.getRequestURL(), e);
+        return new ErrorInfo(req.getRequestURL(), ErrorType.NOT_FOUND, e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.I_AM_A_TEAPOT) // XD
