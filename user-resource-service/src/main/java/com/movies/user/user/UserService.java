@@ -71,6 +71,11 @@ public class UserService {
                 .map(LocalUserMapper.INSTANCE::asUser);
     }
 
+    // TODO test it
+    public void deleteUserById(int id) {
+        userRepository.deleteById(id);
+    }
+
     public boolean testEmail(String email) {
         return userRepository.countAllByEmail(email.toLowerCase()) == 0;
     }

@@ -144,6 +144,17 @@ class UserServiceTest extends AbstractTest {
     }
 
     @Test
+    void deleteUserById() {
+        Page<User> users = userService.findAll(PageRequest.of(0, 10));
+        assertThat(users).hasSize(1);
+
+        userService.deleteUserById(DEFAULT_USER_ID);
+
+        Page<User> newUsers = userService.findAll(PageRequest.of(0, 10));
+        assertThat(newUsers).hasSize(0);
+    }
+
+    @Test
     void findAll() {
         PageRequest page = PageRequest.of(0, 1);
         Page<User> users = userService.findAll(page);

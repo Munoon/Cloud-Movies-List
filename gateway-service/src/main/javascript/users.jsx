@@ -12,6 +12,7 @@ import Modal from "react-bootstrap/Modal";
 import FormCheck from "react-bootstrap/FormCheck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons/faPen";
+import { faTimes } from "@fortawesome/free-solid-svg-icons/faTimes";
 import useSWR from "swr";
 import { useForm } from "react-hook-form";
 import { InputField } from "./components/misc";
@@ -80,6 +81,19 @@ const UsersTable = React.forwardRef((props, ref) => {
         refresh: () => loadData()
     };
 
+    const handleDeleteUser = (userId, name) => {
+        if (!confirm(`Вы уверены, что хотите удалить пользователя ${name}?`)) {
+            return;
+        }
+
+        fetcher(`/users/admin/${userId}`, { method: 'DELETE' })
+            .then(() => {
+                toast.success('Вы успешно удалили пользователя!');
+                loadData();
+            })
+            .catch(e => e.useDefaultErrorParser());
+    }
+
     return (
         <div className='mt-2'>
             <div className='row'>
@@ -117,7 +131,8 @@ const UsersTable = React.forwardRef((props, ref) => {
                         {headerGroup.headers.map(column => (
                             <th {...column.getHeaderProps()}>{column.render('Header')}</th>
                         ))}
-                        <th></th>
+                        <th/>
+                        <th/>
                     </tr>
                 ))}
                 </thead>
@@ -125,6 +140,7 @@ const UsersTable = React.forwardRef((props, ref) => {
                 {page.map((row) => {
                     prepareRow(row);
                     let userId = row.original.id;
+                    let name = row.original.name + ' ' + row.original.surname;
                     return (
                         <tr key={row.original.id} role='row'>
                             {row.cells.map(cell => (
@@ -132,6 +148,9 @@ const UsersTable = React.forwardRef((props, ref) => {
                             ))}
                             <td>
                                 <FontAwesomeIcon icon={faPen} onClick={() => UPDATE_USER_MODAL_INSTANCE.updateUser(userId)} className='custom-button' />
+                            </td>
+                            <td>
+                                <FontAwesomeIcon icon={faTimes} onClick={() => handleDeleteUser(userId, name)} className='custom-button' />
                             </td>
                         </tr>
                     );

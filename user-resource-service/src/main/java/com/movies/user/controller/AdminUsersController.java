@@ -60,4 +60,11 @@ public class AdminUsersController {
         User user = userService.updateUser(userId, userTo);
         return UserMapper.INSTANCE.asTo(user);
     }
+
+    // TODO test it
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable int userId) {
+        log.info("Admin {} delete user {}", authUserId(), userId);
+        userService.deleteUserById(userId);
+    }
 }

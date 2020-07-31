@@ -8,15 +8,17 @@ import com.movies.user.user.to.RegisterUserTo;
 import com.movies.user.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 
 import java.util.Collections;
 
 import static com.movies.user.user.UserTestData.*;
 import static com.movies.user.util.TestUtils.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -132,5 +134,18 @@ class AdminUsersControllerTest extends AbstractWebTest {
                 .with(defaultUser()))
                 .andExpect(status().isOk())
                 .andExpect(contentJson(DEFAULT_USER));
+    }
+
+    @Test
+    void deleteUser() throws Exception {
+        Page<User> users = userService.findAll(PageRequest.of(0, 10));
+        assertThat(users).hasSize(1);
+
+        mockMvc.perform(delete("/admin/" + DEFAULT_USER_ID)
+                .with(defaultUser()))
+                .andExpect(status().isOk());
+
+        Page<User> newUsers = userService.findAll(PageRequest.of(0, 10));
+        assertThat(newUsers).hasSize(0);
     }
 }
