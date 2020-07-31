@@ -31,6 +31,26 @@ class UserMapperTest {
         assertThat(user.getEmail()).isEqualTo("testemail");
         assertThat(user.getPassword()).isEqualTo(TestPasswordEncoder.PREFIX + "newPassword");
         assertThat(user.getRegistered()).isNotNull();
+        assertThat(user.getRoles()).usingDefaultComparator().isEqualTo(Collections.singleton(UserRoles.ROLE_USER));
+    }
+
+    @Test
+    void toUserEntityFromAdminRegisterUserTo() {
+        AdminCreateUserTo adminCreateUserTo = new AdminCreateUserTo();
+        adminCreateUserTo.setName("New");
+        adminCreateUserTo.setSurname("User");
+        adminCreateUserTo.setEmail("Test@example.com");
+        adminCreateUserTo.setPassword("examplePassword");
+        adminCreateUserTo.setRoles(Set.of(UserRoles.ROLE_USER, UserRoles.ROLE_ADMIN));
+
+        UserEntity user = LocalUserMapper.INSTANCE.toUserEntity(adminCreateUserTo, new TestPasswordEncoder());
+        assertThat(user.getId()).isNull();
+        assertThat(user.getName()).isEqualTo("New");
+        assertThat(user.getSurname()).isEqualTo("User");
+        assertThat(user.getEmail()).isEqualTo("test@example.com");
+        assertThat(user.getPassword()).isEqualTo(TestPasswordEncoder.PREFIX + "examplePassword");
+        assertThat(user.getRegistered()).isNotNull();
+        assertThat(user.getRoles()).usingDefaultComparator().isEqualTo(Set.of(UserRoles.ROLE_USER, UserRoles.ROLE_ADMIN));
     }
 
     @Test
@@ -84,18 +104,18 @@ class UserMapperTest {
 
     @Test
     void updateEntity() {
-        AdminSaveUserTo adminSaveUserTo = new AdminSaveUserTo();
-        adminSaveUserTo.setEmail("Example@example.com");
-        adminSaveUserTo.setName("NewName");
-        adminSaveUserTo.setSurname("NewSurname");
-        adminSaveUserTo.setRoles(Collections.singleton(UserRoles.ROLE_USER));
+        AdminUpdateUserTo adminUpdateUserTo = new AdminUpdateUserTo();
+        adminUpdateUserTo.setEmail("Example@example.com");
+        adminUpdateUserTo.setName("NewName");
+        adminUpdateUserTo.setSurname("NewSurname");
+        adminUpdateUserTo.setRoles(Collections.singleton(UserRoles.ROLE_USER));
 
         Set<UserRoles> roles = new HashSet<>();
         roles.add(UserRoles.ROLE_ADMIN);
         roles.add(UserRoles.ROLE_USER);
 
         UserEntity userEntity = new UserEntity(100, "Test", "User", "email@email.com", "pass", null, roles);
-        LocalUserMapper.INSTANCE.updateEntity(adminSaveUserTo, userEntity);
+        LocalUserMapper.INSTANCE.updateEntity(adminUpdateUserTo, userEntity);
 
         UserEntity expected = new UserEntity(100, "NewName", "NewSurname", "example@example.com", "pass", null, Collections.singleton(UserRoles.ROLE_USER));
         assertThat(userEntity).isEqualToComparingFieldByField(expected);

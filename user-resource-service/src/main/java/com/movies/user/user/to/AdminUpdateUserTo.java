@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Data
-public class AdminSaveUserTo {
+public class AdminUpdateUserTo {
     @NotEmpty
     @Size(min = 3, max = 30)
     private String name;

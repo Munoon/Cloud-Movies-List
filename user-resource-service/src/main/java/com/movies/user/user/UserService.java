@@ -16,8 +16,14 @@ public class UserService {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
-    public User registerUser(RegisterUserTo registerUserTo) {
+    public User createUser(RegisterUserTo registerUserTo) {
         UserEntity user = LocalUserMapper.INSTANCE.toUserEntity(registerUserTo, passwordEncoder);
+        userRepository.save(user);
+        return LocalUserMapper.INSTANCE.asUser(user);
+    }
+
+    public User createUser(AdminCreateUserTo adminCreateUserTo) {
+        UserEntity user = LocalUserMapper.INSTANCE.toUserEntity(adminCreateUserTo, passwordEncoder);
         userRepository.save(user);
         return LocalUserMapper.INSTANCE.asUser(user);
     }
@@ -54,7 +60,7 @@ public class UserService {
         return LocalUserMapper.INSTANCE.asUser(updated);
     }
 
-    public User updateUser(int id, AdminSaveUserTo userTo) {
+    public User updateUser(int id, AdminUpdateUserTo userTo) {
         UserEntity userEntity = getUserEntityById(id);
         LocalUserMapper.INSTANCE.updateEntity(userTo, userEntity);
         UserEntity updated = userRepository.save(userEntity);
@@ -71,7 +77,6 @@ public class UserService {
                 .map(LocalUserMapper.INSTANCE::asUser);
     }
 
-    // TODO test it
     public void deleteUserById(int id) {
         userRepository.deleteById(id);
     }

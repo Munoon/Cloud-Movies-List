@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.movies.user.user.UserTestData.*;
@@ -38,12 +39,33 @@ class UserServiceTest extends AbstractTest {
         RegisterUserTo registerUserTo = new RegisterUserTo();
         registerUserTo.setName("New");
         registerUserTo.setSurname("User");
-        registerUserTo.setEmail("test@example.com");
+        registerUserTo.setEmail("Test@example.com");
         registerUserTo.setPassword("examplePassword");
 
-        User savedUser = userService.registerUser(registerUserTo);
+        User savedUser = userService.createUser(registerUserTo);
 
         User expected = new User(savedUser.getId(), "New", "User", "test@example.com", null, null, Collections.singleton(UserRoles.ROLE_USER));
+        List<User> allUsers = userRepository.findAll()
+                .stream()
+                .map(LocalUserMapper.INSTANCE::asUser)
+                .collect(Collectors.toList());
+        assertMatch(allUsers, DEFAULT_USER, expected);
+
+        User newUser = userService.getById(savedUser.getId());
+        assertTrue(passwordEncoder.matches("examplePassword", newUser.getPassword()));
+    }
+
+    @Test
+    void createUser() {
+        AdminCreateUserTo adminCreateUserTo = new AdminCreateUserTo();
+        adminCreateUserTo.setName("New");
+        adminCreateUserTo.setSurname("User");
+        adminCreateUserTo.setEmail("Test@example.com");
+        adminCreateUserTo.setPassword("examplePassword");
+        adminCreateUserTo.setRoles(Set.of(UserRoles.ROLE_USER, UserRoles.ROLE_ADMIN));
+        User savedUser = userService.createUser(adminCreateUserTo);
+
+        User expected = new User(savedUser.getId(), "New", "User", "test@example.com", null, null, Set.of(UserRoles.ROLE_USER, UserRoles.ROLE_ADMIN));
         List<User> allUsers = userRepository.findAll()
                 .stream()
                 .map(LocalUserMapper.INSTANCE::asUser)
@@ -126,13 +148,13 @@ class UserServiceTest extends AbstractTest {
 
     @Test
     void updateUserAdmin() {
-        AdminSaveUserTo adminSaveUserTo = new AdminSaveUserTo();
-        adminSaveUserTo.setEmail("example@example.com");
-        adminSaveUserTo.setName("NewName");
-        adminSaveUserTo.setSurname("NewSurname");
-        adminSaveUserTo.setRoles(Collections.singleton(UserRoles.ROLE_USER));
+        AdminUpdateUserTo adminUpdateUserTo = new AdminUpdateUserTo();
+        adminUpdateUserTo.setEmail("example@example.com");
+        adminUpdateUserTo.setName("NewName");
+        adminUpdateUserTo.setSurname("NewSurname");
+        adminUpdateUserTo.setRoles(Collections.singleton(UserRoles.ROLE_USER));
 
-        userService.updateUser(DEFAULT_USER_ID, adminSaveUserTo);
+        userService.updateUser(DEFAULT_USER_ID, adminUpdateUserTo);
 
         User actual = userService.getById(DEFAULT_USER_ID);
         User expected = new User(DEFAULT_USER);

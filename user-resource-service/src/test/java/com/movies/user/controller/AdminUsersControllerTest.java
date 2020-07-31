@@ -2,22 +2,31 @@ package com.movies.user.controller;
 
 import com.movies.common.user.User;
 import com.movies.common.user.UserRoles;
+import com.movies.common.user.UserTo;
 import com.movies.user.user.UserService;
-import com.movies.user.user.to.AdminSaveUserTo;
+import com.movies.user.user.to.AdminCreateUserTo;
+import com.movies.user.user.to.AdminUpdateUserTo;
 import com.movies.user.user.to.RegisterUserTo;
 import com.movies.user.util.JsonUtil;
+import com.movies.user.util.mapper.LocalUserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.movies.user.user.UserTestData.*;
 import static com.movies.user.util.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,6 +35,9 @@ class AdminUsersControllerTest extends AbstractWebTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Test
     void noAccess() throws Exception {
         RegisterUserTo registerUserTo = new RegisterUserTo();
@@ -33,7 +45,7 @@ class AdminUsersControllerTest extends AbstractWebTest {
         registerUserTo.setName("Test");
         registerUserTo.setSurname("Surname");
         registerUserTo.setPassword("password");
-        User user = userService.registerUser(registerUserTo);
+        User user = userService.createUser(registerUserTo);
 
         mockMvc.perform(get("/admin/list")
                 .with(customUser(user)))
@@ -47,7 +59,7 @@ class AdminUsersControllerTest extends AbstractWebTest {
         registerUserTo.setName("Test");
         registerUserTo.setSurname("Surname");
         registerUserTo.setPassword("password");
-        User user = userService.registerUser(registerUserTo);
+        User user = userService.createUser(registerUserTo);
 
         mockMvc.perform(get("/admin/list")
                 .with(defaultUser())
@@ -91,15 +103,15 @@ class AdminUsersControllerTest extends AbstractWebTest {
 
     @Test
     void updateUser() throws Exception {
-        AdminSaveUserTo adminSaveUserTo = new AdminSaveUserTo();
-        adminSaveUserTo.setEmail("example@example.com");
-        adminSaveUserTo.setName("NewName");
-        adminSaveUserTo.setSurname("NewSurname");
-        adminSaveUserTo.setRoles(Collections.singleton(UserRoles.ROLE_USER));
+        AdminUpdateUserTo adminUpdateUserTo = new AdminUpdateUserTo();
+        adminUpdateUserTo.setEmail("example@example.com");
+        adminUpdateUserTo.setName("NewName");
+        adminUpdateUserTo.setSurname("NewSurname");
+        adminUpdateUserTo.setRoles(Collections.singleton(UserRoles.ROLE_USER));
 
         mockMvc.perform(put("/admin/" + DEFAULT_USER_ID)
                 .with(defaultUser())
-                .content(JsonUtil.writeValue(adminSaveUserTo))
+                .content(JsonUtil.writeValue(adminUpdateUserTo))
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
 
@@ -115,15 +127,15 @@ class AdminUsersControllerTest extends AbstractWebTest {
 
     @Test
     void updateUserNotFound() throws Exception {
-        AdminSaveUserTo adminSaveUserTo = new AdminSaveUserTo();
-        adminSaveUserTo.setEmail("example@example.com");
-        adminSaveUserTo.setName("NewName");
-        adminSaveUserTo.setSurname("NewSurname");
-        adminSaveUserTo.setRoles(Collections.singleton(UserRoles.ROLE_USER));
+        AdminUpdateUserTo adminUpdateUserTo = new AdminUpdateUserTo();
+        adminUpdateUserTo.setEmail("example@example.com");
+        adminUpdateUserTo.setName("NewName");
+        adminUpdateUserTo.setSurname("NewSurname");
+        adminUpdateUserTo.setRoles(Collections.singleton(UserRoles.ROLE_USER));
 
         mockMvc.perform(put("/admin/101")
                 .with(defaultUser())
-                .content(JsonUtil.writeValue(adminSaveUserTo))
+                .content(JsonUtil.writeValue(adminUpdateUserTo))
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound());
     }
@@ -147,5 +159,31 @@ class AdminUsersControllerTest extends AbstractWebTest {
 
         Page<User> newUsers = userService.findAll(PageRequest.of(0, 10));
         assertThat(newUsers).hasSize(0);
+    }
+
+    @Test
+    void createUser() throws Exception {
+        AdminCreateUserTo adminCreateUserTo = new AdminCreateUserTo();
+        adminCreateUserTo.setName("New");
+        adminCreateUserTo.setSurname("User");
+        adminCreateUserTo.setEmail("Test@example.com");
+        adminCreateUserTo.setPassword("examplePassword");
+        adminCreateUserTo.setRoles(Set.of(UserRoles.ROLE_USER, UserRoles.ROLE_ADMIN));
+
+        MvcResult mvcResult = mockMvc.perform(post("/admin/create")
+                .with(defaultUser())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(adminCreateUserTo)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        UserTo userTo = JsonUtil.readFromJson(mvcResult, UserTo.class);
+
+        User expected = new User(userTo.getId(), "New", "User", "test@example.com", null, null, Set.of(UserRoles.ROLE_USER, UserRoles.ROLE_ADMIN));
+        List<User> allUsers = userService.findAll(PageRequest.of(0, 10)).getContent();
+        assertMatch(allUsers, DEFAULT_USER, expected);
+
+        User newUser = userService.getById(userTo.getId());
+        assertTrue(passwordEncoder.matches("examplePassword", newUser.getPassword()));
     }
 }

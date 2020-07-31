@@ -29,7 +29,7 @@ public class UserInfoController {
     @PostMapping("/register")
     public void register(@RequestBody @Valid RegisterUserTo registerUserTo) {
         log.info("Register user {}", registerUserTo);
-        userService.registerUser(registerUserTo);
+        userService.createUser(registerUserTo);
     }
 
     @GetMapping("/login/{username}")

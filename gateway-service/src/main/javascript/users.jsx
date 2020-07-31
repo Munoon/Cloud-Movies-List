@@ -24,6 +24,7 @@ const body = () => (
     <>
         <UsersTable ref={USERS_TABLE_INSTANCE} />
         <UpdateUser ref={ref => UPDATE_USER_MODAL_INSTANCE = ref} />
+        <RegisterUserModal ref={REGISTER_USER_MODAL_INSTANCE} />
     </>
 );
 
@@ -120,6 +121,7 @@ const UsersTable = React.forwardRef((props, ref) => {
 
                 <div>
                     <Button onClick={() => loadData()} disabled={loading} variant='secondary' className='ml-2 mb-3'>Обновить</Button>
+                    <Button onClick={() => REGISTER_USER_MODAL_INSTANCE.current.show()} variant='secondary' className='ml-2 mb-3'>Добавить</Button>
                     {loading && <Spinner animation="border" role="status" className='ml-2 mb-3 spinner-vertical-middle' />}
                 </div>
             </div>
@@ -183,17 +185,48 @@ class UpdateUser extends React.Component {
 }
 
 function UpdateUserModal({ userId, onHide }) {
+    const { data: user, error } = useSWR(`/users/admin/${userId}`, fetcher);
+
+    let modalBody = null;
+    let modalTitle = '';
+    let loading;
+
+    if (error) {
+        loading = false;
+        modalBody = <p>Ошибка загрузки пользователя!</p>
+        modalTitle = 'Ошибка';
+    } else if (!user) {
+        loading = true;
+        modalBody = <p>Загрузка...</p>;
+        modalTitle = 'Загрузка...';
+    } else {
+        loading = false;
+        modalTitle = `Обновить: ${user.name} ${user.surname}`;
+    }
+
+    const settings = { user, onHide, modalTitle, body: modalBody, loading, saveAble: !error && user !== null };
+    return <UserModal {...settings} />
+}
+
+const RegisterUserModal = React.forwardRef((props, ref) => {
+    const [show, setShow] = useState(false);
+    ref.current = {
+        show: () => setShow(true)
+    };
+    return show ? <UserModal modalTitle='Создать пользователя' onHide={() => setShow(false)} /> : <></>;
+});
+
+function UserModal({ user = null, onHide = () => null, modalTitle, body = null, loading = false, saveAble = true }) {
     const defaultEmailErrorMessage = 'Пользователь с таким Email адресом уже зарегистрирован';
     const [emailErrorMessage, setEmailErrorMessage] = useState(defaultEmailErrorMessage);
-    const [show, setShow] = useState(true);
-    const [requestLoading, setRequestLoading] = useState(false);
-    const { register, handleSubmit, errors } = useForm();
 
-    const { data: user, error } = useSWR(`/users/admin/${userId}`, fetcher);
+    const { register, handleSubmit, errors } = useForm();
+    const [requestLoading, setRequestLoading] = useState(false);
+    const [show, setShow] = useState(true);
 
     const getErrorMessage = (messages, name) => messages[name] ? messages[name] : '';
     const getError = (name, messages) => !errors[name] ? null : getErrorMessage(messages, errors[name].type);
-    const testEmail = async email => email === user.email ? true
+    const testEmail = async email => email === (user && user.email) ? true
         : await fetcher(`/users/test/email/${email}`)
             .then(response => {
                 setEmailErrorMessage(defaultEmailErrorMessage);
@@ -205,90 +238,97 @@ function UpdateUserModal({ userId, onHide }) {
             });
     const onSubmit = data => {
         setRequestLoading(true);
-        fetcher(`/users/admin/${userId}`, {
+
+        const request = user ? fetcher(`/users/admin/${user.id}`, {
             method: 'PUT',
             body: JSON.stringify(data)
-        }).then(() => {
-            toast.success('Вы успешно обновили пользователя!');
+        }) : fetcher('/users/admin/create', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+
+        request.then(() => {
+            let action = user ? 'обновили' : 'создали';
+            toast.success(`Вы успешно ${action} пользователя!`);
             setShow(false);
             USERS_TABLE_INSTANCE.current.refresh();
-        }).catch(e => e.useDefaultErrorParser());
-    }
+        }).catch(e => {
+            setRequestLoading(false);
+            e.useDefaultErrorParser()
+        });
+    };
 
-    let modalBody = <></>;
-    let modalTitle = '';
-    let loading;
+    let workUser = user ? user : { roles: ['ROLE_USER'] };
+    let modalBody = body ? body : (
+        <>
+            <InputField
+                id='updateUserNameInput' type='text'
+                name='name' placeholder='Петр' title='Имя' value={workUser.name}
+                ref={register({ minLength: 3, maxLength: 30, required: true })}
+                error={getError('name', {
+                    minLength: 'Имя должно содержать хотя-бы 3 символа',
+                    maxLength: 'Имя должно быть меньше 30 символов'
+                })}
+            />
 
-    if (error) {
-        loading = false;
-        modalBody = <p>Ошибка загрузки пользователя!</p>
-        modalTitle = 'Ошибка';
-    } else if (!user) {
-        loading = true;
-        modalTitle = 'Загрузка...';
-    } else {
-        loading = false;
-        modalTitle = `Обновить: ${user.name} ${user.surname}`;
-        modalBody = (
-            <>
+            <InputField
+                id='updateUsernSurnameInput' type='text'
+                name='surname' placeholder='Васильевич' title='Фамилия' value={workUser.surname}
+                ref={register({ minLength: 3, maxLength: 30, required: true })}
+                error={getError('surname', {
+                    minLength: 'Фамилия должна содержать хотя-бы 3 символа',
+                    maxLength: 'Фамилия должна быть меньше 30 символов'
+                })}
+            />
+
+            <InputField
+                id='updateUserEmailAddressInput' type='email' value={workUser.email}
+                name='email' placeholder='name@example.com' title='Email адрес'
+                ref={register({
+                    pattern: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
+                    validate: testEmail,
+                    required: true
+                })}
+                error={getError('email', {
+                    validate: emailErrorMessage,
+                    pattern: 'Пожалуйста, введите корректную почту'
+                })}
+            />
+
+            {!user && (
                 <InputField
-                    id='updateUserNameInput' type='text'
-                    name='name' placeholder='Петр' title='Имя' value={user.name}
-                    ref={register({ minLength: 3, maxLength: 30, required: true })}
-                    error={getError('name', {
-                        minLength: 'Имя должно содержать хотя-бы 3 символа',
-                        maxLength: 'Имя должно быть меньше 30 символов'
+                    id='updateUserPasswordInput' type='password' title='Пароль'
+                    name='password'
+                    ref={register({ minLength: 8, required: true })}
+                    error={getError('password', {
+                        minLength: 'Пароль должен содержать хотя-бы 8 символов'
                     })}
                 />
+            )}
 
-                <InputField
-                    id='updateUsernSurnameInput' type='text'
-                    name='surname' placeholder='Васильевич' title='Фамилия' value={user.surname}
-                    ref={register({ minLength: 3, maxLength: 30, required: true })}
-                    error={getError('surname', {
-                        minLength: 'Фамилия должна содержать хотя-бы 3 символа',
-                        maxLength: 'Фамилия должна быть меньше 30 символов'
-                    })}
+            <div className="mb-3">
+                <label className="form-label">Роли</label>
+
+                <FormCheck
+                    custom type='checkbox' id='updateUserUserRoleForm'
+                    label='ROLE_USER' value='ROLE_USER'
+                    name='roles' ref={register({
+                    validate: data => data.length > 0
+                })}
+                    defaultChecked={workUser.roles.includes('ROLE_USER')}
                 />
 
-                <InputField
-                    id='updateUserEmailAddressInput' type='email' value={user.email}
-                    name='email' placeholder='name@example.com' title='Email адрес'
-                    ref={register({
-                        pattern: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
-                        validate: testEmail,
-                        required: true
-                    })}
-                    error={getError('email', {
-                        validate: emailErrorMessage,
-                        pattern: 'Пожалуйста, введите корректную почту'
-                    })}
+                <FormCheck
+                    custom type='checkbox'
+                    id='updateUserAdminRoleForm'
+                    label='ROLE_ADMIN'
+                    value='ROLE_ADMIN'
+                    name='roles' ref={register()}
+                    defaultChecked={workUser.roles.includes('ROLE_ADMIN')}
                 />
-
-                <div className="mb-3">
-                    <label className="form-label">Роли</label>
-
-                    <FormCheck
-                        custom type='checkbox' id='updateUserUserRoleForm'
-                        label='ROLE_USER' value='ROLE_USER'
-                        name='roles' ref={register({
-                            validate: data => data.length > 0
-                        })}
-                        defaultChecked={user.roles.includes('ROLE_USER')}
-                    />
-
-                    <FormCheck
-                        custom type='checkbox'
-                        id='updateUserAdminRoleForm'
-                        label='ROLE_ADMIN'
-                        value='ROLE_ADMIN'
-                        name='roles' ref={register()}
-                        defaultChecked={user.roles.includes('ROLE_ADMIN')}
-                    />
-                </div>
-            </>
-        )
-    }
+            </div>
+        </>
+    );
 
     return (
         <Modal show={show} onHide={() => setShow(false)} onExited={onHide}>
@@ -303,7 +343,7 @@ function UpdateUserModal({ userId, onHide }) {
             <Modal.Footer>
                 {(loading || requestLoading) && <Spinner animation="border" role="status" className='ml-3 spinner-vertical-middle' />}
                 <Button variant='secondary'>Закрыть</Button>
-                <Button variant='primary' disabled={error || !user} onClick={handleSubmit(onSubmit)}>Сохранить</Button>
+                <Button variant='primary' disabled={!saveAble || requestLoading} onClick={handleSubmit(onSubmit)}>Сохранить</Button>
             </Modal.Footer>
         </Modal>
     );
@@ -311,5 +351,6 @@ function UpdateUserModal({ userId, onHide }) {
 
 let USERS_TABLE_INSTANCE = React.createRef();
 let UPDATE_USER_MODAL_INSTANCE = null;
+let REGISTER_USER_MODAL_INSTANCE = React.createRef();
 
 ReactDOM.render(<Application body={body} />, document.getElementById('root'));
