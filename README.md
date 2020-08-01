@@ -1,4 +1,6 @@
 # Cloud Movies List
+![Java Maven Test](https://github.com/Munoon/Cloud-Movies-List/workflows/Java%20Maven%20Test/badge.svg)
+
 Spring Cloud learning project.
 Service, provided movies list with ability for users to add movies to favorites or watch later and mark movies.
 
