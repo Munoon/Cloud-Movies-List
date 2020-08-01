@@ -1,0 +1,12 @@
+security:
+  oauth2:
+    resource:
+      jwt:
+        keyValue: SimpleKey
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/movies-users
+    username: postgres
+    password: password
+    initialization-mode: always
