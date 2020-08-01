@@ -1,4 +1,7 @@
 # Cloud Movies List
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/bc79bad27f4246948060e7d7df6066bb)](https://app.codacy.com/manual/Munoon/Cloud-Movies-List?utm_source=github.com&utm_medium=referral&utm_content=Munoon/Cloud-Movies-List&utm_campaign=Badge_Grade_Dashboard)
+
 ![Java Maven Test](https://github.com/Munoon/Cloud-Movies-List/workflows/Java%20Maven%20Test/badge.svg)
 
 Spring Cloud learning project.
