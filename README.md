@@ -1,8 +1,6 @@
 # Cloud Movies List
-
+[![Java Maven Test](https://github.com/Munoon/Cloud-Movies-List/workflows/Java%20Maven%20Test/badge.svg)](https://github.com/Munoon/Cloud-Movies-List/actions?query=workflow%3A%22Java+Maven+Test%22)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bc79bad27f4246948060e7d7df6066bb)](https://app.codacy.com/manual/Munoon/Cloud-Movies-List?utm_source=github.com&utm_medium=referral&utm_content=Munoon/Cloud-Movies-List&utm_campaign=Badge_Grade_Dashboard)
-
-![Java Maven Test](https://github.com/Munoon/Cloud-Movies-List/workflows/Java%20Maven%20Test/badge.svg)
 
 Spring Cloud learning project.
 Service, provided movies list with ability for users to add movies to favorites or watch later and mark movies.
@@ -16,13 +14,42 @@ Postgres, JWT, JSON,
 JavaScript (including ES6), Node JS, npm, Webpack, React, React Hook Form, SWR, Bootstrap (and Bootswatch), babel, sass.
 
 ## Microservices
-Launch order | Name | Package | Description | Requirement
------------- | ---- | ------- | ----------- | -----------
-1 | Config service | config-service | Storage all config and provide it to other microservices. | RabbitMQ
-2 | Eureka service | eureka-service | Giving ability for microservices to communicate with each other. | RabbitMQ
-3 | User resource service | user-resource-service | Storage all info about users and provide API to make CRUD operations with them. | RabbitMQ, PostgreSQL
-4 | Authorization service | auth-service | Giving ability for users to login. | RabbitMQ
-5 | Gateway service  | gateway-service | Service for clients that giving access to communicate with other microservice. | RabbitMQ
+### 1. Config service
+Storage all config and provide it to other microservices. \
+Package: **config-service** \
+Working port: **8010** \
+Requirements: **RabbitMQ** (should be in each microservice, allow sending configuration updates for each microservice) \
+Launch order: **ALWAYS FIRST**
+
+### 2. Eureka service
+Giving ability for microservices to communicate with each other. \
+Package: **eureka-service** \
+Working port: **8020** \
+Requirements: **RabbitMQ** \
+Launch order: **ALWAYS SECOND**
+
+### 3. User resource service
+Storage all info about users and provide API to make CRUD operations with them. \
+**Can be launched in multiple instances.** \
+Package: **user-resource-service** \
+Working port: **random** (you may watch at eureka dashboard) \
+Requirements: **RabbitMQ, PostgreSQL** (for storing users) \
+Launch order: **Any time after eureka service**
+
+### 4. Authorization service
+Giving ability for users to login. \
+Package: **auth-service** \
+Working port: **8030** \
+Base URL path: **/uaa** \
+Requirements: **RabbitMQ** \
+Launch order: **Any time after eureka service**
+
+### 5. Gateway service
+Service for clients that giving access to communicate with other microservices. \
+Package: **gateway-service** \
+Working port: **8080** \
+Requirements: **RabbitMQ** \
+Launch order: **Any time after eureka service**
 
 ## Additional requirement
 1. [PostgreSQL](https://www.postgresql.org/) - users info storage.
@@ -34,5 +61,5 @@ Launch order | Name | Package | Description | Requirement
 3. Launch all applications, indicated in 'Additional requirement'..
 4. Execute `mvn package` in project root folder.
 5. Setup configuration in `config` folder, if needed.
-6. Launch each microservice in order, that showing in Microservices table using command `java -jar ${jar-name}`. Each jar locate in `${microservice-package}/target` folder.
+6. Launch each microservice in order, that showing in Microservices list using command `java -jar ${jar-name}`. Each jar locate in `${microservice-package}/target` folder.
 7. You may open website using url `localhost:8080`.
