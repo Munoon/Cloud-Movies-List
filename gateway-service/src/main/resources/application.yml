@@ -18,3 +18,8 @@ logging:
           web:
             csrf:
               CsrfFilter: debug
+
+security:
+  oauth2:
+    resource:
+      userInfoUri: http://user-resource-service/profile

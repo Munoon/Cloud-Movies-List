@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,8 +48,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public OAuth2RestOperations restOperations(OAuth2ProtectedResourceDetails resource, @Qualifier("oauth2ClientContext") OAuth2ClientContext context) {
-        return new OAuth2RestTemplate(resource, context);
+    @LoadBalanced
+    public OAuth2RestOperations restOperations(OAuth2ProtectedResourceDetails resource,
+                                               @Qualifier("oauth2ClientContext") OAuth2ClientContext context,
+                                               UserInfoTokenServices userInfoTokenServices) {
+        var restTemplate = new OAuth2RestTemplate(resource, context);
+        userInfoTokenServices.setRestTemplate(restTemplate);
+        return restTemplate;
     }
 
     @Bean

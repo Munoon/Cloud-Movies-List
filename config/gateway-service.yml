@@ -1,4 +1,3 @@
-# TODO get urls from discovery service
 security:
   oauth2:
     client:
@@ -6,5 +5,3 @@ security:
       userAuthorizationUri: http://localhost:8030/uaa/oauth/authorize
       clientId: testClient
       clientSecret: password
-    resource:
-      userInfoUri: http://localhost:8040/profile
