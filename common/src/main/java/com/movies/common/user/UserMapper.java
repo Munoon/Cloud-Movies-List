@@ -4,6 +4,7 @@ import com.movies.common.util.UserUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,5 +26,15 @@ public interface UserMapper {
         userTo.setRoles(Set.copyOf(userRolesList));
 
         return userTo;
+    }
+
+    default Map<String, ?> asMap(UserTo userTo) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", userTo.getId());
+        result.put("name", userTo.getName());
+        result.put("surname", userTo.getSurname());
+        result.put("email", userTo.getEmail());
+        result.put("roles", userTo.getRoles());
+        return result;
     }
 }

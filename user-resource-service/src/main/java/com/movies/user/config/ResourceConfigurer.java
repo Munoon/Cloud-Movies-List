@@ -1,6 +1,6 @@
 package com.movies.user.config;
 
-import com.movies.user.user.UserService;
+import com.movies.common.user.CustomUserAuthenticationConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 @Configuration
@@ -34,9 +35,15 @@ public class ResourceConfigurer extends ResourceServerConfigurerAdapter {
     }
 
     @Bean
-    public AccessTokenConverter accessTokenConverter(UserService userService, JwtAccessTokenConverter jwtAccessTokenConverter) {
-        var customAccessTokenConverter = new CustomAccessTokenConverter(userService);
-        jwtAccessTokenConverter.setAccessTokenConverter(customAccessTokenConverter);
-        return customAccessTokenConverter;
+    public AccessTokenConverter accessTokenConverter(JwtAccessTokenConverter jwtAccessTokenConverter) {
+        var accessTokenConverter = new DefaultAccessTokenConverter();
+        accessTokenConverter.setUserTokenConverter(customUserAuthenticationConverter());
+        jwtAccessTokenConverter.setAccessTokenConverter(accessTokenConverter);
+        return accessTokenConverter;
+    }
+
+    @Bean
+    public CustomUserAuthenticationConverter customUserAuthenticationConverter() {
+        return new CustomUserAuthenticationConverter();
     }
 }

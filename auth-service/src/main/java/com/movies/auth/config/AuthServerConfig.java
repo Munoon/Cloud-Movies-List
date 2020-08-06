@@ -1,5 +1,6 @@
 package com.movies.auth.config;
 
+import com.movies.common.user.CustomUserAuthenticationConverter;
 import com.movies.auth.user.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,8 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
@@ -51,16 +54,33 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
+        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        converter.setAccessTokenConverter(accessTokenConverter());
+        converter.setKeyPair(keyPair());
+        return converter;
+    }
+
+    @Bean
+    public AccessTokenConverter accessTokenConverter() {
+        var accessTokenConverter = new DefaultAccessTokenConverter();
+        accessTokenConverter.setUserTokenConverter(customUserAuthenticationConverter());
+        return accessTokenConverter;
+    }
+
+    @Bean
+    public CustomUserAuthenticationConverter customUserAuthenticationConverter() {
+        return new CustomUserAuthenticationConverter();
+    }
+
+    @Bean
+    public KeyPair keyPair() {
         KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(
                 storeFile,
                 environment.getRequiredProperty("jwt.certificate.store.password").toCharArray()
         );
-        KeyPair keyPair = keyStoreKeyFactory.getKeyPair(
+        return keyStoreKeyFactory.getKeyPair(
                 environment.getRequiredProperty("jwt.certificate.key.alias"),
                 environment.getRequiredProperty("jwt.certificate.key.password").toCharArray()
         );
-        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setKeyPair(keyPair);
-        return converter;
     }
 }
