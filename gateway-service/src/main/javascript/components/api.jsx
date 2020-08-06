@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import { getMetaProperty } from "./misc";
 import { toast } from "react-toastify";
+import React from "react";
 
 export const fetcher = (...args) => {
     if (args[1] === undefined) {
@@ -35,7 +36,24 @@ export const fetcher = (...args) => {
 }
 
 function parseError(error, data) {
-    toast.error(`Ошибка: ${error.error}`); // TODO add better error parsing
+    let messages = [];
+    if (error.details) {
+        messages.push(error.details.join(', '))
+    }
+    if (error.fields) {
+        for (let field in error.fields) {
+            messages.push(`${field}: ${error.fields[field].join(', ')}`);
+        }
+    }
+    toast.error(getMultipleLinesToastElement(messages));
+}
+
+function getMultipleLinesToastElement(lines) {
+    let linesInOneStr = lines.join('<br/>');
+    if (lines.length > 1) {
+        linesInOneStr = linesInOneStr.substr(5);
+    }
+    return <div dangerouslySetInnerHTML={{ __html: linesInOneStr }}/>
 }
 
 function parseFromJSON(text) {
