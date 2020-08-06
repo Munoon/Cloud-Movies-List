@@ -72,10 +72,14 @@ const UsersTable = React.forwardRef((props, ref) => {
         setLoading(true);
         getUsers(pageIndex, pageSize)
             .then(response => setData({
-                users: response['_embedded'].users,
+                users: response.content,
                 pages: response.page.totalPages
             }))
-            .then(() => setLoading(false));
+            .then(() => setLoading(false))
+            .catch(e => {
+                e.useDefaultErrorParser();
+                setLoading(false);
+            });
     };
 
     ref.current = {

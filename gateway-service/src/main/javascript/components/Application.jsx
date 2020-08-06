@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { fetcher } from "./api";
 import Spinner from "react-bootstrap/Spinner";
 import { ToastContainer, toast } from "react-toastify";
-const AUTHENTICATED_USERS_ONLY_PAGES = ['/profile'];
+const AUTHENTICATED_USERS_ONLY_PAGES = ['/profile', '/admin/users'];
 
 class Application extends React.Component {
     constructor(props) {

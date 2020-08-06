@@ -3,7 +3,7 @@ package com.movies.user.controller;
 import com.movies.common.error.ErrorInfo;
 import com.movies.common.error.ErrorInfoField;
 import com.movies.common.error.ErrorType;
-import com.movies.common.error.ErrorUtils;
+import com.movies.common.util.ErrorUtils;
 import com.movies.user.util.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;

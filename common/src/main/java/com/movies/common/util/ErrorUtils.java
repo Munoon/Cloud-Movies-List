@@ -1,4 +1,4 @@
-package com.movies.common.error;
+package com.movies.common.util;
 
 import org.springframework.validation.FieldError;
 
