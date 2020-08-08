@@ -11,7 +11,7 @@ Spring Boot, Spring Security, Spring Cloud, Spring Actuator, Spring Cloud Config
 Rest API, oAuth 2, oAuth Authorization Server, oAuth Resource Server,
 Netflix Eureka, Netflix Zuul, Hibernate, JUnit 5, RabbitMQ, thymeleaf,
 Postgres, JWT, JSON,
-JavaScript (including ES6), Node JS, npm, Webpack, React, React Hook Form, SWR, Bootstrap (and Bootswatch), babel, sass.
+JavaScript (including ES6), Node JS, npm, Webpack, React, React Hook Form, Redux, React Redux, SWR, Bootstrap (and Bootswatch), babel, sass.
 
 ## Microservices
 ### 1. Config service
