@@ -20,12 +20,6 @@ import javax.validation.Valid;
 public class UserInfoController {
     private UserService userService;
 
-    @GetMapping("/profile")
-    public UserTo getProfile(@AuthenticationPrincipal AuthorizedUser authorizedUser) {
-        log.info("Get profile of user with {}", authorizedUser.getId());
-        return authorizedUser.getUserTo();
-    }
-
     @PostMapping("/register")
     public void register(@RequestBody @Valid RegisterUserTo registerUserTo) {
         log.info("Register user {}", registerUserTo);

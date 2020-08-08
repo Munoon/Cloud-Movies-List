@@ -84,4 +84,10 @@ public class UserService {
     public boolean testEmail(String email) {
         return userRepository.countAllByEmail(email.toLowerCase()) == 0;
     }
+
+    // TODO test it
+    public boolean testPassword(int userId, String password) {
+        User user = getById(userId);
+        return passwordEncoder.matches(password, user.getPassword());
+    }
 }

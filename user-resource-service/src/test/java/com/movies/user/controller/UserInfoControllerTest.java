@@ -27,15 +27,6 @@ class UserInfoControllerTest extends AbstractWebTest {
     private UserRepository userRepository;
 
     @Test
-    void getProfile() throws Exception {
-        mockMvc.perform(get("/profile")
-                .with(defaultUser())
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(contentJson(DEFAULT_USER));
-    }
-
-    @Test
     void register() throws Exception {
         RegisterUserTo registerUserTo = new RegisterUserTo();
         registerUserTo.setName("New");

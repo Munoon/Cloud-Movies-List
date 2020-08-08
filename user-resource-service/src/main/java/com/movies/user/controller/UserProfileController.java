@@ -8,15 +8,14 @@ import com.movies.user.user.UserService;
 import com.movies.user.user.to.UpdateEmailTo;
 import com.movies.user.user.to.UpdatePasswordTo;
 import com.movies.user.user.to.UpdateProfileTo;
+import com.movies.user.util.UserUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -24,6 +23,12 @@ import javax.validation.Valid;
 @RequestMapping("/profile")
 public class UserProfileController {
     private UserService userService;
+
+    @GetMapping
+    public UserTo getProfile(@AuthenticationPrincipal AuthorizedUser authorizedUser) {
+        log.info("Get profile of user with id {}", authorizedUser.getId());
+        return authorizedUser.getUserTo();
+    }
 
     @PostMapping("/update")
     public UserTo updateProfile(@Valid @RequestBody UpdateProfileTo updateProfileTo,
@@ -43,9 +48,17 @@ public class UserProfileController {
 
     @PostMapping("/update/password")
     public UserTo updatePassword(@Valid @RequestBody UpdatePasswordTo updatePasswordTo,
-                              @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+                                 @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         log.info("User {} update password", authorizedUser.getId());
         User user = userService.updateUser(authorizedUser.getId(), updatePasswordTo);
         return UserMapper.INSTANCE.asTo(user);
+    }
+
+    @DeleteMapping
+    public void deleteProfile(@RequestBody Map<String, Object> data,
+                              @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+        UserUtils.validatePassword(data, authorizedUser.getId(), userService);
+        log.info("User {} deleted his profile", authorizedUser.getId());
+        userService.deleteUserById(authorizedUser.getId());
     }
 }

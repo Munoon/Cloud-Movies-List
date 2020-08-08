@@ -21,8 +21,9 @@ import java.util.List;
 public class LogoutUserFilter extends ZuulFilter {
     private static final String LOGOUT_ERROR_MESSAGE = "Error logout user";
     private static final List<AntPathRequestMatcher> pathMatchers = Arrays.asList(
-            new AntPathRequestMatcher("/users/profile/update/email", HttpMethod.POST.name(), false),
-            new AntPathRequestMatcher("/users/profile/update/password", HttpMethod.POST.name(), false)
+            new AntPathRequestMatcher("/users/profile/update/email*", HttpMethod.POST.name(), false),
+            new AntPathRequestMatcher("/users/profile/update/password*", HttpMethod.POST.name(), false),
+            new AntPathRequestMatcher("/users/profile*", HttpMethod.DELETE.name(), false)
     );
 
     @Override

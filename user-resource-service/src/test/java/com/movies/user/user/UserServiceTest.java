@@ -185,4 +185,10 @@ class UserServiceTest extends AbstractTest {
         assertThat(users.getTotalElements()).isEqualTo(1);
         assertMatch(users.getContent(), DEFAULT_USER);
     }
+
+    @Test
+    void testPassword() {
+        assertThat(userService.testPassword(DEFAULT_USER_ID, "pass")).isTrue();
+        assertThat(userService.testPassword(DEFAULT_USER_ID, "unCorrectPass")).isFalse();
+    }
 }

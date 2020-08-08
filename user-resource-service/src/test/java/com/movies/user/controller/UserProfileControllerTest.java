@@ -11,14 +11,18 @@ import com.movies.user.user.to.UpdateProfileTo;
 import com.movies.user.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Collections;
 
 import static com.movies.user.user.UserTestData.*;
 import static com.movies.user.util.TestUtils.defaultUser;
 import static com.movies.user.util.TestUtils.errorType;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class UserProfileControllerTest extends AbstractWebTest {
@@ -27,6 +31,15 @@ class UserProfileControllerTest extends AbstractWebTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Test
+    void getProfile() throws Exception {
+        mockMvc.perform(get("/profile")
+                .with(defaultUser())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(contentJson(DEFAULT_USER));
+    }
 
     @Test
     void updateProfile() throws Exception {
@@ -100,5 +113,33 @@ class UserProfileControllerTest extends AbstractWebTest {
 
         User actual = userService.getById(DEFAULT_USER_ID);
         assertThat(passwordEncoder.matches("pass", actual.getPassword())).isTrue();
+    }
+
+    @Test
+    void deleteAccount() throws Exception {
+        PageRequest request = PageRequest.of(0, 10);
+        assertThat(userService.findAll(request)).hasSize(1);
+
+        mockMvc.perform(delete("/profile")
+                .with(defaultUser())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(Collections.singletonMap("password", "pass"))))
+                .andExpect(status().isOk());
+
+        assertThat(userService.findAll(request)).hasSize(0);
+    }
+
+    @Test
+    void deleteAccountInCorrectPassword() throws Exception {
+        PageRequest request = PageRequest.of(0, 10);
+        assertThat(userService.findAll(request)).hasSize(1);
+
+        mockMvc.perform(delete("/profile")
+                .with(defaultUser())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(Collections.singletonMap("password", "inCorrectPassword"))))
+                .andExpect(status().isUnprocessableEntity());
+
+        assertThat(userService.findAll(request)).hasSize(1);
     }
 }

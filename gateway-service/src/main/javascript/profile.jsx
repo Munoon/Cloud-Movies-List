@@ -19,6 +19,8 @@ const ProfilePageBody = () => (
         <UpdateEmailForm />
         <hr className="my-4" />
         <UpdatePasswordForm />
+        <hr className="my-4" />
+        <DeleteProfile />
     </div>
 );
 
@@ -208,6 +210,45 @@ const UpdatePasswordForm = () => {
 
             <div>
                 <button type='submit' className='btn btn-primary' disabled={loading || getErrorsCount(errors) !== 0}>Сохранить</button>
+                {loading && <Spinner animation="border" role="status" className='ml-3 spinner-vertical-middle' />}
+            </div>
+        </form>
+    );
+};
+
+const DeleteProfile = () => {
+    const [loading, setLoading] = useState(false);
+    const { register, handleSubmit } = useForm();
+
+    const onSubmit = data => {
+        if (!confirm('Вы уверены, что хотите удалить аккаунт?')) {
+            return;
+        }
+
+        setLoading(true);
+        fetcher('/users/profile', {
+            method: 'DELETE',
+            body: JSON.stringify(data)
+        }).then(() => {
+            setLoading(false);
+            toast.success('Вы успешно удалили профиль!');
+            APPLICATION_INSTANCE.instantlyLogout();
+        }).catch(e => {
+            setLoading(false);
+            e.useDefaultErrorParser();
+        });
+    };
+
+    return (
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <InputField
+                id='deleteAccountPassword' type='password'
+                name='password' title='Пароль от аккаунта'
+                ref={register({ required: true })}
+            />
+
+            <div>
+                <button className='btn btn-danger'>Удалить аккаунт</button>
                 {loading && <Spinner animation="border" role="status" className='ml-3 spinner-vertical-middle' />}
             </div>
         </form>
