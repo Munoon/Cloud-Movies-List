@@ -7,15 +7,23 @@ import Button from "react-bootstrap/Button";
 import { useForm } from "react-hook-form";
 import { fetcher } from "./api";
 import Spinner from "react-bootstrap/Spinner";
+import { connect, Provider } from "react-redux";
+import store from './store';
 import { ToastContainer, toast } from "react-toastify";
+import { removeUser } from "./store/user";
 const AUTHENTICATED_USERS_ONLY_PAGES = ['/profile', '/admin/users'];
 
-class Application extends React.Component {
+export default function RootApplication(props) {
+    return (
+        <Provider store={store}>
+            <Application {...props} />
+        </Provider>
+    )
+}
+
+class ApplicationClass extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            userAuthenticated: getMetaProperty('user:authenticated') === 'true'
-        };
         APPLICATION_INSTANCE = this;
     }
 
@@ -30,20 +38,19 @@ class Application extends React.Component {
     }
 
     instantlyLogout() {
-        this.setState({ userAuthenticated: false });
         if (AUTHENTICATED_USERS_ONLY_PAGES.includes(location.pathname)) {
             location.href = '/';
         }
+        this.props.removeUser();
     }
 
     render() {
         const Body = this.props.body;
-        const settings = { userAuthenticated: this.state.userAuthenticated };
         return (
             <>
-                <HeaderNavBar {...settings} />
+                <HeaderNavBar />
                 <div className='container'>
-                    <Body {...settings} />
+                    <Body />
                 </div>
                 <RegisterModal ref={REGISTER_MODAL_INSTANCE} />
                 <ToastContainer
@@ -61,6 +68,8 @@ class Application extends React.Component {
         );
     }
 }
+
+const Application = connect(null, { removeUser })(ApplicationClass);
 
 const RegisterModal = React.forwardRef((props, ref) => {
     let defaultEmailErrorMessage = 'Пользователь с таким Email адресом уже зарегистрирован';
@@ -163,5 +172,3 @@ const RegisterModal = React.forwardRef((props, ref) => {
 
 export let REGISTER_MODAL_INSTANCE = React.createRef();
 export let APPLICATION_INSTANCE;
-
-export default Application;

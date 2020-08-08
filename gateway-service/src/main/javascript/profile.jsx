@@ -6,6 +6,8 @@ import { getErrorsCount, getMetaProperty, InputField, updateMetaProperty } from 
 import Spinner from "react-bootstrap/Spinner";
 import { fetcher } from "./components/api";
 import { toast } from "react-toastify";
+import {connect} from "react-redux";
+import { updateUser } from "./components/store/user";
 
 const getConfirmChangeFiledMessage = field => `Вы уверены, что хотите изменить ${field}? После этой операции вам будет необходимо перезайти в систему!`;
 
@@ -20,7 +22,7 @@ const ProfilePageBody = () => (
     </div>
 );
 
-const UpdateProfileForm = () => {
+const UpdateProfileForm = connect(null, { updateUser })(props => {
     const [loading, setLoading] = useState(false);
     const { register, handleSubmit, errors } = useForm();
 
@@ -31,8 +33,9 @@ const UpdateProfileForm = () => {
         fetcher('/users/profile/update', {
             method: 'POST',
             body: JSON.stringify(data)
-        }).then(() => {
+        }).then(user => {
             setLoading(false);
+            props.updateUser(user);
             toast.success('Вы успешно обновили профиль!');
         }).catch(e => {
             setLoading(false);
@@ -70,18 +73,17 @@ const UpdateProfileForm = () => {
             </div>
         </form>
     );
-};
+});
 
-const UpdateEmailForm = () => {
+const UpdateEmailForm = connect(state => ({ user: state.user }), { updateUser })(props => {
     let defaultEmailErrorMessage = 'Пользователь с таким Email адресом уже зарегистрирован';
     const [emailErrorMessage, setEmailErrorMessage] = useState(defaultEmailErrorMessage);
     const [loading, setLoading] = useState(false);
     const { register, handleSubmit, errors } = useForm();
 
-    const currentEmail = getMetaProperty('user:email');
     const getErrorMessage = (messages, name) => messages[name] ? messages[name] : '';
     const getError = (name, messages) => !errors[name] ? null : getErrorMessage(messages, errors[name].type);
-    const testEmail = async email => email === currentEmail ? true
+    const testEmail = async email => email === props.user.email ? true
         : await fetcher(`/users/test/email/${email}`)
             .then(response => {
                 setEmailErrorMessage(defaultEmailErrorMessage);
@@ -102,9 +104,9 @@ const UpdateEmailForm = () => {
         fetcher('/users/profile/update/email', {
             method: 'POST',
             body: JSON.stringify(data)
-        }).then(() => {
+        }).then(user => {
             setLoading(false);
-            updateMetaProperty('user:email', data.email);
+            props.updateUser(user);
             toast.success('Вы успешно обновили Email адрес!');
             APPLICATION_INSTANCE.instantlyLogout();
         }).catch(e => {
@@ -117,7 +119,7 @@ const UpdateEmailForm = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
             <h4>Изменение Email адреса</h4>
             <InputField
-                id='registerEmailAddressInput' type='email' value={currentEmail}
+                id='registerEmailAddressInput' type='email' value={props.user.email}
                 name='email' placeholder='name@example.com' title='Email адрес'
                 ref={register({
                     pattern: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
@@ -136,7 +138,7 @@ const UpdateEmailForm = () => {
             </div>
         </form>
     );
-};
+});
 
 const UpdatePasswordForm = () => {
     const { register, handleSubmit, errors, watch, setError } = useForm();
