@@ -59,4 +59,9 @@ public class ZuulFilterUtils {
         HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
         return matchers.stream().anyMatch(predicate -> predicate.matches(request));
     }
+
+    public static boolean isResponseOk() {
+        RequestContext context = RequestContext.getCurrentContext();
+        return context.getResponseStatusCode() >= 200 && context.getResponseStatusCode() < 400;
+    }
 }

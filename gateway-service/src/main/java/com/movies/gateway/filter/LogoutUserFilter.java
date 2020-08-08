@@ -30,7 +30,7 @@ public class LogoutUserFilter extends ZuulFilter {
     public Object run() throws ZuulException {
         RequestContext context = RequestContext.getCurrentContext();
 
-        if (!(context.getResponseStatusCode() >= 200 && context.getResponseStatusCode() < 400)) {
+        if (!ZuulFilterUtils.isResponseOk()) {
             return null;
         }
 

@@ -29,6 +29,10 @@ public class UpdateUserDetailsFilter extends ZuulFilter {
 
     @Override
     public Object run() throws ZuulException {
+        if (!ZuulFilterUtils.isResponseOk()) {
+            return null;
+        }
+
         UserTo userTo = ZuulFilterUtils.addResponseBodyAndParseResponseAsUserTo(objectMapper);
         HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
         log.info("Update user details {} for servlet path '{}'", userTo, request.getServletPath());
