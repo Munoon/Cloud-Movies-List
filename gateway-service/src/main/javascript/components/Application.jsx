@@ -10,66 +10,40 @@ import Spinner from "react-bootstrap/Spinner";
 import { connect, Provider } from "react-redux";
 import store from './store';
 import { ToastContainer, toast } from "react-toastify";
-import { removeUser } from "./store/user";
 const AUTHENTICATED_USERS_ONLY_PAGES = ['/profile', '/admin/users'];
 
-export default function RootApplication(props) {
+export default function Application(props) {
+    const Body = props.body;
     return (
         <Provider store={store}>
-            <Application {...props} />
+            <HeaderNavBar />
+            <div className='container'>
+                <Body />
+            </div>
+            <RegisterModal ref={REGISTER_MODAL_INSTANCE} />
+            <ToastContainer
+                position="bottom-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
         </Provider>
     )
 }
 
-class ApplicationClass extends React.Component {
-    constructor(props) {
-        super(props);
-        APPLICATION_INSTANCE = this;
-    }
-
-    logout() {
-        let that = this;
-        fetcher('/logout', {
-            method: 'POST',
-            redirect: 'manual'
-        })
-            .then(() => that.instantlyLogout())
-            .catch(() => that.instantlyLogout());
-    }
-
-    instantlyLogout() {
-        if (AUTHENTICATED_USERS_ONLY_PAGES.includes(location.pathname)) {
+document.addEventListener('DOMContentLoaded', e => {
+    store.subscribe(() => {
+        let state = store.getState();
+        if (state.user === null && AUTHENTICATED_USERS_ONLY_PAGES.includes(location.pathname)) {
             location.href = '/';
         }
-        this.props.removeUser();
-    }
-
-    render() {
-        const Body = this.props.body;
-        return (
-            <>
-                <HeaderNavBar />
-                <div className='container'>
-                    <Body />
-                </div>
-                <RegisterModal ref={REGISTER_MODAL_INSTANCE} />
-                <ToastContainer
-                    position="bottom-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                />
-            </>
-        );
-    }
-}
-
-const Application = connect(null, { removeUser })(ApplicationClass);
+    });
+});
 
 const RegisterModal = React.forwardRef((props, ref) => {
     let defaultEmailErrorMessage = 'Пользователь с таким Email адресом уже зарегистрирован';
@@ -171,4 +145,3 @@ const RegisterModal = React.forwardRef((props, ref) => {
 });
 
 export let REGISTER_MODAL_INSTANCE = React.createRef();
-export let APPLICATION_INSTANCE;

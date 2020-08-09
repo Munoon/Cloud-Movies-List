@@ -1,11 +1,13 @@
 import React from 'react';
 import { hasRole } from './misc';
-import { REGISTER_MODAL_INSTANCE, APPLICATION_INSTANCE } from './Application';
+import { REGISTER_MODAL_INSTANCE } from './Application';
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Button from "react-bootstrap/Button";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
+import { removeUser } from "./store/user";
+import {fetcher} from "./api";
 
 const HeaderNavBar = connect(state => ({ user: state.user }))((props) => {
     let userAuthenticated = props.user !== null;
@@ -29,15 +31,28 @@ const UserNavBarItem = ({ userAuthenticated }) => userAuthenticated
     ? <ProfileUserNavBarItem />
     : <LoginUserNavBarItem />;
 
-const ProfileUserNavBarItem = connect(state => ({ user: state.user }))(props => (
-    <NavDropdown title={`${props.user.name} ${props.user.surname}`}
-                 id="userNavbarDropdown" className='text-white'>
-        <NavDropdown.Item disabled>{props.user.email}</NavDropdown.Item>
-        <NavDropdown.Item href='/profile'>Настройки профиля</NavDropdown.Item>
-        <NavDropdown.Divider />
-        <NavDropdown.Item onClick={() => APPLICATION_INSTANCE.logout()}>Выйти</NavDropdown.Item>
-    </NavDropdown>
-));
+const ProfileUserNavBarItem = connect(state => ({ user: state.user }), { removeUser })(props => {
+    const onLogout = e => {
+        e.preventDefault();
+
+        fetcher('/logout', {
+            method: 'POST',
+            redirect: 'manual'
+        })
+            .then(() => props.removeUser())
+            .catch(() => props.removeUser());
+    };
+
+    return (
+        <NavDropdown title={`${props.user.name} ${props.user.surname}`}
+                     id="userNavbarDropdown" className='text-white'>
+            <NavDropdown.Item disabled>{props.user.email}</NavDropdown.Item>
+            <NavDropdown.Item href='/profile'>Настройки профиля</NavDropdown.Item>
+            <NavDropdown.Divider />
+            <NavDropdown.Item onClick={onLogout}>Выйти</NavDropdown.Item>
+        </NavDropdown>
+    )
+});
 
 const LoginUserNavBarItem = () => (
     <>

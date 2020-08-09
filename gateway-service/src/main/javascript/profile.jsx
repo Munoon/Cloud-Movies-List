@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
-import Application, { APPLICATION_INSTANCE } from "./components/Application";
+import Application from "./components/Application";
 import { useForm } from "react-hook-form";
 import { getErrorsCount, getMetaProperty, InputField, updateMetaProperty } from "./components/misc";
 import Spinner from "react-bootstrap/Spinner";
 import { fetcher } from "./components/api";
 import { toast } from "react-toastify";
 import {connect} from "react-redux";
-import { updateUser } from "./components/store/user";
+import { updateUser, removeUser } from "./components/store/user";
 
 const getConfirmChangeFiledMessage = field => `Вы уверены, что хотите изменить ${field}? После этой операции вам будет необходимо перезайти в систему!`;
 
@@ -77,7 +77,7 @@ const UpdateProfileForm = connect(null, { updateUser })(props => {
     );
 });
 
-const UpdateEmailForm = connect(state => ({ user: state.user }), { updateUser })(props => {
+const UpdateEmailForm = connect(state => ({ user: state.user }), { updateUser, removeUser })(props => {
     let defaultEmailErrorMessage = 'Пользователь с таким Email адресом уже зарегистрирован';
     const [emailErrorMessage, setEmailErrorMessage] = useState(defaultEmailErrorMessage);
     const [loading, setLoading] = useState(false);
@@ -85,7 +85,7 @@ const UpdateEmailForm = connect(state => ({ user: state.user }), { updateUser })
 
     const getErrorMessage = (messages, name) => messages[name] ? messages[name] : '';
     const getError = (name, messages) => !errors[name] ? null : getErrorMessage(messages, errors[name].type);
-    const testEmail = async email => email === props.user.email ? true
+    const testEmail = async email => email === props.user && props.user.email ? true
         : await fetcher(`/users/test/email/${email}`)
             .then(response => {
                 setEmailErrorMessage(defaultEmailErrorMessage);
@@ -108,9 +108,8 @@ const UpdateEmailForm = connect(state => ({ user: state.user }), { updateUser })
             body: JSON.stringify(data)
         }).then(user => {
             setLoading(false);
-            props.updateUser(user);
             toast.success('Вы успешно обновили Email адрес!');
-            APPLICATION_INSTANCE.instantlyLogout();
+            props.removeUser();
         }).catch(e => {
             setLoading(false);
             e.useDefaultErrorParser();
@@ -121,7 +120,7 @@ const UpdateEmailForm = connect(state => ({ user: state.user }), { updateUser })
         <form onSubmit={handleSubmit(onSubmit)}>
             <h4>Изменение Email адреса</h4>
             <InputField
-                id='registerEmailAddressInput' type='email' value={props.user.email}
+                id='registerEmailAddressInput' type='email' value={props.user && props.user.email}
                 name='email' placeholder='name@example.com' title='Email адрес'
                 ref={register({
                     pattern: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
@@ -142,7 +141,7 @@ const UpdateEmailForm = connect(state => ({ user: state.user }), { updateUser })
     );
 });
 
-const UpdatePasswordForm = () => {
+const UpdatePasswordForm = connect(null, { removeUser })(props => {
     const { register, handleSubmit, errors, watch, setError } = useForm();
     const [loading, setLoading] = useState(false);
 
@@ -167,7 +166,7 @@ const UpdatePasswordForm = () => {
         }).then(() => {
             setLoading(false);
             toast.success('Вы успешно обновили пароль адрес!');
-            APPLICATION_INSTANCE.instantlyLogout();
+            props.removeUser();
         }).catch(e => {
             setLoading(false);
             if (e.response.type === 'VALIDATION_ERROR') {
@@ -214,9 +213,9 @@ const UpdatePasswordForm = () => {
             </div>
         </form>
     );
-};
+});
 
-const DeleteProfile = () => {
+const DeleteProfile = connect(null, { removeUser })(props => {
     const [loading, setLoading] = useState(false);
     const { register, handleSubmit } = useForm();
 
@@ -232,7 +231,7 @@ const DeleteProfile = () => {
         }).then(() => {
             setLoading(false);
             toast.success('Вы успешно удалили профиль!');
-            APPLICATION_INSTANCE.instantlyLogout();
+            props.removeUser();
         }).catch(e => {
             setLoading(false);
             e.useDefaultErrorParser();
@@ -253,6 +252,6 @@ const DeleteProfile = () => {
             </div>
         </form>
     );
-};
+});
 
 ReactDOM.render(<Application body={ProfilePageBody} />, document.getElementById('root'));
