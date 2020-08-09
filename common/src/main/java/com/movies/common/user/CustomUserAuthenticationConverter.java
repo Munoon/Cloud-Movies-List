@@ -8,23 +8,24 @@ import org.springframework.security.oauth2.provider.token.UserAuthenticationConv
 import java.util.Collections;
 import java.util.Map;
 
-public class CustomUserAuthenticationConverter implements UserAuthenticationConverter {
-    private static final String USER_MODEL_KEY = "user";
+public abstract class CustomUserAuthenticationConverter implements UserAuthenticationConverter {
+    private static final String USER_ID_KEY = "user";
 
     @Override
     public Map<String, ?> convertUserAuthentication(Authentication authentication) {
         AuthorizedUser authUser = (AuthorizedUser) authentication.getPrincipal();
-        Map<String, ?> userToMap = UserMapper.INSTANCE.asMap(authUser.getUserTo());
-        return Collections.singletonMap(USER_MODEL_KEY, userToMap);
+        return Collections.singletonMap(USER_ID_KEY, authUser.getId());
     }
 
     @Override
     public Authentication extractAuthentication(Map<String, ?> map) {
-        if (map.containsKey(USER_MODEL_KEY)) {
-            Map<String, Object> userMap = (Map<String, Object>) map.get(USER_MODEL_KEY);
-            AuthorizedUser principal = new AuthorizedUser(userMap);
+        if (map.containsKey(USER_ID_KEY)) {
+            int userId = (int) map.get(USER_ID_KEY);
+            AuthorizedUser principal = getAuthorizedUser(userId);
             return new UsernamePasswordAuthenticationToken(principal, "N/A", principal.getAuthorities());
         }
         return null;
     }
+
+    public abstract AuthorizedUser getAuthorizedUser(int userId);
 }

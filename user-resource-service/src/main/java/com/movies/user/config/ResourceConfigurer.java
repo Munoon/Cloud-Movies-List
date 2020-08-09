@@ -1,6 +1,9 @@
 package com.movies.user.config;
 
+import com.movies.common.AuthorizedUser;
 import com.movies.common.user.CustomUserAuthenticationConverter;
+import com.movies.common.user.User;
+import com.movies.user.user.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -37,13 +40,19 @@ public class ResourceConfigurer extends ResourceServerConfigurerAdapter {
     @Bean
     public AccessTokenConverter accessTokenConverter(JwtAccessTokenConverter jwtAccessTokenConverter) {
         var accessTokenConverter = new DefaultAccessTokenConverter();
-        accessTokenConverter.setUserTokenConverter(customUserAuthenticationConverter());
+        accessTokenConverter.setUserTokenConverter(customUserAuthenticationConverter(null));
         jwtAccessTokenConverter.setAccessTokenConverter(accessTokenConverter);
         return accessTokenConverter;
     }
 
     @Bean
-    public CustomUserAuthenticationConverter customUserAuthenticationConverter() {
-        return new CustomUserAuthenticationConverter();
+    public CustomUserAuthenticationConverter customUserAuthenticationConverter(UserService userService) {
+        return new CustomUserAuthenticationConverter() {
+            @Override
+            public AuthorizedUser getAuthorizedUser(int userId) {
+                User user = userService.getById(userId);
+                return new AuthorizedUser(user);
+            }
+        };
     }
 }

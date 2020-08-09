@@ -1,7 +1,8 @@
 package com.movies.auth.config;
 
-import com.movies.common.user.CustomUserAuthenticationConverter;
 import com.movies.auth.user.UserService;
+import com.movies.common.user.CustomUserAuthenticationConverter;
+import com.movies.common.user.EmptyCustomUserAuthenticationConverterImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -69,7 +70,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Bean
     public CustomUserAuthenticationConverter customUserAuthenticationConverter() {
-        return new CustomUserAuthenticationConverter();
+        return new EmptyCustomUserAuthenticationConverterImpl();
     }
 
     @Bean
