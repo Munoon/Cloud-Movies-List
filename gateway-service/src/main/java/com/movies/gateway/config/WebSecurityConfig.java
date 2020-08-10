@@ -33,7 +33,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
                 .antMatchers(
                         "/", "/static/**",
-                        "/users/register", "/users/test/email/*"
+                        "/users/register", "/users/test/email/*",
+                        "/actuator/**"
                 ).permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/users/login").denyAll()

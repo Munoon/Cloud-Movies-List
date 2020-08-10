@@ -14,3 +14,9 @@ eureka:
   client:
     serviceUrl:
       defaultZone: "http://${services.eureka-service.username}:${services.eureka-service.password}@localhost:8020/eureka"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
