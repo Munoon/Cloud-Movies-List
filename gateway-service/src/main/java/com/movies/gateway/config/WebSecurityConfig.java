@@ -37,7 +37,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/actuator/**"
                 ).permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/users/login").denyAll()
                 .anyRequest().authenticated()
                 .and()
             .logout()

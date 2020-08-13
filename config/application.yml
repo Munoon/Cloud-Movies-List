@@ -3,6 +3,12 @@ services:
     username: user
     password: pass
 
+databases:
+  users:
+    url: jdbc:postgresql://localhost:5432/movies-users
+    username: postgres
+    password: password
+
 spring:
   rabbitmq:
     host: localhost

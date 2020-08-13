@@ -16,10 +16,12 @@ JavaScript (including ES6), Node JS, npm, Webpack, React, React Hook Form, Redux
 ## Microservices
 ### 1. Config service
 Storage all config and provide it to other microservices. \
+Profiles: **git** (for getting config files from git), **native** (for getting config files from local file system) \
 Package: **config-service** \
 Working port: **8010** \
 Requirements: **RabbitMQ** (should be in each microservice, allow sending configuration updates for each microservice) \
-Launch order: **ALWAYS FIRST**
+Launch order: **ALWAYS FIRST** \
+PS: if you use native file system, provide **CONFIG_FILES_PATH** environment property with location to path, where all configuration files placing
 
 ### 2. Eureka service
 Giving ability for microservices to communicate with each other. \
@@ -41,7 +43,7 @@ Giving ability for users to login. \
 Package: **auth-service** \
 Working port: **8030** \
 Base URL path: **/uaa** \
-Requirements: **RabbitMQ** \
+Requirements: **RabbitMQ, PostgreSQL** (for storing users) \
 Launch order: **Any time after eureka service**
 
 ### 5. Gateway service

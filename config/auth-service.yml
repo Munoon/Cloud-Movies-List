@@ -8,3 +8,10 @@ oauth:
     autoApprove: true
     accessTokenValiditySeconds: 3600
     refreshTokenValiditySeconds: 86400
+
+spring:
+  datasource:
+    url: ${databases.users.url}
+    username: ${databases.users.username}
+    password: ${databases.users.password}
+    initialization-mode: always
