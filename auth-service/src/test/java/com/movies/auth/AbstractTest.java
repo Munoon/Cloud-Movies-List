@@ -1,7 +1,9 @@
 package com.movies.auth;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
+@ActiveProfiles("test")
 @SpringBootTest(properties = {
         "oauth.client.id=" + TestConfigurationProperties.OAUTH_CLIENT_ID,
         "oauth.client.secret=" + TestConfigurationProperties.OAUTH_CLIENT_SECRET,

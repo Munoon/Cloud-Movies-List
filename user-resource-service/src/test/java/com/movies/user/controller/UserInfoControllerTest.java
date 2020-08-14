@@ -48,17 +48,6 @@ class UserInfoControllerTest extends AbstractWebTest {
     }
 
     @Test
-    void getUserForLogin() throws Exception {
-        MvcResult result = mockMvc.perform(get("/login/" + DEFAULT_USER_EMAIL))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        User user = JsonUtil.readFromJson(result, User.class);
-        assertMatch(user, DEFAULT_USER);
-        assertThat(DEFAULT_USER.getPassword()).isEqualTo(user.getPassword());
-    }
-
-    @Test
     void testEmail() throws Exception {
         mockMvc.perform(get("/test/email/" + DEFAULT_USER_EMAIL))
                 .andExpect(status().isOk())

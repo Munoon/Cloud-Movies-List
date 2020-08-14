@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/movies-users
+    username: postgres
+    password: password
+    initialization-mode: always
+    schema: classpath:db/schema.sql
+    data: classpath:db/data.sql
