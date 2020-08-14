@@ -15,6 +15,14 @@ jobs:
           POSTGRES_DB: movies-users
         ports:
           - 5432:5432
+      mongodb:
+        image: mongo:4.4.0
+        env:
+          MONGO_INITDB_DATABASE: movies-list
+          MONGO_INITDB_ROOT_USERNAME: mongodb
+          MONGO_INITDB_ROOT_PASSWORD: password
+        ports:
+          - 27017:27017
 
     steps:
       - uses: actions/checkout@v1

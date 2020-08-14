@@ -6,11 +6,11 @@ Spring Cloud learning project.
 Service, provided movies list with ability for users to add movies to favorites or watch later and mark movies.
 
 ## Used technologies
-Java (11 and 8), Maven, 
+Java (14 and 8), Maven, Kotlin,
 Spring Boot, Spring Security, Spring Cloud, Spring Actuator, Spring Cloud Config, Spring Data JPA, Spring Hateoas,
 Rest API, oAuth 2, oAuth Authorization Server, oAuth Resource Server,
 Netflix Eureka, Netflix Zuul, Hibernate, JUnit 5, RabbitMQ, thymeleaf,
-Postgres, JWT, JSON,
+PostgreSQL, MongoDB, JWT, JSON,
 JavaScript (including ES6), Node JS, npm, Webpack, React, React Hook Form, Redux, React Redux, SWR, Bootstrap (and Bootswatch), babel, sass.
 
 ## Microservices
