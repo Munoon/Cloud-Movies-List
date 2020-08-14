@@ -46,7 +46,14 @@ Base URL path: **/uaa** \
 Requirements: **RabbitMQ, PostgreSQL** (for storing users) \
 Launch order: **Any time after eureka service**
 
-### 5. Gateway service
+### 5. Movies list service
+Working with movies. Admin can make CRUD with them, users can read them and add to favourite and so on. \
+Package: **movies-list-service** \
+Working port: **random** (you may watch at eureka dashboard) \
+Requirements: **RabbitMQ, RabbitMQ** (for storing movies) \
+Launch order: **Any time after eureka service**
+
+### 6. Gateway service
 Service for clients that giving access to communicate with other microservices. \
 Package: **gateway-service** \
 Working port: **8080** \
@@ -55,7 +62,8 @@ Launch order: **Any time after eureka service**
 
 ## Additional requirement
 1. [PostgreSQL](https://www.postgresql.org/) - users info storage.
-2. [RabbitMQ](https://www.rabbitmq.com/) - for sending configuration updates.
+2. [MongoDB](https://www.mongodb.com/) - movies storage.
+3. [RabbitMQ](https://www.rabbitmq.com/) - for sending configuration updates.
 
 ## How to launch
 1. For launching, you need Java 11, Maven and application, indicated in 'Additional requirement'.
