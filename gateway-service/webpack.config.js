@@ -4,7 +4,9 @@ module.exports = {
     entry: {
         index: path.join(__dirname, 'src/main/javascript/index.jsx'),
         profile: path.join(__dirname, 'src/main/javascript/profile.jsx'),
-        users: path.join(__dirname, 'src/main/javascript/users.jsx')
+        users: path.join(__dirname, 'src/main/javascript/users.jsx'),
+        movie: path.join(__dirname, 'src/main/javascript/movie.jsx'),
+        add_movie: path.join(__dirname, 'src/main/javascript/add_movie.jsx')
     },
 
     output: {

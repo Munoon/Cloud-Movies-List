@@ -10,7 +10,7 @@ import Spinner from "react-bootstrap/Spinner";
 import { connect, Provider } from "react-redux";
 import store from './store';
 import { ToastContainer, toast } from "react-toastify";
-const AUTHENTICATED_USERS_ONLY_PAGES = ['/profile', '/admin/users'];
+const AUTHENTICATED_USERS_ONLY_PAGES = ['/profile', '/admin/users', '/admin/movies/add'];
 
 export default function Application(props) {
     const Body = props.body;

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/headTag :: head()}"></head>
-<body>
+<head th:replace="~{fragments/headTag :: head(~{::script})}">
     <script th:src="@{/static/js/index.min.js}" defer></script>
+</head>
+<body>
     <div id="root"></div>
 </body>
 </html>

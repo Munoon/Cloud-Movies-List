@@ -1,4 +1,4 @@
-<head th:fragment="head()" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(additional)" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <meta charset="UTF-8">
 
     <meta name="_csrf" th:content="${_csrf.token}">
@@ -14,6 +14,8 @@
         <meta name="user:email" th:content="${user.email}">
         <meta name="user:roles" th:content="${user.roles}">
     </th:block>
+
+    <th:block th:replace="${additional}" />
 
     <title>Movies List</title>
 </head>

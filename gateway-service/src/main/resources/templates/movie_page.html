@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/headTag :: head(~{::'th:block'})}">
+    <th:block>
+        <meta name="movie:id" th:content="${movieId}">
+        <script th:src="@{/static/js/movie.min.js}" defer></script>
+    </th:block>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>
