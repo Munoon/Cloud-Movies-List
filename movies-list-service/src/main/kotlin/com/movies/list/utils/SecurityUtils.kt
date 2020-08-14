@@ -20,4 +20,6 @@ object SecurityUtils {
     fun authUser(): UserTo = getAuthorizedUser().userTo
 
     fun authUserId(): Int = getAuthorizedUser().id
+
+    fun authUserIdOrAnonymous() = safeGet()?.id?.toString() ?: "[anonymous]"
 }

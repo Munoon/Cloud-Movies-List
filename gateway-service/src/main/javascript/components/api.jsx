@@ -35,6 +35,8 @@ export const fetcher = (...args) => {
         });
 }
 
+export const getFetcher = options => url => fetcher(url, options);
+
 function parseError(error, data) {
     let messages = [];
     if (error.details) {

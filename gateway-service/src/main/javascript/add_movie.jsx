@@ -3,17 +3,28 @@ import ReactDOM from 'react-dom';
 import Application from './components/Application';
 import { InputField } from "./components/misc";
 import { fetcher } from "./components/api";
+import { mutation } from "gql-query-builder";
 
 const body = () => {
     const onSubmit = e => {
         e.preventDefault();
         let name = e.target.querySelector('input[name="name"]').value
 
-        fetcher('/movies/admin/movies/add', {
+        fetcher('/movies/graphql', {
             method: 'POST',
-            body: JSON.stringify({ name })
-        }).then(response => {
-            location.href = `/movie/${response.id}`
+            body: JSON.stringify(mutation({
+                operation: 'addMovie',
+                variables: {
+                    newMovie: {
+                        value: { name },
+                        type: 'CreateMovie',
+                        required: true
+                    }
+                },
+                fields: ['id']
+            }))
+        }).then(({ data: { addMovie: movie } }) => {
+            location.href = `/movie/${movie.id}`
         });
     };
 

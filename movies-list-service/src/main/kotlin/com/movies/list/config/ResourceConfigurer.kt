@@ -25,9 +25,8 @@ class ResourceConfigurer : ResourceServerConfigurerAdapter() {
                 .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                 .and()
             .authorizeRequests()
-                .antMatchers("/**").permitAll()
-                .antMatchers("/profile/**").authenticated()
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/graphql/**").permitAll()
+                .anyRequest().denyAll()
     }
 
     @Bean
