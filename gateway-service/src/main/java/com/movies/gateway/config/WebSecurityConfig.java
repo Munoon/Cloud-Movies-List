@@ -37,6 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/actuator/**"
                 ).permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/users/actuator/**", "/users/microservices/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
             .logout()

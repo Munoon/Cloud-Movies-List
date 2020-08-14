@@ -9,6 +9,9 @@ zuul:
     users:
       path: /users/**
       serviceId: user-resource-service
+    movies:
+      path: /movies/**
+      serviceId: movies-list-service
 
 logging:
   level:

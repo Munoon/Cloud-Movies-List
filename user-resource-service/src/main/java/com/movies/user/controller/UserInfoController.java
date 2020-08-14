@@ -1,5 +1,6 @@
 package com.movies.user.controller;
 
+import com.movies.common.user.User;
 import com.movies.user.user.UserService;
 import com.movies.user.user.to.RegisterUserTo;
 import lombok.AllArgsConstructor;
@@ -24,5 +25,11 @@ public class UserInfoController {
     public boolean testEmail(@PathVariable String email) {
         log.info("Checking if user with email '{}' exist", email);
         return userService.testEmail(email);
+    }
+
+    @GetMapping("/microservices/info/{userId}")
+    public User getUserInfo(@PathVariable int userId) {
+        log.info("Microservice request info about user {}", userId);
+        return userService.getById(userId);
     }
 }
