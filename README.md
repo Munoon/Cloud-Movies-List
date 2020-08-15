@@ -62,8 +62,20 @@ Launch order: **Any time after eureka service**
 
 ## Additional requirement
 1. [PostgreSQL](https://www.postgresql.org/) - users info storage.
+    ```
+    // Docker run example
+    $ docker run --name cloud-movies-postgres -p 5432:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=movies-users -d postgres
+    ```
 2. [MongoDB](https://www.mongodb.com/) - movies storage.
+    ```
+    // Docker run example
+    $ docker run --name cloud-movies-mongo -p 27017:27017 -e MONGO_INITDB_DATABASE=movies-list -e MONGO_INITDB_ROOT_USERNAME=mongodb -e MONGO_INITDB_ROOT_PASSWORD=password -d mongo:4.4.0
+    ```
 3. [RabbitMQ](https://www.rabbitmq.com/) - for sending configuration updates.
+    ```
+    // Docker run example
+    $ docker run -it --rm --name cloud-movies-rabbitmq -p 5672:5672 -p 15672:15672 -d rabbitmq:3-management
+    ```
 
 ## How to launch
 1. For launching, you need Java 11, Maven and application, indicated in 'Additional requirement'.
