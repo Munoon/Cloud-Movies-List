@@ -9,6 +9,7 @@ input CreateMovie {
 
 type Query {
     movie(id: ID): Movie
+    latestMovies(count: Int, page: Int): [Movie]
 }
 
 type Mutation {
