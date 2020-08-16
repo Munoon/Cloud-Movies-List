@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -28,6 +29,13 @@ public class GlobalExceptionHandler {
         log.error("Request exception on request {}", req.getRequestURL(), e);
         String message = e.getMessage() + " Server response: " + e.getResponseStatus().value();
         return getErrorModel(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ModelAndView noHandlerFoundExceptionHandler(HttpServletRequest req) {
+        log.warn("No handler found for request {}", req.getRequestURL());
+        return getErrorModel("Страница не найдена!", HttpStatus.NOT_FOUND);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
