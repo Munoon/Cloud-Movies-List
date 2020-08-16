@@ -25,7 +25,7 @@ class ResourceConfigurer : ResourceServerConfigurerAdapter() {
                 .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                 .and()
             .authorizeRequests()
-                .antMatchers("/graphql/**").permitAll()
+                .antMatchers("/graphql/**", "/movie/**").permitAll()
                 .anyRequest().denyAll()
     }
 

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/headTag :: head(~{::'th:block'})}">
+    <th:block>
+        <meta name="error:message" th:content="${error_message}">
+        <meta name="error:status" th:content="${error_status}">
+        <script th:src="@{/static/js/error.min.js}" defer></script>
+    </th:block>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>

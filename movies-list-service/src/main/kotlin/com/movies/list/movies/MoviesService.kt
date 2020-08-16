@@ -1,8 +1,8 @@
 package com.movies.list.movies
 
 import com.movies.list.movies.to.CreateMoviesTo
+import com.movies.list.utils.exception.NotFoundException
 import org.springframework.stereotype.Service
-import java.lang.RuntimeException
 
 @Service
 class MoviesService(private val moviesRepository: MoviesRepository) {
@@ -13,6 +13,6 @@ class MoviesService(private val moviesRepository: MoviesRepository) {
 
     fun getById(movieId: String): Movie {
         return moviesRepository.findById(movieId)
-                .orElseThrow { RuntimeException("Movie with id $movieId not found!") }
+                .orElseThrow { NotFoundException("Movie with id $movieId not found!") }
     }
 }

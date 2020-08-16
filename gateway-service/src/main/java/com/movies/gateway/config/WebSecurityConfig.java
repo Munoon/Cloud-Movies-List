@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.client.OAuth2RestOperations;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.stream.Collectors;
 
@@ -56,6 +57,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         var restTemplate = new OAuth2RestTemplate(resource, context);
         userInfoTokenServices.setRestTemplate(restTemplate);
         return restTemplate;
+    }
+
+    @Bean
+    @LoadBalanced
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
     @Bean

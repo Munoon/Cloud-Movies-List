@@ -8,6 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 public class SecurityUtils {
+    public static final String AUTHORIZATION_TOKEN_HEADER_NAME = "Authorization";
+
     public static void updateUser(UserTo userTo) {
         SecurityContext context = SecurityContextHolder.getContext();
         OAuth2Authentication authentication = (OAuth2Authentication) context.getAuthentication();

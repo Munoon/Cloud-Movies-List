@@ -6,7 +6,8 @@ module.exports = {
         profile: path.join(__dirname, 'src/main/javascript/profile.jsx'),
         users: path.join(__dirname, 'src/main/javascript/users.jsx'),
         movie: path.join(__dirname, 'src/main/javascript/movie.jsx'),
-        add_movie: path.join(__dirname, 'src/main/javascript/add_movie.jsx')
+        add_movie: path.join(__dirname, 'src/main/javascript/add_movie.jsx'),
+        error: path.join(__dirname, 'src/main/javascript/error.jsx')
     },
 
     output: {
