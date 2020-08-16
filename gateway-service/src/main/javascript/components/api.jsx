@@ -14,6 +14,12 @@ export const fetcher = (...args) => {
     args[1].headers[getMetaProperty('_csrf_header')] = getMetaProperty('_csrf');
     args[1].headers['Content-Type'] = 'application/json';
     args[1].cache = 'no-cache';
+    if (args[1].params !== undefined) {
+        const params = args[1].params;
+        args[0] += '?' + Object.keys(params)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+            .join('&');
+    }
 
     let data;
     return fetch(...args)
@@ -35,7 +41,7 @@ export const fetcher = (...args) => {
         });
 }
 
-export const getFetcher = options => url => fetcher(url, options);
+export const getFetcher = options => (...args) => fetcher(...args, options);
 
 function parseError(error, data) {
     let messages = [];

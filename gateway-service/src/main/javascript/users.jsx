@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import { InputField } from "./components/misc";
 import { toast } from "react-toastify";
 
-const getUsers = (page, size) => fetcher(`/users/admin/list?page=${page}&size=${size}`);
+const getUsers = (page, size) => fetcher('/users/admin/list', { params: { page, size } });
 
 const body = () => (
     <>
