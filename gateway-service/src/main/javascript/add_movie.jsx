@@ -30,7 +30,7 @@ const body = () => {
 
     return (
         <form className='jumbotron mt-3' onSubmit={onSubmit}>
-            <h1>Добавить фильи</h1>
+            <h1>Добавить фильм</h1>
             <InputField type='text' name='name' title='Название' />
             <button className='btn btn-primary'>Создать</button>
         </form>

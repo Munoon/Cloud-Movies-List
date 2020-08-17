@@ -1,13 +1,15 @@
 const path = require('path');
 
+const jsFile = fileName => path.join(__dirname, 'src/main/javascript', fileName);
+
 module.exports = {
     entry: {
-        index: path.join(__dirname, 'src/main/javascript/index.jsx'),
-        profile: path.join(__dirname, 'src/main/javascript/profile.jsx'),
-        users: path.join(__dirname, 'src/main/javascript/users.jsx'),
-        movie: path.join(__dirname, 'src/main/javascript/movie.jsx'),
-        add_movie: path.join(__dirname, 'src/main/javascript/add_movie.jsx'),
-        error: path.join(__dirname, 'src/main/javascript/error.jsx')
+        index: jsFile('index.jsx'),
+        profile: jsFile('profile.jsx'),
+        users: jsFile('users.jsx'),
+        movie: jsFile('movie.jsx'),
+        add_movie: jsFile('add_movie.jsx'),
+        error: jsFile('error.jsx')
     },
 
     output: {
@@ -16,7 +18,7 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['.js', '.jsx', '.scss'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.scss'],
     },
 
     module: {
@@ -31,6 +33,11 @@ module.exports = {
                         plugins: ['@babel/plugin-transform-runtime']
                     }
                 }
+            },
+            {
+                test: /\.(tsx|ts)$/,
+                use: 'ts-loader',
+                exclude: '/node_modules/'
             },
             {
                 test: /\.css$/,
