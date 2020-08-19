@@ -3,13 +3,16 @@ import { hasRole } from './misc';
 import { REGISTER_MODAL_INSTANCE } from './Application';
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import NavDropdown from "react-bootstrap/NavDropdown";
+import NavDropdown  from "react-bootstrap/NavDropdown";
 import Button from "react-bootstrap/Button";
 import { connect } from "react-redux";
-import { removeUser } from "./store/user";
-import {fetcher} from "./api";
+import { removeUser, User } from "./store/user";
+import { fetcher } from "./api";
+import { DropdownItemProps } from "react-bootstrap/DropdownItem";
 
-const HeaderNavBar = connect(state => ({ user: state.user }))((props) => {
+const connectUserProp = (state: { user: User }) => ({ user: state.user });
+
+const HeaderNavBar = connect(connectUserProp)((props: { user: User }) => {
     let userAuthenticated = props.user !== null;
     return (
         <Navbar bg="dark" expand="lg" className='navbar-dark'>
@@ -27,12 +30,12 @@ const HeaderNavBar = connect(state => ({ user: state.user }))((props) => {
     );
 });
 
-const UserNavBarItem = ({ userAuthenticated }) => userAuthenticated
+const UserNavBarItem = ({ userAuthenticated }: { userAuthenticated: boolean }) => userAuthenticated
     ? <ProfileUserNavBarItem />
     : <LoginUserNavBarItem />;
 
-const ProfileUserNavBarItem = connect(state => ({ user: state.user }), { removeUser })(props => {
-    const onLogout = e => {
+const ProfileUserNavBarItem = connect(connectUserProp, { removeUser })((props: { user: User, removeUser: typeof removeUser }) => {
+    const onLogout = (e: React.MouseEvent<DropdownItemProps>) => {
         e.preventDefault();
 
         fetcher('/logout', {

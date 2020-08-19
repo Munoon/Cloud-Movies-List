@@ -20,12 +20,12 @@ import { toast } from "react-toastify";
 
 const getUsers = (page, size) => fetcher('/users/admin/list', { params: { page, size } });
 
-const body = () => (
-    <>
+const UsersPage = () => (
+    <Application>
         <UsersTable ref={USERS_TABLE_INSTANCE} />
         <UpdateUser ref={ref => UPDATE_USER_MODAL_INSTANCE = ref} />
         <RegisterUserModal ref={REGISTER_USER_MODAL_INSTANCE} />
-    </>
+    </Application>
 );
 
 const UsersTable = React.forwardRef((props, ref) => {
@@ -357,4 +357,4 @@ let USERS_TABLE_INSTANCE = React.createRef();
 let UPDATE_USER_MODAL_INSTANCE = null;
 let REGISTER_USER_MODAL_INSTANCE = React.createRef();
 
-ReactDOM.render(<Application body={body} />, document.getElementById('root'));
+ReactDOM.render(<UsersPage />, document.getElementById('root'));

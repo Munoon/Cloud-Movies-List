@@ -1,5 +1,5 @@
 import './scss/style.scss';
-import React, { useState } from 'react';
+import React, {FunctionComponent, useState} from 'react';
 import HeaderNavBar from './HeaderNavBar';
 import { getErrorsCount, getMetaProperty, InputField } from './misc';
 import Modal from "react-bootstrap/Modal";
@@ -7,18 +7,18 @@ import Button from "react-bootstrap/Button";
 import { useForm } from "react-hook-form";
 import { fetcher } from "./api";
 import Spinner from "react-bootstrap/Spinner";
-import { connect, Provider } from "react-redux";
+import { Provider } from "react-redux";
 import store from './store';
 import { ToastContainer, toast } from "react-toastify";
+import {ValidateResult} from "react-hook-form/dist/types/form";
 const AUTHENTICATED_USERS_ONLY_PAGES = ['/profile', '/admin/users', '/admin/movies/add'];
 
-export default function Application(props) {
-    const Body = props.body;
+const Application: FunctionComponent = ({ children }) => {
     return (
         <Provider store={store}>
             <HeaderNavBar />
             <div className='container'>
-                <Body />
+                {children}
             </div>
             <RegisterModal ref={REGISTER_MODAL_INSTANCE} />
             <ToastContainer
@@ -45,19 +45,31 @@ document.addEventListener('DOMContentLoaded', e => {
     });
 });
 
-const RegisterModal = React.forwardRef((props, ref) => {
+interface RegisterUser {
+    name: string;
+    surname: string;
+    email: string;
+    password: string;
+}
+
+interface RegisterModalRef {
+    show: () => void;
+    hide: () => void;
+}
+
+const RegisterModal = React.forwardRef((props, ref: { current: RegisterModalRef }) => {
     let defaultEmailErrorMessage = 'Пользователь с таким Email адресом уже зарегистрирован';
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = useState(defaultEmailErrorMessage);
-    const { register, handleSubmit, errors } = useForm();
+    const { register, handleSubmit, errors } = useForm<RegisterUser>();
 
     ref.current = {
         show: () => setShow(true),
         hide: () => setShow(false)
     };
 
-    const submit = formData => {
+    const submit = (formData: RegisterUser) => {
         setLoading(true);
         fetcher('/users/register', {
             method: 'POST',
@@ -72,17 +84,17 @@ const RegisterModal = React.forwardRef((props, ref) => {
         });
     };
 
-    const getErrorMessage = (messages, name) => messages[name] ? messages[name] : '';
-    const getError = (name, messages) => !errors[name] ? null : getErrorMessage(messages, errors[name].type);
-    const testEmail = email => fetcher(`/users/test/email/${email}`)
-        .then(response => {
+    const testEmail = (email: string): Promise<ValidateResult> => fetcher(`/users/test/email/${email}`)
+        .then((response) => {
             setEmailErrorMessage(defaultEmailErrorMessage);
-            return response;
+            return response as unknown as boolean;
         })
         .catch(() => {
             setEmailErrorMessage('Ошибка проверки доступности почты! Пожалуйста, попробуйте позже.');
             return false;
         });
+
+    const getError = (type: string, messages: Record<string, string>) => messages[type];
 
     return (
         <Modal show={show} onHide={() => setShow(false)}>
@@ -95,7 +107,7 @@ const RegisterModal = React.forwardRef((props, ref) => {
                         id='registerNameInput' type='text'
                         name='name' placeholder='Петр' title='Имя'
                         ref={register({ minLength: 3, maxLength: 30, required: true })}
-                        error={getError('name', {
+                        error={getError(errors.name?.type, {
                             minLength: 'Имя должно содержать хотя-бы 3 символа',
                             maxLength: 'Имя должно быть меньше 30 символов'
                         })}
@@ -105,7 +117,7 @@ const RegisterModal = React.forwardRef((props, ref) => {
                         id='registerSurnameInput' type='text'
                         name='surname' placeholder='Васильевич' title='Фамилия'
                         ref={register({ minLength: 3, maxLength: 30, required: true })}
-                        error={getError('surname', {
+                        error={getError(errors.surname?.type, {
                             minLength: 'Фамилия должна содержать хотя-бы 3 символа',
                             maxLength: 'Фамилия должна быть меньше 30 символов'
                         })}
@@ -117,9 +129,9 @@ const RegisterModal = React.forwardRef((props, ref) => {
                         ref={register({
                             pattern: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
                             validate: testEmail,
-                            required: true
+                            required: true,
                         })}
-                        error={getError('email', {
+                        error={getError(errors.email?.type, {
                             validate: emailErrorMessage,
                             pattern: 'Пожалуйста, введите корректную почту'
                         })}
@@ -129,7 +141,7 @@ const RegisterModal = React.forwardRef((props, ref) => {
                         id='registerPasswordInput' type='password' title='Пароль'
                         name='password'
                         ref={register({ minLength: 8, required: true })}
-                        error={getError('password', {
+                        error={getError(errors.password?.type, {
                             minLength: 'Пароль должен содержать хотя-бы 8 символов'
                         })}
                         />
@@ -144,4 +156,5 @@ const RegisterModal = React.forwardRef((props, ref) => {
     );
 });
 
-export let REGISTER_MODAL_INSTANCE = React.createRef();
+export let REGISTER_MODAL_INSTANCE = React.createRef<RegisterModalRef>();
+export default Application;

@@ -36,6 +36,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.11",
+    "@types/react-redux": "^7.1.9",
     "bootstrap": "^5.0.0-alpha1",
     "bootswatch": "^4.5.0",
     "gql-query-builder": "^3.5.0",

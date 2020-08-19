@@ -11,6 +11,12 @@ import { updateUser, removeUser } from "./components/store/user";
 
 const getConfirmChangeFiledMessage = field => `Вы уверены, что хотите изменить ${field}? После этой операции вам будет необходимо перезайти в систему!`;
 
+const ProfilePage = () => (
+    <Application>
+        <ProfilePageBody />
+    </Application>
+);
+
 const ProfilePageBody = () => (
     <div className='jumbotron mt-3'>
         <h3>Настройки профиля</h3>
@@ -254,4 +260,4 @@ const DeleteProfile = connect(null, { removeUser })(props => {
     );
 });
 
-ReactDOM.render(<Application body={ProfilePageBody} />, document.getElementById('root'));
+ReactDOM.render(<ProfilePage />, document.getElementById('root'));

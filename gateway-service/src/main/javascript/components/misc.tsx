@@ -19,13 +19,13 @@ export function getUserRoles(): UserRole[] {
 }
 
 interface InputFiledProps {
-    id: string;
+    id?: string;
     title: string;
     name: string;
     type: string;
-    value: string;
-    placeholder: string;
-    error: string;
+    value?: string;
+    placeholder?: string;
+    error?: string;
 }
 
 export const InputField =

@@ -2,27 +2,47 @@ import useSWR from "swr";
 import { getMetaProperty } from "./misc";
 import { toast } from "react-toastify";
 import React from "react";
+import { User } from "./store/user";
 
-export const fetcher = (...args) => {
-    if (args[1] === undefined) {
-        args[1] = {
-            headers: {}
-        };
-    } else if (args[1].headers === undefined) {
-        args[1].headers = {};
+interface CustomRequestInit extends RequestInit {
+    headers?: Record<string, string>;
+    params?: Record<string, string>;
+}
+
+enum ErrorType {
+    REQUEST_EXCEPTION,
+    VALIDATION_ERROR,
+    DATA_ERROR,
+    NOT_UNIQUE_ERROR,
+    APPLICATION_EXCEPTION,
+    ACCESS_DENIED,
+    NOT_FOUND
+}
+
+interface ErrorInfo {
+    url: string;
+    errorType: ErrorType;
+    details: string[];
+    fields?: Record<string, string[]>;
+}
+
+export const fetcher = (input: RequestInfo, init: CustomRequestInit = { headers: {} }): Promise<Response> => {
+    if (init.headers === undefined) {
+        init.headers = {};
     }
-    args[1].headers[getMetaProperty('_csrf_header')] = getMetaProperty('_csrf');
-    args[1].headers['Content-Type'] = 'application/json';
-    args[1].cache = 'no-cache';
-    if (args[1].params !== undefined) {
-        const params = args[1].params;
-        args[0] += '?' + Object.keys(params)
+
+    init.headers[getMetaProperty('_csrf_header')] = getMetaProperty('_csrf');
+    init.headers['Content-Type'] = 'application/json';
+    init.cache = 'no-cache';
+    if (init.params !== undefined) {
+        const params = init.params;
+        input += '?' + Object.keys(params)
             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
             .join('&');
     }
 
-    let data;
-    return fetch(...args)
+    let data: Response;
+    return fetch(input, init)
         .then(res => {
             data = res
             return res.text();
@@ -41,9 +61,7 @@ export const fetcher = (...args) => {
         });
 }
 
-export const getFetcher = options => (...args) => fetcher(...args, options);
-
-function parseError(error, data) {
+function parseError(error: ErrorInfo, data: Response) {
     let messages = [];
     if (error.details) {
         messages.push(error.details.join(', '))
@@ -56,7 +74,7 @@ function parseError(error, data) {
     toast.error(getMultipleLinesToastElement(messages));
 }
 
-function getMultipleLinesToastElement(lines) {
+function getMultipleLinesToastElement(lines: string[]) {
     let linesInOneStr = lines.join('<br/>');
     if (lines.length > 1) {
         linesInOneStr = linesInOneStr.substr(5);
@@ -64,7 +82,7 @@ function getMultipleLinesToastElement(lines) {
     return <div dangerouslySetInnerHTML={{ __html: linesInOneStr }}/>
 }
 
-function parseFromJSON(text) {
+function parseFromJSON(text: string) {
     try {
         return JSON.parse(text);
     } catch (e) {
@@ -72,11 +90,11 @@ function parseFromJSON(text) {
     }
 }
 
-export function getProfile() {
+export function getProfile(): { user: User, isLoading: boolean, isError: boolean } {
     const { data, error } = useSWR('/users/profile', fetcher);
 
     return {
-        user: data,
+        user: data as unknown as User,
         isLoading: !error && !data,
         isError: error
     }

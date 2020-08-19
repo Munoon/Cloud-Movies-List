@@ -5,7 +5,7 @@ import { InputField } from "./components/misc";
 import { fetcher } from "./components/api";
 import { mutation } from "gql-query-builder";
 
-const body = () => {
+const AddMovie = () => {
     const onSubmit = e => {
         e.preventDefault();
         let name = e.target.querySelector('input[name="name"]').value
@@ -29,12 +29,14 @@ const body = () => {
     };
 
     return (
-        <form className='jumbotron mt-3' onSubmit={onSubmit}>
-            <h1>Добавить фильм</h1>
-            <InputField type='text' name='name' title='Название' />
-            <button className='btn btn-primary'>Создать</button>
-        </form>
+        <Application>
+            <form className='jumbotron mt-3' onSubmit={onSubmit}>
+                <h1>Добавить фильм</h1>
+                <InputField type='text' name='name' title='Название' />
+                <button className='btn btn-primary'>Создать</button>
+            </form>
+        </Application>
     );
 }
 
-ReactDOM.render(<Application body={body} />, document.getElementById('root'));
+ReactDOM.render(<AddMovie />, document.getElementById('root'));

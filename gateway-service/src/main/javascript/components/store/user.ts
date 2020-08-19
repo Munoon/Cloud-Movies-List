@@ -1,7 +1,7 @@
 import { getMetaProperty, getUserRoles } from "../misc";
 
 export type UserRole = "ROLE_ADMIN" | "ROLE_USER";
-interface User {
+export interface User {
     id: number;
     name: string;
     surname: string;
