@@ -3,6 +3,7 @@ package com.movies.user.controller;
 import com.movies.common.user.User;
 import com.movies.common.user.UserRoles;
 import com.movies.user.user.UserRepository;
+import com.movies.user.user.UserTestData;
 import com.movies.user.user.to.RegisterUserTo;
 import com.movies.user.util.JsonUtil;
 import com.movies.user.util.mapper.LocalUserMapper;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.movies.user.user.UserTestData.*;
+import static com.movies.user.util.JsonUtil.readFromJson;
 import static com.movies.user.util.TestUtils.defaultUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -52,15 +54,22 @@ class UserInfoControllerTest extends AbstractWebTest {
         mockMvc.perform(get("/test/email/" + DEFAULT_USER_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(mvcResult -> {
-                    boolean result = JsonUtil.readFromJson(mvcResult, Boolean.class);
+                    boolean result = readFromJson(mvcResult, Boolean.class);
                     assertThat(result).isEqualTo(false);
                 });
 
         mockMvc.perform(get("/test/email/email@example.com"))
                 .andExpect(status().isOk())
                 .andExpect(mvcResult -> {
-                    boolean result = JsonUtil.readFromJson(mvcResult, Boolean.class);
+                    boolean result = readFromJson(mvcResult, Boolean.class);
                     assertThat(result).isEqualTo(true);
                 });
+    }
+
+    @Test
+    void getUserInfo() throws Exception {
+        mockMvc.perform(get("/microservices/info/" + DEFAULT_USER_ID))
+                .andExpect(status().isOk())
+                .andExpect(result -> assertMatch(readFromJson(result, User.class), DEFAULT_USER));
     }
 }

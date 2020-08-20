@@ -43,6 +43,7 @@ class ResourceConfigurer : ResourceServerConfigurerAdapter() {
             override fun getAuthorizedUser(userId: Int): AuthorizedUser {
                 val url = "http://user-resource-service/microservices/info/$userId"
                 val user = restTemplate!!.getForObject(url, User::class.java)!!
+                user.password = user.password ?: "N/A"
                 return AuthorizedUser(user)
             }
         }

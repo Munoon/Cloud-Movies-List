@@ -27,14 +27,4 @@ public interface UserMapper {
 
         return userTo;
     }
-
-    default Map<String, ?> asMap(UserTo userTo) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("id", userTo.getId());
-        result.put("name", userTo.getName());
-        result.put("surname", userTo.getSurname());
-        result.put("email", userTo.getEmail());
-        result.put("roles", userTo.getRoles());
-        return result;
-    }
 }
