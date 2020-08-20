@@ -61,9 +61,9 @@ const UsersTable = React.forwardRef((props, ref) => {
     } = useTable({
         columns,
         data: data.users,
+        pageCount: data.pages,
         manualPagination: true,
-        pageCount: 3,
-        initialState: { pageIndex: data.pages, pageSize: 10 }
+        initialState: { pageIndex: 0, pageSize: 10 }
     }, usePagination);
 
     useEffect(() => loadData(), [ pageIndex, pageSize ]);
