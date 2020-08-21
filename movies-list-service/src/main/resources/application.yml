@@ -4,3 +4,9 @@ server:
 spring:
   application:
     name: movies-list-service
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 256MB
+      max-request-size: 256MB

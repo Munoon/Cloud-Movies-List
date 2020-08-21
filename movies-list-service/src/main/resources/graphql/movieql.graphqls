@@ -5,11 +5,13 @@ schema {
 
 type Movie {
     id: ID!,
-    name: String
+    name: String!,
+    hasAvatar: Boolean!
 }
 
 input CreateMovie {
-    name: String
+    name: String!,
+    avatarImageId: String
 }
 
 type Query {

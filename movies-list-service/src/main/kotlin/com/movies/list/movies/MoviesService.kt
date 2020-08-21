@@ -1,5 +1,6 @@
 package com.movies.list.movies
 
+import com.movies.list.mediaTemplate.MediaTemplateService
 import com.movies.list.movies.to.CreateMoviesTo
 import com.movies.list.utils.exception.NotFoundException
 import org.springframework.data.domain.Page
@@ -9,9 +10,16 @@ import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
 @Service
-class MoviesService(private val moviesRepository: MoviesRepository) {
+class MoviesService(
+        private val moviesRepository: MoviesRepository,
+        private val mediaTemplateService: MediaTemplateService
+) {
     fun createMovie(createMoviesTo: CreateMoviesTo): Movie {
-        val movie = MovieMapper.INSTANCE.asMovie(createMoviesTo);
+        var movie = MovieMapper.INSTANCE.asMovie(createMoviesTo);
+        if (createMoviesTo.avatarImageId !== null) {
+            val template = mediaTemplateService.getById(createMoviesTo.avatarImageId)
+            movie = movie.copy(avatar = template.media)
+        }
         return moviesRepository.save(movie);
     }
 

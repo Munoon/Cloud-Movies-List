@@ -12,10 +12,10 @@ interface MovieMapper {
         // TODO refactor this with mapstruct
         val INSTANCE = object: MovieMapper {
             override fun asMovie(createMoviesTo: CreateMoviesTo) =
-                    Movie(null, createMoviesTo.name, LocalDateTime.now())
+                    Movie(null, createMoviesTo.name, null, LocalDateTime.now())
 
             override fun asMovieTo(movie: Movie): MovieTo =
-                    MovieTo(movie.id, movie.name, movie.registered)
+                    MovieTo(movie.id, movie.name, movie.avatar !== null, movie.registered)
         }
     }
 }

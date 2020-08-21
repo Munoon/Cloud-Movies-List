@@ -7,6 +7,7 @@ import { User } from "./store/user";
 interface CustomRequestInit extends RequestInit {
     headers?: Record<string, string>;
     params?: Record<string, string>;
+    addContentTypeHeader?: boolean;
 }
 
 enum ErrorType {
@@ -26,13 +27,18 @@ interface ErrorInfo {
     fields?: Record<string, string[]>;
 }
 
-export const fetcher = (input: RequestInfo, init: CustomRequestInit = { headers: {} }): Promise<Response> => {
+export const fetcher = (input: RequestInfo, init: CustomRequestInit = { headers: {}, addContentTypeHeader: true }): Promise<Response> => {
     if (init.headers === undefined) {
         init.headers = {};
     }
 
     init.headers[getMetaProperty('_csrf_header')] = getMetaProperty('_csrf');
-    init.headers['Content-Type'] = 'application/json';
+
+    if (init.headers['Content-Type'] === undefined && init.addContentTypeHeader) {
+        init.headers['Content-Type'] = 'application/json';
+    } else if (!init.addContentTypeHeader) {
+        delete init.headers['Content-Type'];
+    }
     init.cache = 'no-cache';
     if (init.params !== undefined) {
         const params = init.params;

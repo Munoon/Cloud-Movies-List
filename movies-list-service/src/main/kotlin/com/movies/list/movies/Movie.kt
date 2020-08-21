@@ -1,6 +1,7 @@
 package com.movies.list.movies
 
 import lombok.NoArgsConstructor
+import org.bson.types.Binary
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
@@ -12,6 +13,8 @@ data class Movie(
         var id: String?,
 
         var name: String,
+
+        val avatar: Binary?,
 
         var registered: LocalDateTime
 )

@@ -1,5 +1,6 @@
 package com.movies.list.movies
 
+import com.movies.common.movie.MovieTo
 import com.movies.list.utils.JsonUtil
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.test.web.servlet.ResultMatcher
@@ -17,10 +18,14 @@ object MoviesTestData {
         assertMatch(actual, expected.asList())
     }
 
-    fun jsonContent(expected: Movie): ResultMatcher {
+    fun assertMatch(actual: MovieTo, expected: MovieTo) {
+        assertThat(actual).isEqualToIgnoringGivenFields(expected, "registered")
+    }
+
+    fun jsonContent(expected: MovieTo): ResultMatcher {
         return ResultMatcher {
             val content = JsonUtil.getContent(it)
-            val actual = JsonUtil.readValue(content, Movie::class.java)
+            val actual = JsonUtil.readValue(content, MovieTo::class.java)
             assertMatch(actual, expected)
         }
     }

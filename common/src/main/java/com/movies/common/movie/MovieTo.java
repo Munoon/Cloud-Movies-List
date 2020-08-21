@@ -12,5 +12,6 @@ import java.time.LocalDateTime;
 public class MovieTo {
     private String id;
     private String name;
+    private boolean hasAvatar;
     private LocalDateTime registered;
 }
