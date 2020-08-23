@@ -4,6 +4,7 @@ import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import com.movies.common.movie.MovieTo
 import com.movies.list.movies.MovieMapper
 import com.movies.list.movies.MoviesService
+import com.movies.list.movies.to.PagedMovie
 import com.movies.list.utils.SecurityUtils.authUserIdOrAnonymous
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
@@ -19,11 +20,10 @@ class MovieQueryResolver(private val moviesService: MoviesService) : GraphQLQuer
         return MovieMapper.INSTANCE.asMovieTo(movie)
     }
 
-    fun getLatestMovies(count: Int, page: Int): List<MovieTo> {
+    fun getLatestMovies(count: Int, page: Int): PagedMovie {
         log.info("Get latest movie (count: $count, page: $page) by user ${authUserIdOrAnonymous()}")
         val pageRequest = PageRequest.of(page, count)
-        return moviesService.getPage(pageRequest)
-                .map { MovieMapper.INSTANCE.asMovieTo(it) }
-                .content
+        val page = moviesService.getPage(pageRequest).map { MovieMapper.INSTANCE.asMovieTo(it) }
+        return PagedMovie(page.totalPages, page.totalElements, page.content)
     }
 }

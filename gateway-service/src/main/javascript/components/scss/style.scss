@@ -1,4 +1,5 @@
 @import "~bootswatch/dist/superhero/bootstrap.min.css";
+//@import "~bootstrap/scss/bootstrap-utilities";
 @import "~react-toastify/dist/ReactToastify.css";
 
 .spinner-vertical-middle {
@@ -11,4 +12,53 @@
 
 .custom-button {
   cursor: pointer;
+}
+
+.movie-avatar {
+  img {
+    height: 160px;
+    width: 110px;
+  }
+
+  h4 {
+    text-align: center;
+  }
+}
+
+.movies-list-with-buttons {
+  white-space: nowrap;
+
+  .movies-list-button {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    width: unset;
+    cursor: pointer;
+    flex: unset;
+
+    svg {
+      width: 50px;
+      height: 50px;
+      transition: color 0.5s ease;
+    }
+
+    &.disabled {
+      cursor: default !important;
+
+      svg {
+        color: #868e96;
+      }
+    }
+  }
+}
+
+.movies-list {
+  overflow: hidden;
+  //display: inln;
+  white-space: nowrap;
+
+  .movie-avatar {
+    display: inline-block;
+    padding: 0 10px 0 10px;
+  }
 }

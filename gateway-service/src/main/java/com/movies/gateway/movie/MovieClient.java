@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(name = "movies-list-service", configuration = AuthenticateIfCan.class)
 public interface MovieClient {
     @RequestMapping(method = RequestMethod.GET, path = "/movie/{id}", consumes = "application/json")
-    MovieTo getMovieById(@PathVariable String id);
+    MovieTo getMovieById(@PathVariable("id") String id);
 }

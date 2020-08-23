@@ -8,12 +8,25 @@ import { useForm } from "react-hook-form";
 import { fetcher } from "./api";
 import Spinner from "react-bootstrap/Spinner";
 import { Provider } from "react-redux";
-import store from './store';
+import createStore from './store';
 import { ToastContainer, toast } from "react-toastify";
 import {ValidateResult} from "react-hook-form/dist/types/form";
+import { ReducersMapObject, Store } from "redux";
 const AUTHENTICATED_USERS_ONLY_PAGES = ['/profile', '/admin/users', '/admin/movies/add'];
+const onStoreInitialized = () => {
+    store.subscribe(() => {
+        let state = store.getState();
+        if (state.user === null && AUTHENTICATED_USERS_ONLY_PAGES.includes(location.pathname)) {
+            location.href = '/';
+        }
+    });
+};
+let store: Store = null;
 
-const Application: FunctionComponent = ({ children }) => {
+const Application: FunctionComponent<{ additionalStore?: ReducersMapObject }> = ({ children, additionalStore }) => {
+    if (store === null) {
+        initializeStore(additionalStore);
+    }
     return (
         <Provider store={store}>
             <HeaderNavBar />
@@ -36,14 +49,10 @@ const Application: FunctionComponent = ({ children }) => {
     )
 }
 
-document.addEventListener('DOMContentLoaded', e => {
-    store.subscribe(() => {
-        let state = store.getState();
-        if (state.user === null && AUTHENTICATED_USERS_ONLY_PAGES.includes(location.pathname)) {
-            location.href = '/';
-        }
-    });
-});
+function initializeStore(additionalStore?: ReducersMapObject) {
+    store = createStore(additionalStore);
+    onStoreInitialized();
+}
 
 interface RegisterUser {
     name: string;

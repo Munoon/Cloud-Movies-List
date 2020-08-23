@@ -1,5 +1,9 @@
-import { createStore, combineReducers } from "redux";
+import {createStore as createReduxStore, combineReducers, ReducersMapObject} from "redux";
 import user from './user';
 
-let reducers = combineReducers({ user });
-export default createStore(reducers);
+const createStore = (additionalStores: ReducersMapObject = {}) => {
+    let reducers = combineReducers({ user, ...additionalStores });
+    return createReduxStore(reducers);
+}
+
+export default createStore;

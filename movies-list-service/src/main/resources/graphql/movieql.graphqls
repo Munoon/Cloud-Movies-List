@@ -14,9 +14,15 @@ input CreateMovie {
     avatarImageId: String
 }
 
+type PagedMovie {
+    totalPages: Int!,
+    totalElements: Int!,
+    movies: [Movie]!
+}
+
 type Query {
     movie(id: ID): Movie
-    latestMovies(count: Int, page: Int): [Movie]
+    latestMovies(count: Int, page: Int): PagedMovie
 }
 
 type Mutation {
