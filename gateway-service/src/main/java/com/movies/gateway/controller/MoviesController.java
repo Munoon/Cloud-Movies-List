@@ -1,6 +1,6 @@
 package com.movies.gateway.controller;
 
-import com.movies.common.movie.MovieTo;
+import com.movies.common.movie.SmallMovieTo;
 import com.movies.gateway.movie.MoviesService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,7 +15,7 @@ public class MoviesController {
 
     @GetMapping("/movie/{movieId}")
     public String movie(@PathVariable String movieId, Model model) {
-        MovieTo movie = moviesService.getMovieById(movieId);
+        SmallMovieTo movie = moviesService.getMovieById(movieId);
         model.addAttribute("movie", movie);
         return "movie_page";
     }

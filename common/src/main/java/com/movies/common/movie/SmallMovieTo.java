@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MovieTo {
+public class SmallMovieTo {
     private String id;
     private String name;
     private boolean hasAvatar;

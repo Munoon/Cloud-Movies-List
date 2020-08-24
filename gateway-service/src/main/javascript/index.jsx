@@ -7,6 +7,7 @@ import { fetcher } from "./components/api";
 import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft} from "@fortawesome/free-solid-svg-icons/faChevronLeft";
+import {MovieImage} from "./components/MoviesComponents";
 
 const IndexPage = () => (
     <Application additionalStore={{ moviesStore }}>
@@ -126,6 +127,7 @@ const LatestMoviesList = connect(({ moviesStore: { latestMovies, movies } }) => 
 
     return (
         <TitledMoviesList title='Новые фильмы' onScrollBottom={onScrollBottom}>
+            {props.latestMovies.movies.length === 0 && <span>Нет доступных фильмов</span>}
             {props.latestMovies.movies.map(id => (
                 <MovieAvatar key={id} movie={props.movies[id]}/>
             ))}
@@ -138,12 +140,6 @@ const MovieAvatar = ({ movie}) => (
         <MovieImage movie={movie} />
         <h4>{movie.name}</h4>
     </a>
-);
-
-const MovieImage = ({ movie }) => (
-    <img
-        src={movie.hasAvatar ? `/movies/movie/${movie.id}/avatar` : '/static/img/default_movie_avatar.jpg'}
-        alt={`Avatar for '${movie.name}' movie`} />
 );
 
 ReactDOM.render(<IndexPage />, document.getElementById('root'));

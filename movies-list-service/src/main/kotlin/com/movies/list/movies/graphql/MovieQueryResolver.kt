@@ -1,11 +1,12 @@
 package com.movies.list.movies.graphql
 
-import com.coxautodev.graphql.tools.GraphQLQueryResolver
-import com.movies.common.movie.MovieTo
+import com.movies.common.movie.SmallMovieTo
 import com.movies.list.movies.MovieMapper
 import com.movies.list.movies.MoviesService
+import com.movies.list.movies.to.MovieTo
 import com.movies.list.movies.to.PagedMovie
 import com.movies.list.utils.SecurityUtils.authUserIdOrAnonymous
+import graphql.kickstart.tools.GraphQLQueryResolver
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component

@@ -1,6 +1,6 @@
 package com.movies.gateway.movie;
 
-import com.movies.common.movie.MovieTo;
+import com.movies.common.movie.SmallMovieTo;
 import com.movies.gateway.utils.exception.NotFoundException;
 import com.movies.gateway.utils.exception.RequestException;
 import feign.FeignException;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class MoviesService {
     private MovieClient movieClient;
 
-    public MovieTo getMovieById(String movieId) {
+    public SmallMovieTo getMovieById(String movieId) {
         try {
             return movieClient.getMovieById(movieId);
         } catch (FeignException e) {

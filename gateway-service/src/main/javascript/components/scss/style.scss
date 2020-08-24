@@ -14,15 +14,13 @@
   cursor: pointer;
 }
 
-.movie-avatar {
-  img {
-    height: 160px;
-    width: 110px;
-  }
+h4.movie-avatar {
+  text-align: center;
+}
 
-  h4 {
-    text-align: center;
-  }
+img.movie-avatar {
+  height: 160px;
+  width: 130px;
 }
 
 .movies-list-with-buttons {
@@ -54,7 +52,6 @@
 
 .movies-list {
   overflow: hidden;
-  //display: inln;
   white-space: nowrap;
 
   .movie-avatar {

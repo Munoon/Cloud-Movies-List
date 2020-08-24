@@ -3,15 +3,31 @@ schema {
     mutation: Mutation
 }
 
+scalar LocalDate
+
 type Movie {
     id: ID!,
     name: String!,
+    originalName: String,
     hasAvatar: Boolean!
+    about: String,
+    country: String!,
+    genres: [String]!,
+    premiere: LocalDate!,
+    age: String!,
+    time: String!
 }
 
 input CreateMovie {
     name: String!,
-    avatarImageId: String
+    originalName: String,
+    avatarImageId: String,
+    about: String,
+    country: String!,
+    genres: [String]!,
+    premiere: LocalDate!,
+    age: String,
+    time: String
 }
 
 type PagedMovie {

@@ -1,6 +1,6 @@
 package com.movies.list.controllers
 
-import com.movies.common.movie.MovieTo
+import com.movies.common.movie.SmallMovieTo
 import com.movies.list.movies.MovieMapper
 import com.movies.list.movies.MoviesService
 import com.movies.list.utils.SecurityUtils
@@ -21,10 +21,10 @@ class MovieController(private val moviesService: MoviesService) {
     private val log = LoggerFactory.getLogger(MovieController::class.java)
 
     @GetMapping
-    fun getMovieById(@PathVariable id: String): MovieTo {
+    fun getMovieById(@PathVariable id: String): SmallMovieTo {
         log.info("User ${SecurityUtils.authUserIdOrAnonymous()} get movie with id $id")
         val movie = moviesService.getById(id)
-        return MovieMapper.INSTANCE.asMovieTo(movie)
+        return MovieMapper.INSTANCE.asSmallMovie(movie)
     }
 
     @GetMapping("/avatar")

@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/headTag :: head(~{::script})}">
-    <script th:src="@{/static/js/movie.min.js}" defer></script>
-    <script th:inline="javascript">
-        var CURRENT_MOVIE = /*[[${movie}]]*/ {};
-    </script>
+<head th:replace="~{fragments/headTag :: head(~{::'th:block'})}">
+    <th:block>
+        <meta name="current_movie:id" th:content="${movie.id}">
+        <meta name="current_movie:name" th:content="${movie.name}">
+        <meta name="current_movie:hasAvatar" th:content="${movie.hasAvatar}">
+        <meta name="current_movie:registered" th:content="${movie.registered}">
+        <script th:src="@{/static/js/movie.min.js}" defer></script>
+    </th:block>
 </head>
 <body>
     <div id="root"></div>

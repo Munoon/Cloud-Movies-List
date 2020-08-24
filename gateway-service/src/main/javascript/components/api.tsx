@@ -67,6 +67,9 @@ export const fetcher = (input: RequestInfo, init: CustomRequestInit = { headers:
         });
 }
 
+export const getFetcher = (settings: CustomRequestInit) =>
+    (input: RequestInfo, init: CustomRequestInit) => fetcher(input, { ...init, ...settings })
+
 function parseError(error: ErrorInfo, data: Response) {
     let messages = [];
     if (error.details) {

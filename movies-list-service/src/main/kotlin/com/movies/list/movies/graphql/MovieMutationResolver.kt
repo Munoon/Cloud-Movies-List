@@ -1,10 +1,11 @@
 package com.movies.list.movies.graphql
 
-import com.coxautodev.graphql.tools.GraphQLMutationResolver
-import com.movies.common.movie.MovieTo
+import com.movies.common.movie.SmallMovieTo
 import com.movies.list.movies.MovieMapper
 import com.movies.list.movies.MoviesService
 import com.movies.list.movies.to.CreateMoviesTo
+import com.movies.list.movies.to.MovieTo
+import graphql.kickstart.tools.GraphQLMutationResolver
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
