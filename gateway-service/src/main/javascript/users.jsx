@@ -86,19 +86,6 @@ const UsersTable = React.forwardRef((props, ref) => {
         refresh: () => loadData()
     };
 
-    const handleDeleteUser = (userId, name) => {
-        if (!confirm(`Вы уверены, что хотите удалить пользователя ${name}?`)) {
-            return;
-        }
-
-        fetcher(`/users/admin/${userId}`, { method: 'DELETE' })
-            .then(() => {
-                toast.success('Вы успешно удалили пользователя!');
-                loadData();
-            })
-            .catch(e => e.useDefaultErrorParser());
-    }
-
     return (
         <div className='mt-2'>
             <div className='row'>
@@ -138,7 +125,6 @@ const UsersTable = React.forwardRef((props, ref) => {
                             <th {...column.getHeaderProps()}>{column.render('Header')}</th>
                         ))}
                         <th/>
-                        <th/>
                     </tr>
                 ))}
                 </thead>
@@ -154,9 +140,6 @@ const UsersTable = React.forwardRef((props, ref) => {
                             ))}
                             <td>
                                 <FontAwesomeIcon icon={faPen} onClick={() => UPDATE_USER_MODAL_INSTANCE.updateUser(userId)} className='custom-button' />
-                            </td>
-                            <td>
-                                <FontAwesomeIcon icon={faTimes} onClick={() => handleDeleteUser(userId, name)} className='custom-button' />
                             </td>
                         </tr>
                     );
@@ -262,6 +245,20 @@ function UserModal({ user = null, onHide = () => null, modalTitle, body = null, 
         });
     };
 
+    const handleDeleteUser = () => {
+        if (!user || !confirm(`Вы уверены, что хотите удалить пользователя ${user.name}?`)) {
+            return;
+        }
+
+        fetcher(`/users/admin/${user.id}`, { method: 'DELETE' })
+            .then(() => {
+                setShow(false);
+                toast.success('Вы успешно удалили пользователя!');
+                USERS_TABLE_INSTANCE.current.refresh();
+            })
+            .catch(e => e.useDefaultErrorParser());
+    };
+
     let workUser = user ? user : { roles: ['ROLE_USER'] };
     let modalBody = body ? body : (
         <>
@@ -346,7 +343,8 @@ function UserModal({ user = null, onHide = () => null, modalTitle, body = null, 
 
             <Modal.Footer>
                 {(loading || requestLoading) && <Spinner animation="border" role="status" className='ml-3 spinner-vertical-middle' />}
-                <Button variant='secondary'>Закрыть</Button>
+                <Button variant='secondary' onClick={() => setShow(false)}>Закрыть</Button>
+                {user && <Button variant='danger' onClick={() => handleDeleteUser()}>Удалить</Button>}
                 <Button variant='primary' disabled={!saveAble || requestLoading} onClick={handleSubmit(onSubmit)}>Сохранить</Button>
             </Modal.Footer>
         </Modal>

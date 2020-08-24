@@ -72,8 +72,7 @@ const AdminNavItem = () => (
     <NavDropdown title='Админ панель' id="adminNavbarDropdown" className='text-white'>
         <NavDropdown.Item href='/admin/users'>Пользователи</NavDropdown.Item>
         <NavDropdown.Divider />
-        <NavDropdown.Item disabled>Фильмы</NavDropdown.Item>
-        <NavDropdown.Item href='/admin/movies/add'>Добавить</NavDropdown.Item>
+        <NavDropdown.Item href='/admin/movies/add'>Добавить фильм</NavDropdown.Item>
     </NavDropdown>
 );
 

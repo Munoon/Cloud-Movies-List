@@ -32,6 +32,10 @@ export const fetcher = (input: RequestInfo, init: CustomRequestInit = { headers:
         init.headers = {};
     }
 
+    if (!init.addContentTypeHeader) {
+        init.addContentTypeHeader = true;
+    }
+
     init.headers[getMetaProperty('_csrf_header')] = getMetaProperty('_csrf');
 
     if (init.headers['Content-Type'] === undefined && init.addContentTypeHeader) {
