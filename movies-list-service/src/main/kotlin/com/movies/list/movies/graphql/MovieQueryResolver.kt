@@ -27,4 +27,12 @@ class MovieQueryResolver(private val moviesService: MoviesService) : GraphQLQuer
         val page = moviesService.getPage(pageRequest).map { MovieMapper.INSTANCE.asMovieTo(it) }
         return PagedMovie(page.totalPages, page.totalElements, page.content)
     }
+
+    fun findMovies(findQuery: String, count: Int, page: Int): PagedMovie {
+        log.info("Find movies by query '$findQuery' (count: $count, page: $page) by user ${authUserIdOrAnonymous()}")
+        val pageRequest = PageRequest.of(page, count)
+        val page = moviesService.findMovieByNameAndOriginalName(findQuery, pageRequest)
+                .map { MovieMapper.INSTANCE.asMovieTo(it) }
+        return PagedMovie(page.totalPages, page.totalElements, page.content)
+    }
 }

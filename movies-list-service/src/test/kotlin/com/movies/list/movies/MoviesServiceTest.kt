@@ -6,6 +6,7 @@ import com.movies.list.movies.MoviesTestData.assertMatch
 import com.movies.list.movies.to.CreateMoviesTo
 import com.movies.list.utils.exception.NotFoundException
 import com.neovisionaries.i18n.CountryCode
+import org.assertj.core.api.Assertions.assertThat
 import org.bson.types.Binary
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -65,5 +66,25 @@ internal class MoviesServiceTest : AbstractTest() {
 
         val moviesPage2 = moviesService.getPage(PageRequest.of(1, 1))
         assertMatch(moviesPage2.content, Movie(createdMovie.id, "Test Movie", "Original Name", null, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16", createdMovie.registered))
+    }
+
+    @Test
+    internal fun findMovieByNameAndOriginalName() {
+        val createdMovie = moviesService.createMovie(CreateMoviesTo("Test Movie", "Original Name", null, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"))
+        val pageable = PageRequest.of(0, 10)
+
+        with(moviesService) {
+            val query = findMovieByNameAndOriginalName("test", pageable)
+            assertMatch(query.content, createdMovie)
+            assertThat(query.totalElements).isEqualTo(1L)
+            assertThat(query.totalPages).isEqualTo(1L)
+        }
+
+        with(moviesService) {
+            val query = findMovieByNameAndOriginalName("original", pageable)
+            assertMatch(query.content, createdMovie)
+            assertThat(query.totalElements).isEqualTo(1L)
+            assertThat(query.totalPages).isEqualTo(1L)
+        }
     }
 }

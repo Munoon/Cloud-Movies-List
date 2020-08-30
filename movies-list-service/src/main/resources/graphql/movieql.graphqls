@@ -39,6 +39,7 @@ type PagedMovie {
 type Query {
     movie(id: ID): Movie
     latestMovies(count: Int, page: Int): PagedMovie
+    findMovies(findQuery: String, count: Int, page: Int): PagedMovie
 }
 
 type Mutation {

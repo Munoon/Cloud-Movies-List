@@ -37,6 +37,10 @@ class MoviesService(
         return moviesRepository.findAll(pageRequest)
     }
 
+    fun findMovieByNameAndOriginalName(query: String, pageable: Pageable): Page<Movie> {
+        return moviesRepository.findByNameOrOriginalName(query, pageable)
+    }
+
     companion object {
         private val SORT_BY_REGISTERED = Sort.by(Sort.Direction.DESC, "registered")
     }

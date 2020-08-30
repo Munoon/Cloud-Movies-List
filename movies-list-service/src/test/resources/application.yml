@@ -7,3 +7,12 @@ spring:
       database: movies-list
       username: mongodb
       password: password
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
