@@ -1,5 +1,4 @@
 @import "~bootswatch/dist/superhero/bootstrap.min.css";
-//@import "~bootstrap/scss/bootstrap-utilities";
 @import "~react-toastify/dist/ReactToastify.css";
 
 .spinner-vertical-middle {
@@ -58,4 +57,36 @@ img.movie-avatar {
     display: inline-block;
     padding: 0 10px 0 10px;
   }
+}
+
+.search-movie-item {
+  .movie-avatar {
+    height: 90px;
+    width: 65px;
+    display: inline-block;
+  }
+
+  .movie-info {
+    display: inline-block;
+
+    h6 {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.movies-search-input {
+  width: 50%;
+}
+
+.custom-highlighter mark {
+  background: yellow !important;
+}
+
+.w-40 {
+  width: 40% !important;
+}
+
+.flex-1-1-auto {
+  flex: 1 1 auto;
 }

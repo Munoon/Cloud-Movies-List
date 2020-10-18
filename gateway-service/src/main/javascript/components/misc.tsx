@@ -53,3 +53,30 @@ export const hasRole = (role: UserRole): boolean => {
     let roles = getUserRoles();
     return roles.includes(role);
 }
+
+export const mapGenreEnumToString = (genre: string): string => ({
+    ABSURDIST: 'Абсурдист',
+    ACTION: 'Экшн',
+    ADVENTURE: 'Приключение',
+    COMEDY: 'Комедия',
+    CRIME: 'Криминал',
+    DRAMA: 'Драма',
+    FANTASY: 'Фентези',
+    HISTORICAL: 'Исторический',
+    HISTORICAL_FICTION: 'Историческая фантастика',
+    HORROR: 'Ужастик',
+    MAGICAL_REALISM: 'Магический реализм',
+    MYSTERY: 'Детективный роман',
+    PARANOID_FICTION: 'Параноидальная беллетристика',
+    PHILOSOPHICAL: 'Философский',
+    POLITICAL: 'Политический',
+    ROMANCE: 'Романтика',
+    SAGA: 'Сага',
+    SATIRE: 'Сатира',
+    SCIENCE_FICTION: 'Научная фантастика',
+    SOCIAL: 'Социальный',
+    SPECULATIVE: 'Спекулятивный',
+    THRILLER: 'Триллер',
+    URBAN: 'Городской',
+    WESTERN: 'Западный'
+} as { [key: string]: string; })[genre];

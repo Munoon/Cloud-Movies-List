@@ -27,7 +27,7 @@ interface ErrorInfo {
     fields?: Record<string, string[]>;
 }
 
-export const fetcher = (input: RequestInfo, init: CustomRequestInit = { headers: {}, addContentTypeHeader: true }): Promise<Response> => {
+export const fetcher = (input: RequestInfo, init: CustomRequestInit = { headers: {}, addContentTypeHeader: true }): Promise<any> => {
     if (init.headers === undefined) {
         init.headers = {};
     }

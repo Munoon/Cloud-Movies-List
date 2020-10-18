@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import { removeUser, User } from "./store/user";
 import { fetcher } from "./api";
 import { DropdownItemProps } from "react-bootstrap/DropdownItem";
+import SearchMovieForm from "./SearchMovieForm";
 
 const connectUserProp = (state: { user: User }) => ({ user: state.user });
 
@@ -25,6 +26,7 @@ const HeaderNavBar = connect(connectUserProp)((props: { user: User }) => {
                         <UserNavBarItem userAuthenticated={userAuthenticated} />
                     </Nav>
                 </Navbar.Collapse>
+                <SearchMovieForm />
             </div>
         </Navbar>
     );
