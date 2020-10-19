@@ -9,6 +9,7 @@ module.exports = {
         users: jsFile('users.jsx'),
         movie: jsFile('movie.jsx'),
         add_movie: jsFile('add_movie.jsx'),
+        search: jsFile('search.tsx'),
         error: jsFile('error.jsx')
     },
 

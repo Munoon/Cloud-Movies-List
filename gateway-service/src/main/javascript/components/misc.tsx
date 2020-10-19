@@ -1,5 +1,6 @@
 import React from 'react';
 import { UserRole } from './store/user';
+import { SearchMovieItem } from "./SearchMovieForm";
 
 export const getMetaProperty = (name: string): string => {
     let el = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
@@ -80,3 +81,8 @@ export const mapGenreEnumToString = (genre: string): string => ({
     URBAN: 'Городской',
     WESTERN: 'Западный'
 } as { [key: string]: string; })[genre];
+
+export const renderGenres = (movie: SearchMovieItem) => movie.genres
+    .slice(0, 3)
+    .map(genre => mapGenreEnumToString(genre))
+    .join(", ");

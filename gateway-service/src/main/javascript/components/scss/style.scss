@@ -75,6 +75,22 @@ img.movie-avatar {
   }
 }
 
+.search-movie-item-lg {
+  .movie-avatar {
+    height: 180px;
+    width: 130px;
+    display: inline-block;
+  }
+
+  .movie-info {
+    display: inline-block;
+
+    h6 {
+      margin-bottom: 0;
+    }
+  }
+}
+
 .movies-search-input {
   width: 50%;
 }
@@ -89,4 +105,8 @@ img.movie-avatar {
 
 .flex-1-1-auto {
   flex: 1 1 auto;
+}
+
+.text-decoration-underline-parent:hover .text-decoration-underline {
+  text-decoration: underline;
 }

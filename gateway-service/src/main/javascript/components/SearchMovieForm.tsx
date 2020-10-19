@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { fetcher } from "./api";
 import { toast } from "react-toastify";
 import { AsyncTypeahead, Highlighter } from "react-bootstrap-typeahead";
 import { Form, InputGroup } from "react-bootstrap";
 import { MovieImage } from "./MoviesComponents";
 import Button from "react-bootstrap/Button";
-import { mapGenreEnumToString } from "./misc";
+import { renderGenres } from "./misc";
 
 const SearchMovieForm = () => {
     const [loading, setLoading] = useState(false);
     const [options, setOptions] = useState([] as SearchMovieItem[]);
+    const inputRef = useRef(null);
 
     const handleSearch = (query: string) => {
         setLoading(true);
@@ -29,6 +30,14 @@ const SearchMovieForm = () => {
                 }
                 setLoading(false);
             });
+    };
+
+    const searchMovie = (e: React.MouseEvent<HTMLElement>) => {
+        e.preventDefault();
+        if (inputRef.current && inputRef.current.inputNode) {
+            let query = inputRef.current.inputNode.value;
+            location.href = '/search?query=' + encodeURIComponent(query);
+        }
     };
 
     const handleChange = (data: Array<SearchMovieItem>) => location.href = '/movie/' + data[0].id;
@@ -59,80 +68,18 @@ const SearchMovieForm = () => {
                             />
                         )}
                         renderMenuItemChildren={(movie, props) => (
-                            <div className='search-movie-item row'>
-                                <MovieImage movie={movie} />
-                                <div className='movie-info ml-2'>
-                                    <h6 className='custom-highlighter'>
-                                        <Highlighter search={props.text}>{movie.name}</Highlighter>
-                                    </h6>
-                                    <span className='text-muted custom-highlighter'>
-                                    <Highlighter search={props.text}>{movie.originalName}</Highlighter>
-                                </span>
-                                    <br/>
-                                    <span className='text-muted'>{movie.age}, {renderGenres(movie)}</span>
-                                </div>
-                            </div>
+                            <MovieItem movie={movie} search={props.text} />
                         )}
+                        ref={inputRef}
                     />
                 </div>
                 <InputGroup.Append>
-                    <Button variant='outline-success'>Найти</Button>
+                    <Button variant='outline-success' onClick={searchMovie}>Найти</Button>
                 </InputGroup.Append>
             </div>
         </form>
     );
-
-    return (
-        <Form inline className={'d-inline w-100'}>
-            <Form.Group>
-                <AsyncTypeahead
-                    id="search-movie-form-input"
-                    isLoading={loading}
-                    labelKey="name"
-                    minLength={3}
-                    onSearch={handleSearch}
-                    options={options}
-                    filterBy={() => true}
-                    // @ts-ignore
-                    renderInput={({ inputRef, referenceElementRef, ...inputProps }) => (
-                        <Form.Control
-                            {...inputProps}
-                            ref={(ref: HTMLInputElement) => {
-                                inputRef(ref);
-                                referenceElementRef(ref);
-                            }}
-                            placeholder='Название фильма'
-                            className={inputProps.className + ' movies-search-input'}
-                        />
-                    )}
-                    renderMenuItemChildren={(movie, props) => (
-                        <div className='search-movie-item row'>
-                            <MovieImage movie={movie} />
-                            <div className='movie-info ml-2'>
-                                <h6 className='custom-highlighter'>
-                                    <Highlighter search={props.text}>{movie.name}</Highlighter>
-                                </h6>
-                                <span className='text-muted custom-highlighter'>
-                                    <Highlighter search={props.text}>{movie.originalName}</Highlighter>
-                                </span>
-                                <br/>
-                                <span className='text-muted'>{movie.age}, {renderGenres(movie)}</span>
-                            </div>
-                        </div>
-                    )}
-                />
-                <InputGroup.Append>
-                    <Button variant='outline-success'>Найти</Button>
-                </InputGroup.Append>
-            </Form.Group>
-        </Form>
-    );
 };
-
-const renderGenres = (movie: SearchMovieItem) => movie.genres
-    .slice(0, 3)
-    .map(genre => mapGenreEnumToString(genre))
-    .join(", ");
 
 const searchMovieGraphQLQuery = `
     query ($query: String, $count: Int, $page: Int) {
@@ -142,7 +89,7 @@ const searchMovieGraphQLQuery = `
     }
 `;
 
-interface SearchMovieItem {
+export interface SearchMovieItem {
     id: string;
     name: string;
     originalName: string;
@@ -150,5 +97,21 @@ interface SearchMovieItem {
     genres: string[];
     hasAvatar: boolean;
 }
+
+const MovieItem = ({ movie, search = '' }: ({ movie: SearchMovieItem, search?: string })) => (
+    <div className='search-movie-item row'>
+        <MovieImage movie={movie} />
+        <div className='movie-info ml-2'>
+            <h6 className='custom-highlighter'>
+                <Highlighter search={search}>{movie.name}</Highlighter>
+            </h6>
+            <span className='text-muted custom-highlighter'>
+                <Highlighter search={search}>{movie.originalName}</Highlighter>
+            </span>
+            <br/>
+            <span className='text-muted'>{movie.age}, {renderGenres(movie)}</span>
+        </div>
+    </div>
+);
 
 export default SearchMovieForm;
