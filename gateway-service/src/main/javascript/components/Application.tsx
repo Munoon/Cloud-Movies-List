@@ -1,7 +1,7 @@
 import './scss/style.scss';
 import React, {FunctionComponent, useState} from 'react';
 import HeaderNavBar from './HeaderNavBar';
-import { getErrorsCount, getMetaProperty, InputField } from './misc';
+import { getErrorsCount, InputField } from './misc';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { useForm } from "react-hook-form";
