@@ -1,23 +1,36 @@
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+const outputFolder = path.join(__dirname, 'target/classes/static');
+const cssOutputFolder = path.join(outputFolder, 'css');
 const jsFile = fileName => path.join(__dirname, 'src/main/javascript', fileName);
-const dependingEntry = fileName => ({ import: jsFile(fileName), dependOn: 'shared' });
+const cssFile = fileName => jsFile(path.join('components/scss', fileName));
+const dependingEntry = fileName => ({ import: jsFile(fileName), dependOn: 'js/shared.min.js' });
+const dependencyEntries = entries => entries.reduce((acc, item) => {
+    const fileName = item.substr(0, item.indexOf('.'));
+    if (item.endsWith('.jsx') || item.endsWith('.tsx') || item.endsWith('.js')) {
+        acc[`js/${fileName}.min.js`] = dependingEntry(item);
+    } else if (item.endsWith('.css') || item.endsWith('.scss')) {
+        acc[`css/${fileName}.min`] = cssFile(item);
+    }
+    return acc;
+}, {});
 
 module.exports = {
     entry: {
-        index: dependingEntry('index.jsx'),
-        profile: dependingEntry('profile.jsx'),
-        users: dependingEntry('users.jsx'),
-        movie: dependingEntry('movie.jsx'),
-        add_movie: dependingEntry('add_movie.jsx'),
-        search: dependingEntry('search.tsx'),
-        error: dependingEntry('error.jsx'),
-        shared: ['react', 'react-dom', jsFile('components/Application.tsx')]
+        ...dependencyEntries([
+            'index.jsx', 'profile.jsx',
+            'users.jsx', 'movie.jsx',
+            'add_movie.jsx', 'search.tsx',
+            'error.jsx', 'style.scss'
+        ]),
+        'js/shared.min.js': ['react-dom', jsFile('components/Application.tsx')]
     },
 
     output: {
-        path: path.join(__dirname, 'target/classes/static/js'),
-        filename: '[name].min.js'
+        path: outputFolder,
+        filename: '[name]'
     },
 
     resolve: {
@@ -49,13 +62,21 @@ module.exports = {
             {
                 test: /\.s[ac]ss$/i,
                 use: [
-                    process.env.NODE_ENV !== 'production'
-                        ? 'style-loader'
-                        : MiniCssExtractPlugin.loader,
+                    MiniCssExtractPlugin.loader,
                     'css-loader',
                     'sass-loader',
                 ]
             }
         ]
-    }
+    },
+
+    plugins: [
+        new MiniCssExtractPlugin(),
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: 'node_modules/bootswatch/dist/superhero/bootstrap.min.css', to: cssOutputFolder },
+                { from: 'node_modules/react-toastify/dist/ReactToastify.min.css', to: cssOutputFolder }
+            ],
+        }),
+    ],
 };

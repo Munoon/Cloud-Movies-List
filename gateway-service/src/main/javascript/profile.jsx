@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import Application from "./components/Application";
 import { useForm } from "react-hook-form";
-import { getErrorsCount, getMetaProperty, InputField, updateMetaProperty } from "./components/misc";
+import { getErrorsCount, getMetaProperty, InputField } from "./components/misc";
 import Spinner from "react-bootstrap/Spinner";
 import { fetcher } from "./components/api";
 import { toast } from "react-toastify";

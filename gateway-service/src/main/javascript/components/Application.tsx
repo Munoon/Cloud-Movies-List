@@ -1,5 +1,4 @@
-import './scss/style.scss';
-import React, {FunctionComponent, useState} from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import HeaderNavBar from './HeaderNavBar';
 import { getErrorsCount, InputField } from './misc';
 import Modal from "react-bootstrap/Modal";
@@ -10,7 +9,7 @@ import Spinner from "react-bootstrap/Spinner";
 import { Provider } from "react-redux";
 import createStore from './store';
 import { ToastContainer, toast } from "react-toastify";
-import {ValidateResult} from "react-hook-form/dist/types/form";
+import { ValidateResult } from "react-hook-form/dist/types/form";
 import { ReducersMapObject, Store } from "redux";
 const AUTHENTICATED_USERS_ONLY_PAGES = ['/profile', '/admin/users', '/admin/movies/add'];
 const onStoreInitialized = () => {

@@ -12,7 +12,6 @@ import Modal from "react-bootstrap/Modal";
 import FormCheck from "react-bootstrap/FormCheck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons/faPen";
-import { faTimes } from "@fortawesome/free-solid-svg-icons/faTimes";
 import useSWR from "swr";
 import { useForm } from "react-hook-form";
 import { InputField } from "./components/misc";

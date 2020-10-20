@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import Application from './components/Application';
 import {getMetaProperty} from "./components/misc";
 import {MovieImage} from "./components/MoviesComponents";
-import {fetcher, getFetcher} from "./components/api";
+import {getFetcher} from "./components/api";
 import useSWR from "swr";
 import {toast} from "react-toastify";
 

@@ -101,7 +101,6 @@ const SearchInput = connect(null, { setItems })((props: { setItems: typeof setIt
     const [inputQuery, setQuery] = useState(query[0]);
 
     useEffect(() => {
-        console.log(inputQuery)
         findMovies(inputQuery, 0)
             .then(data => props.setItems({ data, query: query[0], currentPage: 0 }));
     });
