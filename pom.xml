@@ -9,12 +9,12 @@
     <name>movies-list-website</name>
 
     <modules>
-        <module>auth-service</module>
         <module>config-service</module>
         <module>eureka-service</module>
-        <module>gateway-service</module>
+        <module>auth-service</module>
         <module>user-resource-service</module>
         <module>movies-list-service</module>
+        <module>gateway-service</module>
         <module>common</module>
     </modules>
 

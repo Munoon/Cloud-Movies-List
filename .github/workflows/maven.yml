@@ -31,4 +31,4 @@ jobs:
         with:
           java-version: 14
       - name: Build with Maven
-        run: mvn test --file pom.xml
+        run: mvn install --file pom.xml

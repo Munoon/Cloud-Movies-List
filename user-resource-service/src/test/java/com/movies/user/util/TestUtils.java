@@ -25,7 +25,7 @@ public class TestUtils {
             Collections.emptySet(), "http://localhost:8080",
             Collections.emptySet(), Collections.emptyMap());
 
-    private static void addAuthentication(OAuth2Request oAuth2Request, User user) {
+    public static void addAuthentication(OAuth2Request oAuth2Request, User user) {
         OAuth2Authentication authentication = new OAuth2Authentication(
                 oAuth2Request,
                 new UsernamePasswordAuthenticationToken(new AuthorizedUser(user), null, user.getRoles())
