@@ -1,18 +1,18 @@
 import org.springframework.cloud.contract.spec.Contract
 
 Contract.make {
-    description "update user's name and surname"
+    description "update user's password"
 
     request {
-        url "/profile/update"
+        url "/profile/update/password"
         method POST()
         headers {
             contentType applicationJson()
             header("Authorization", "bearer DEFAULT_USER")
         }
         body (
-                name: "newName",
-                surname: "newSurname"
+                oldPassword: "pass",
+                newPassword: "newPassword"
         )
     }
 
@@ -23,8 +23,8 @@ Contract.make {
         }
         body (
                 id: 100,
-                name: "newName",
-                surname: "newSurname",
+                name: "Nikita",
+                surname: "Ivchenko",
                 email: "munoongg@gmail.com",
                 roles: ["ROLE_ADMIN", "ROLE_USER"]
         )

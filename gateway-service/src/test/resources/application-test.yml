@@ -1,0 +1,7 @@
+security:
+  oauth2:
+    client:
+      accessTokenUri: http://localhost:8030/uaa/oauth/token
+      userAuthorizationUri: http://localhost:8030/uaa/oauth/authorize
+      clientId: testClient
+      clientSecret: password

@@ -3,15 +3,7 @@ package com.movies.gateway;
 import com.movies.common.user.UserRoles;
 import com.movies.common.user.UserTo;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner;
-import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -20,27 +12,14 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(
-        properties = {
-                "security.oauth2.client.accessTokenUri=http://localhost:8030/uaa/oauth/token",
-                "security.oauth2.client.userAuthorizationUri=http://localhost:8030/uaa/oauth/authorize",
-                "security.oauth2.client.clientId=testClient",
-                "security.oauth2.client.clientSecret=password"
-        }
-)
-@AutoConfigureStubRunner(
-        stubsMode = StubRunnerProperties.StubsMode.LOCAL,
-        ids = "com.movies:user-resource-service:+:stubs:8090"
-)
-class GatewayServiceApplicationTest {
+class ContractTest extends AbstractTest {
     @Test
     void updateProfileContractTest() {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json;charset=UTF-8");
-        headers.set("Authorization", "DEFAULT_USER");
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "bearer DEFAULT_USER");
 
         Map<String, String> body = new HashMap<>();
         body.put("name", "newName");
