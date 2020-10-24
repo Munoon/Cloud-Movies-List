@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,8 @@ import java.util.Set;
 import static com.movies.gateway.utils.TestUtil.authenticate;
 import static com.movies.gateway.utils.UserToValidation.userToResponse;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,14 +35,9 @@ class UpdateUserDetailsFilterTest extends AbstractTest {
         mockMvc.perform(post("/users/profile/update")
                 .content(JsonUtil.writeValue(body))
                 .contentType(MediaType.APPLICATION_JSON)
+                .with(csrf())
                 .with(authenticate()))
-                .andExpect(mvcResult -> {
-                    var authentication = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
-                    var userAuthentication = (UsernamePasswordAuthenticationToken) authentication.getUserAuthentication();
-                    var authorizedUser = (AuthorizedUser) userAuthentication.getPrincipal();
-                    UserTo userTo = authorizedUser.getUserTo();
-                    assertThat(userTo).isEqualToComparingFieldByField(expected);
-                })
+                .andExpect(authenticated().withAuthenticationPrincipal(new AuthorizedUser(expected)))
                 .andExpect(status().isOk())
                 .andExpect(userToResponse(expected));
     }

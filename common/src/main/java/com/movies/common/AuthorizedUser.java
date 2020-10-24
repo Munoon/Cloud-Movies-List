@@ -4,11 +4,13 @@ import com.movies.common.user.User;
 import com.movies.common.user.UserMapper;
 import com.movies.common.user.UserTo;
 import com.movies.common.util.UserUtils;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.Map;
 
 @Getter
+@EqualsAndHashCode
 public class AuthorizedUser extends org.springframework.security.core.userdetails.User {
     private final UserTo userTo;
 

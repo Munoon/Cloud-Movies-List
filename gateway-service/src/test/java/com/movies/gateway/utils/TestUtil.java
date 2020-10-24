@@ -13,14 +13,12 @@ import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 public class TestUtil {
@@ -51,15 +49,6 @@ public class TestUtil {
             request.setSession(mockHttpSession);
             request.setUserPrincipal(oAuth2Authentication);
             return request;
-        };
-    }
-
-    public static ResultMatcher checkIfAnonymous() {
-        return mvcResult -> {
-            MockHttpServletRequest request = mvcResult.getRequest();
-            assertThat(request.getUserPrincipal()).isNull();
-            assertThat(request.getRemoteUser()).isNull();
-            assertThat(request.getAuthType()).isNull();
         };
     }
 }

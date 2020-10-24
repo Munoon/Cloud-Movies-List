@@ -13,12 +13,17 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.PostConstruct;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+
 @SpringBootTest
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @AutoConfigureStubRunner(
         stubsMode = StubRunnerProperties.StubsMode.LOCAL,
-        ids = "com.movies:user-resource-service:+:stubs:8090"
+        ids = {
+                "com.movies:user-resource-service:+:stubs:8090",
+                "com.movies:movies-list-service:+:stubs:8010"
+        }
 )
 public abstract class AbstractTest {
     @Autowired
@@ -30,6 +35,7 @@ public abstract class AbstractTest {
     public void setup() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
+                .apply(springSecurity())
                 .build();
     }
 }

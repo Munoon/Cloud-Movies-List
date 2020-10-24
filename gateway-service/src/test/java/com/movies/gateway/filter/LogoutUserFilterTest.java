@@ -12,8 +12,9 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.movies.gateway.utils.TestUtil.authenticate;
-import static com.movies.gateway.utils.TestUtil.checkIfAnonymous;
 import static com.movies.gateway.utils.UserToValidation.userToResponse;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,9 +29,10 @@ class LogoutUserFilterTest extends AbstractTest {
         mockMvc.perform(post("/users/profile/update/email")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(body))
+                .with(csrf())
                 .with(authenticate()))
                 .andExpect(status().isOk())
-                .andExpect(checkIfAnonymous())
+                .andExpect(unauthenticated())
                 .andExpect(userToResponse(expected));
     }
 
@@ -44,9 +46,10 @@ class LogoutUserFilterTest extends AbstractTest {
         mockMvc.perform(post("/users/profile/update/password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(body))
+                .with(csrf())
                 .with(authenticate()))
                 .andExpect(status().isOk())
-                .andExpect(checkIfAnonymous())
+                .andExpect(unauthenticated())
                 .andExpect(userToResponse(expected));
     }
 
@@ -58,8 +61,9 @@ class LogoutUserFilterTest extends AbstractTest {
         mockMvc.perform(delete("/users/profile")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(body))
+                .with(csrf())
                 .with(authenticate()))
                 .andExpect(status().isOk())
-                .andExpect(checkIfAnonymous());
+                .andExpect(unauthenticated());
     }
 }
