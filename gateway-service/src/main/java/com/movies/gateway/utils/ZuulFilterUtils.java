@@ -9,13 +9,13 @@ import com.netflix.zuul.exception.ZuulException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.util.StreamUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.zip.GZIPInputStream;
 
 @Slf4j
 public class ZuulFilterUtils {
@@ -29,9 +29,8 @@ public class ZuulFilterUtils {
 
     public static void addResponseBodyToContext() throws ZuulException {
         RequestContext ctx = RequestContext.getCurrentContext();
-        try (InputStream responseDataStream = ctx.getResponseDataStream();
-             InputStreamReader reader = new InputStreamReader(responseDataStream, StandardCharsets.UTF_8)) {
-            String responseData = CharStreams.toString(reader);
+        try (InputStream responseDataStream = new GZIPInputStream(getResponseDataStream())) {
+            String responseData = StreamUtils.copyToString(responseDataStream, StandardCharsets.UTF_8);
             ctx.setResponseBody(responseData);
         } catch (IOException e) {
             log.error("Error reading response", e);
@@ -42,10 +41,26 @@ public class ZuulFilterUtils {
         }
     }
 
+    private static InputStream getResponseDataStream() throws IOException {
+        RequestContext ctx = RequestContext.getCurrentContext();
+        InputStream responseDataStream = ctx.getResponseDataStream();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        responseDataStream.transferTo(outputStream);
+
+        byte[] byteArray = outputStream.toByteArray();
+        ctx.setResponseDataStream(new ByteArrayInputStream(byteArray));
+        return new ByteArrayInputStream(byteArray);
+    }
+
     public static UserTo parseResponseAsUserTo(ObjectMapper objectMapper) throws ZuulException {
+        return readResponseAsModel(objectMapper, UserTo.class);
+    }
+
+    public static <T> T readResponseAsModel(ObjectMapper objectMapper, Class<T> tClass) throws ZuulException {
         RequestContext ctx = RequestContext.getCurrentContext();
         try {
-            return objectMapper.readValue(ctx.getResponseBody(), UserTo.class);
+            return objectMapper.readValue(ctx.getResponseBody(), tClass);
         } catch (JsonProcessingException e) {
             log.error("Error parsing response", e);
             throw new ZuulException(
@@ -62,6 +77,7 @@ public class ZuulFilterUtils {
 
     public static boolean isResponseOk() {
         RequestContext context = RequestContext.getCurrentContext();
-        return context.getResponseStatusCode() >= 200 && context.getResponseStatusCode() < 400;
+        int responseStatusCode = context.getResponseStatusCode();
+        return responseStatusCode >= 200 && responseStatusCode < 400;
     }
 }
