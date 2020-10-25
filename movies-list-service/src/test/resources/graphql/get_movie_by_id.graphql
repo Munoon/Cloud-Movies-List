@@ -1,0 +1,15 @@
+query ($id: ID) {
+    movie(id: $id) {
+        id,
+        name,
+        originalName,
+        hasAvatar,
+        about,
+        country,
+        genres,
+        premiere,
+        age,
+        time,
+        registered
+    }
+}

@@ -1,0 +1,26 @@
+query {
+    byName: findMovies(findQuery: "name", count: 1, page: 0) {
+        ...pagesResult
+    }
+
+    byOriginalName: findMovies(findQuery: "original", count: 1, page: 0) {
+        ...pagesResult
+    }
+}
+
+fragment pagesResult on PagedMovie {
+    totalPages, totalElements,
+    movies {
+        id,
+        name,
+        originalName,
+        hasAvatar,
+        about,
+        country,
+        genres,
+        premiere,
+        age,
+        time,
+        registered
+    }
+}

@@ -4,6 +4,7 @@ schema {
 }
 
 scalar LocalDate
+scalar LocalDateTime
 
 type Movie {
     id: ID!,
@@ -15,7 +16,8 @@ type Movie {
     genres: [String]!,
     premiere: LocalDate!,
     age: String!,
-    time: String!
+    time: String!,
+    registered: LocalDateTime!
 }
 
 input CreateMovie {

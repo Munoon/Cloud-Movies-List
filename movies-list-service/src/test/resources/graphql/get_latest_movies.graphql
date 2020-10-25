@@ -1,0 +1,26 @@
+query {
+    page1: latestMovies(count: 1, page: 0) {
+        ...pagesResult
+    }
+
+    page2: latestMovies(count: 1, page: 1) {
+        ...pagesResult
+    }
+}
+
+fragment pagesResult on PagedMovie {
+    totalPages, totalElements,
+    movies {
+        id,
+        name,
+        originalName,
+        hasAvatar,
+        about,
+        country,
+        genres,
+        premiere,
+        age,
+        time,
+        registered
+    }
+}
