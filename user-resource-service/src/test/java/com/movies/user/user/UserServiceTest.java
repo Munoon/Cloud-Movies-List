@@ -177,6 +177,11 @@ class UserServiceTest extends AbstractTest {
     }
 
     @Test
+    void deleteUserByIdNotFound() {
+        assertThrows(NotFoundException.class, () -> userService.deleteUserById(999));
+    }
+
+    @Test
     void findAll() {
         PageRequest page = PageRequest.of(0, 1);
         Page<User> users = userService.findAll(page);

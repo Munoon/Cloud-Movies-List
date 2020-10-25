@@ -13,9 +13,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
     int countAllByEmail(String email);
 
-    @Override
     @Modifying
     @Transactional
     @Query("DELETE FROM UserEntity WHERE id = ?1")
-    void deleteById(Integer id);
+    int delete(Integer id);
 }

@@ -1,5 +1,7 @@
 package com.movies.user.controller;
 
+import com.movies.common.error.ErrorInfo;
+import com.movies.common.error.ErrorType;
 import com.movies.common.user.User;
 import com.movies.common.user.UserRoles;
 import com.movies.common.user.UserTo;
@@ -8,7 +10,6 @@ import com.movies.user.user.to.AdminCreateUserTo;
 import com.movies.user.user.to.AdminUpdateUserTo;
 import com.movies.user.user.to.RegisterUserTo;
 import com.movies.user.util.JsonUtil;
-import com.movies.user.util.mapper.LocalUserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.movies.user.user.UserTestData.*;
 import static com.movies.user.util.TestUtils.*;
@@ -149,6 +149,14 @@ class AdminUsersControllerTest extends AbstractWebTest {
     }
 
     @Test
+    void getUserByIdNotFound() throws Exception {
+        mockMvc.perform(get("/admin/9999")
+                .with(defaultUser()))
+                .andExpect(status().isNotFound())
+                .andExpect(errorType(ErrorType.NOT_FOUND, ErrorInfo.class));
+    }
+
+    @Test
     void deleteUser() throws Exception {
         Page<User> users = userService.findAll(PageRequest.of(0, 10));
         assertThat(users).hasSize(1);
@@ -159,6 +167,14 @@ class AdminUsersControllerTest extends AbstractWebTest {
 
         Page<User> newUsers = userService.findAll(PageRequest.of(0, 10));
         assertThat(newUsers).hasSize(0);
+    }
+
+    @Test
+    void deleteUserNotFound() throws Exception {
+        mockMvc.perform(delete("/admin/999")
+                .with(defaultUser()))
+                .andExpect(status().isNotFound())
+                .andExpect(errorType(ErrorType.NOT_FOUND, ErrorInfo.class));
     }
 
     @Test

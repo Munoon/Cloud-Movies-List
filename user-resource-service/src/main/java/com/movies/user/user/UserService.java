@@ -31,7 +31,7 @@ public class UserService {
     public User getByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(LocalUserMapper.INSTANCE::asUser)
-                .orElseThrow(() -> new NotFoundException("User with email " + email + " is not found!"));
+                .orElseThrow(() -> new NotFoundException("User with email '" + email + "' is not found!"));
     }
 
     public User getById(int id) {
@@ -69,7 +69,7 @@ public class UserService {
 
     private UserEntity getUserEntityById(int id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User with id " + id + " is not found!"));
+                .orElseThrow(() -> new NotFoundException("User with id '" + id + "' is not found!"));
     }
 
     public Page<User> findAll(Pageable pageable) {
@@ -78,7 +78,10 @@ public class UserService {
     }
 
     public void deleteUserById(int id) {
-        userRepository.deleteById(id);
+        int delete = userRepository.delete(id);
+        if (delete == 0) {
+            throw new NotFoundException("User with id '" + id + "' is not found!");
+        }
     }
 
     public boolean testEmail(String email) {
