@@ -1,16 +1,19 @@
 package com.movies.user.user;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.movies.common.user.User;
 import com.movies.common.user.UserMapper;
 import com.movies.common.user.UserRoles;
 import com.movies.common.user.UserTo;
+import com.movies.user.config.MvcConfig;
 import com.movies.user.util.JsonUtil;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -48,17 +51,18 @@ public class UserTestData {
     }
 
     public static ResultMatcher contentJsonHateos(User... expected) {
+        UserTo[] expectedUserTos = Stream.of(expected)
+                .map(UserMapper.INSTANCE::asTo)
+                .toArray(UserTo[]::new);
+        return contentJsonHateos(expectedUserTos);
+    }
+
+    public static ResultMatcher contentJsonHateos(UserTo... expected) {
         return result -> {
-            Map<String, Object> resultMap = JsonUtil.readValueAsMap(JsonUtil.getContent(result));
-            List<Map<String, Object>> maps = ((Map<String, List<Map<String, Object>>>) resultMap.get("_embedded")).get("users");
-
-            assertThat(maps).hasSize(expected.length);
-
-            // TODO refactor validation comparing each field
-            for (int i = 0; i < expected.length; i++) {
-                User expectedUser = expected[i];
-                assertThat(expectedUser.getId()).isEqualTo(maps.get(i).get("id"));
-            }
+            String content = JsonUtil.getContent(result);
+            JsonNode node = MvcConfig.OBJECT_MAPPER.readTree(content).at("/_embedded/users");
+            List<UserTo> actual = MvcConfig.OBJECT_MAPPER.convertValue(node, new TypeReference<>() {});
+            assertThat(actual).usingFieldByFieldElementComparator().isEqualTo(List.of(expected));
         };
     }
 
