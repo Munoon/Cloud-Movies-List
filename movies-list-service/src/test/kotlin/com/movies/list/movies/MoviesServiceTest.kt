@@ -57,6 +57,11 @@ internal class MoviesServiceTest : AbstractTest() {
     }
 
     @Test
+    fun getByIdNotFound() {
+        assertThrows(NotFoundException::class.java) { moviesService.getById("UNKNOWN-ID") }
+    }
+
+    @Test
     internal fun getPage() {
         val createdMovie = moviesService.createMovie(CreateMoviesTo("Test Movie", "Original Name", null, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"))
         val createdMovie2 = moviesService.createMovie(CreateMoviesTo("Test Movie 2", "Original Name", null, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"))

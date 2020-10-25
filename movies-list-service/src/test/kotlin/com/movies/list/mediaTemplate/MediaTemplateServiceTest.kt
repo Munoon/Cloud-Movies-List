@@ -1,8 +1,10 @@
 package com.movies.list.mediaTemplate
 
 import com.movies.list.AbstractTest
+import com.movies.list.utils.exception.NotFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.bson.types.Binary
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,5 +38,10 @@ internal class MediaTemplateServiceTest : AbstractTest() {
         val actual = mediaTemplateService.getById(globalMediaTemplate.id!!)
         val expected = MediaTemplate(globalMediaTemplate.id, Binary(fileTextByteArray), globalMediaTemplate.registered)
         assertThat(actual).isEqualToIgnoringGivenFields(expected, "registered")
+    }
+
+    @Test
+    fun getByIdNotFound() {
+        assertThrows(NotFoundException::class.java) { mediaTemplateService.getById("UNKNOWN-ID") }
     }
 }
