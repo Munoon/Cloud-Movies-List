@@ -1,11 +1,11 @@
-import React, { useRef, useState } from "react";
-import { fetcher } from "./api";
-import { toast } from "react-toastify";
-import { AsyncTypeahead, Highlighter } from "react-bootstrap-typeahead";
-import { Form, InputGroup } from "react-bootstrap";
-import { MovieImage } from "./MoviesComponents";
+import React, {useRef, useState} from "react";
+import {movieGraphQLClient} from "./api";
+import {AsyncTypeahead, Highlighter} from "react-bootstrap-typeahead";
+import {Form, InputGroup} from "react-bootstrap";
+import {MovieImage} from "./MoviesComponents";
 import Button from "react-bootstrap/Button";
-import { renderGenres } from "./misc";
+import {renderGenres} from "./misc";
+import {gql} from "graphql-request/dist";
 
 const SearchMovieForm = () => {
     const [loading, setLoading] = useState(false);
@@ -15,19 +15,11 @@ const SearchMovieForm = () => {
     const handleSearch = (query: string) => {
         setLoading(true);
 
-        fetcher('/movies/graphql', {
-            method: 'POST',
-            body: JSON.stringify({
-                query: searchMovieGraphQLQuery,
-                variables: { query, page: 0, count: 5 }
-            })
-        })
-            .then(response => {
-                if (response.data && response.data.findMovies) {
-                    setOptions(response.data.findMovies.movies);
-                } else {
-                    toast.error('Ошибка поиска фильмов');
-                }
+        const variables = { query, page: 0 };
+        // TODO parse exception
+        movieGraphQLClient.request(searchMovieGraphQLQuery, variables)
+            .then(data => {
+                setOptions(data.findMovies.movies);
                 setLoading(false);
             });
     };
@@ -81,9 +73,9 @@ const SearchMovieForm = () => {
     );
 };
 
-const searchMovieGraphQLQuery = `
-    query ($query: String, $count: Int, $page: Int) {
-        findMovies(findQuery: $query, count: $count, page: $page) {
+const searchMovieGraphQLQuery = gql`
+    query ($query: String, $page: Int) {
+        findMovies(findQuery: $query, count: 5, page: $page) {
             totalPages, totalElements, movies { id, name, originalName, age, genres, hasAvatar }
         }
     }

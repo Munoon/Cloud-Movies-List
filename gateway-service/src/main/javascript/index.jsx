@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom';
 import Application from './components/Application';
 import { connect } from "react-redux";
 import moviesStore, { addLatestMovie, latestMoviesLoading } from './components/store/movies'
-import { fetcher } from "./components/api";
-import {faChevronRight} from "@fortawesome/free-solid-svg-icons/faChevronRight";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronLeft} from "@fortawesome/free-solid-svg-icons/faChevronLeft";
-import {MovieImage} from "./components/MoviesComponents";
+import { movieGraphQLClient } from "./components/api";
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons/faChevronRight";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
+import { MovieImage } from "./components/MoviesComponents";
+import { gql } from 'graphql-request';
 
 const IndexPage = () => (
     <Application additionalStore={{ moviesStore }}>
@@ -15,7 +16,7 @@ const IndexPage = () => (
     </Application>
 );
 
-const latestMoviesQuery = `
+const latestMoviesQuery = gql`
     query ($page: Int!) {
         latestMovies(count: 10, page: $page) {
             totalPages,
@@ -28,17 +29,9 @@ const latestMoviesQuery = `
 
 const MainPage = connect(null, { addLatestMovie })(props => {
     useEffect(() => {
-        fetcher('/movies/graphql', {
-            method: 'POST',
-            body: JSON.stringify({
-                query: latestMoviesQuery,
-                variables: { page: 0 }
-            })
-        }).then(response => {
-            if (response.data && response.data.latestMovies) {
-                props.addLatestMovie({ ...response.data.latestMovies, currentPage: 0 })
-            }
-        }).catch(e => e.useDefaultErrorParser())
+        // TODO parse exception
+        movieGraphQLClient.request(latestMoviesQuery, { page: 0 })
+            .then(data => props.addLatestMovie({ ...data.latestMovies, currentPage: 0 }));
     });
 
     return (
@@ -108,20 +101,12 @@ const LatestMoviesList = connect(({ moviesStore: { latestMovies, movies } }) => 
     const onScrollBottom = () => {
         let latestMovies = props.latestMovies
         if (latestMovies.totalPages > latestMovies.currentPage + 1 && !props.latestMovies.loading) {
-            console.log('add')
             const newPage = latestMovies.currentPage + 1;
             props.latestMoviesLoading();
-            fetcher('/movies/graphql', {
-                method: 'POST',
-                body: JSON.stringify({
-                    query: latestMoviesQuery,
-                    variables: { page: newPage }
-                })
-            }).then(response => {
-                if (response.data && response.data.latestMovies) {
-                    props.addLatestMovie({ ...response.data.latestMovies, currentPage: newPage })
-                }
-            }).catch(e => e.useDefaultErrorParser());
+
+            // TODO parse exception
+            movieGraphQLClient.request(latestMoviesQuery, { page: newPage })
+                .then(data => props.addLatestMovie({ ...data.latestMovies, currentPage: newPage }));
         }
     };
 

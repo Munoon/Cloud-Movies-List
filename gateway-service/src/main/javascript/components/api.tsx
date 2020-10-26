@@ -3,6 +3,7 @@ import { getMetaProperty } from "./misc";
 import { toast } from "react-toastify";
 import React from "react";
 import { User } from "./store/user";
+import { GraphQLClient } from "graphql-request";
 
 interface CustomRequestInit extends RequestInit {
     headers?: Record<string, string>;
@@ -73,6 +74,13 @@ export const fetcher = (input: RequestInfo, init: CustomRequestInit = { headers:
 
 export const getFetcher = (settings: CustomRequestInit) =>
     (input: RequestInfo, init: CustomRequestInit) => fetcher(input, { ...init, ...settings })
+
+export const movieGraphQLClient = new GraphQLClient('/movies/graphql', {
+    headers: {
+        'Content-Type': 'application/json',
+        [getMetaProperty('_csrf_header')]: getMetaProperty('_csrf')
+    }
+});
 
 function parseError(error: ErrorInfo, data: Response) {
     let messages = [];

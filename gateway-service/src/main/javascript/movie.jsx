@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import Application from './components/Application';
 import {getMetaProperty} from "./components/misc";
 import {MovieImage} from "./components/MoviesComponents";
-import {getFetcher} from "./components/api";
+import {movieGraphQLClient} from "./components/api";
 import useSWR from "swr";
-import {toast} from "react-toastify";
+import {gql} from "graphql-request/dist";
 
 const smallMovieInfo = {
     id: getMetaProperty('current_movie:id'),
@@ -14,7 +14,7 @@ const smallMovieInfo = {
     registered: getMetaProperty('current_movie:registered')
 };
 
-const getMovieQuery = `
+const getMovieQuery = gql`
     query ($movieId: ID) {
         movie(id: $movieId) {
             originalName, about, country, genres, premiere, age, time
@@ -22,24 +22,13 @@ const getMovieQuery = `
     }
 `;
 
+const graphQLMovieRequest = movieId => movieGraphQLClient.request(getMovieQuery, { movieId });
+
 const MoviePage = () => {
-    const { data, error } = useSWR('/movies/graphql', getFetcher({
-        method: 'POST',
-        body: JSON.stringify({
-            query: getMovieQuery,
-            variables: { movieId: smallMovieInfo.id }
-        })
-    }));
+    // TODO parse exception
+    const { data, error } = useSWR(smallMovieInfo.id, graphQLMovieRequest);
 
-    const movie = data && data.data && data.data.movie ? data.data.movie : null;
-
-    if (data && data.errors) {
-        toast.error('Ошибка запроса фильма: ' + data.errors.map(error => error.message).join('; '));
-    }
-
-    if (error) {
-        error.useDefaultErrorParser();
-    }
+    const movie = data && data.movie ? data.movie : null;
 
     const tableData = movie ? [
         { title: 'Оригинальное название', value: movie.originalName },
@@ -47,7 +36,7 @@ const MoviePage = () => {
         { title: 'Страна', value: movie.country },
         { title: 'Жанр', value: movie.genres.join(', ') },
         { title: 'Дата премьера', value: movie.premiere },
-        { title: 'Возраствное ограничение', value: movie.age },
+        { title: 'Возрастное ограничение', value: movie.age },
         { title: 'Длительность', value: movie.time }
     ] : []
 

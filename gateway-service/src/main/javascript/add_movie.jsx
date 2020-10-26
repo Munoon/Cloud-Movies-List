@@ -1,19 +1,20 @@
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import Application from './components/Application';
-import { InputField } from "./components/misc";
-import { fetcher } from "./components/api";
+import {InputField} from "./components/misc";
+import {fetcher, movieGraphQLClient} from "./components/api";
 import {toast} from "react-toastify";
 import FormCheck from "react-bootstrap/FormCheck";
 import {useForm} from "react-hook-form";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck} from "@fortawesome/free-solid-svg-icons/faCheck";
+import {gql} from "graphql-request/dist";
 
-const addMovieQuery = `
-    mutation($name: String!, $originalName: String, 
-            $avatarImageId: String, $about: String, 
-            $country: String!, $genres: [String]!, 
-            $premiere: LocalDate!, $age: String, $time: String) {
+const addMovieQuery = gql`
+    mutation($name: String!, $originalName: String,
+        $avatarImageId: String, $about: String,
+        $country: String!, $genres: [String]!,
+        $premiere: LocalDate!, $age: String, $time: String) {
         addMovie(newMovie: {
             name: $name,
             originalName: $originalName,
@@ -35,19 +36,10 @@ const AddMovie = () => {
     const onSubmit = data => {
         let sendData = { ...data, avatarImageId };
 
-        fetcher('/movies/graphql', {
-            method: 'POST',
-            body: JSON.stringify({
-                query: addMovieQuery,
-                variables: sendData
-            })
-        }).then(response => {
-            if (response.data && response.data.addMovie) {
-                location.href = `/movie/${response.data.addMovie.id}`
-            } else {
-                toast.error('Ошибка создания фильма: ' + response.errors.map(error => error.message).join('; '))
-            }
-        });
+        movieGraphQLClient.request(addMovieQuery, sendData)
+            .then(data => location.href = `/movie/${data.addMovie.id}`)
+            // TODO parse exception
+            .catch(e => toast.error('Ошибка создания фильма: ' + e.response.errors.map(error => error.message).join('; ')));
     };
 
     const addFileHandler = e => {

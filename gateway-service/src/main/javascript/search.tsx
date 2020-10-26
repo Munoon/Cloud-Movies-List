@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
 import Application from "./components/Application";
-import { SearchMovieItem } from "./components/SearchMovieForm";
-import { connect, DefaultRootState } from "react-redux";
-import { fetcher } from "./components/api";
-import { toast } from "react-toastify";
-import { Form } from 'react-bootstrap';
-import { MovieImage } from "./components/MoviesComponents";
-import { Highlighter } from "react-bootstrap-typeahead";
-import { renderGenres } from "./components/misc";
+import {SearchMovieItem} from "./components/SearchMovieForm";
+import {connect, DefaultRootState} from "react-redux";
+import {movieGraphQLClient} from "./components/api";
+import {Form} from 'react-bootstrap';
+import {MovieImage} from "./components/MoviesComponents";
+import {Highlighter} from "react-bootstrap-typeahead";
+import {renderGenres} from "./components/misc";
+import {gql} from "graphql-request/dist";
 
 declare var query: string[];
 
@@ -75,27 +75,17 @@ const SearchPage = () => (
     </Application>
 );
 
-const findMovies = (query: string, page: number): Promise<SearchData> => new Promise((resolve) => {
-    fetcher('/movies/graphql', {
-        method: 'POST',
-        body: JSON.stringify({
-            query: `
-                query ($query: String, $page: Int) {
-                    findMovies(findQuery: $query, count: 20, page: $page) {
-                        totalPages, totalElements, movies { id, name, originalName, age, genres, hasAvatar }
-                    }
-                }
-            `,
-            variables: { query, page }
-        })
-    }).then(resp => {
-        if (resp.data && resp.data.findMovies) {
-            resolve(resp.data.findMovies);
-        } else {
-            toast.error("Error finding movies");
+const requestQuery = gql`
+    query ($query: String, $page: Int) {
+        findMovies(findQuery: $query, count: 20, page: $page) {
+            totalPages, totalElements, movies { id, name, originalName, age, genres, hasAvatar }
         }
-    }).catch(e => e.useDefaultErrorParser());
-});
+    }
+`;
+
+const findMovies = (query: string, page: number): Promise<SearchData> => new Promise((resolve) =>
+    movieGraphQLClient.request(requestQuery, { query, page })
+        .then(data => resolve(data.findMovies)));
 
 const SearchInput = connect(null, { setItems })((props: { setItems: typeof setItems }) => {
     const [inputQuery, setQuery] = useState(query[0]);

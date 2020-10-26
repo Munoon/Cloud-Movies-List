@@ -43,6 +43,8 @@
     "bootswatch": "^4.5.0",
     "copy-webpack-plugin": "^6.2.1",
     "gql-query-builder": "^3.5.0",
+    "graphql": "^15.3.0",
+    "graphql-request": "^3.2.0",
     "popper.js": "^1.16.1",
     "react": "^16.13.1",
     "react-bootstrap": "^1.2.2",
