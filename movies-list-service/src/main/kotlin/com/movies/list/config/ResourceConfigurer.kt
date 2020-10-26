@@ -11,8 +11,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter
+import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter
+import org.springframework.security.oauth2.provider.token.TokenStore
+import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter
 import org.springframework.web.client.RestTemplate
 
@@ -20,14 +23,18 @@ import org.springframework.web.client.RestTemplate
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class ResourceConfigurer : ResourceServerConfigurerAdapter() {
-    override fun configure(http: HttpSecurity?) {
-        http!!.sessionManagement()
+    override fun configure(http: HttpSecurity) {
+        http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                 .and()
             .authorizeRequests()
                 .antMatchers("/templates/**").permitAll()
                 .antMatchers("/graphql/**", "/movie/**").permitAll()
                 .anyRequest().denyAll()
+    }
+
+    override fun configure(resources: ResourceServerSecurityConfigurer) {
+        resources.tokenStore(tokenStore())
     }
 
     @Bean
@@ -55,4 +62,7 @@ class ResourceConfigurer : ResourceServerConfigurerAdapter() {
     fun restTemplate(): RestTemplate {
         return RestTemplate()
     }
+
+    @Bean
+    fun tokenStore(): TokenStore = InMemoryTokenStore()
 }

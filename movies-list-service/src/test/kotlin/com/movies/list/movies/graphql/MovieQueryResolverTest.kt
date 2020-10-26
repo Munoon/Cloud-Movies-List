@@ -8,6 +8,7 @@ import com.movies.list.movies.MoviesService
 import com.movies.list.movies.to.CreateMoviesTo
 import com.movies.list.movies.to.MovieTo
 import com.movies.list.movies.to.PagedMovie
+import com.movies.list.utils.GraphQLRestTemplate
 import com.neovisionaries.i18n.CountryCode
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -17,7 +18,7 @@ import java.time.LocalDate
 
 class MovieQueryResolverTest : AbstractTest() {
     @Autowired
-    private lateinit var graphQLTestTemplate: GraphQLTestTemplate
+    private lateinit var graphQLRestTemplate: GraphQLRestTemplate
 
     @Autowired
     private lateinit var moviesService: MoviesService
@@ -29,7 +30,7 @@ class MovieQueryResolverTest : AbstractTest() {
         val variables = ObjectMapper().createObjectNode()
                 .apply { put("id", movie.id) }
 
-        val response = graphQLTestTemplate.perform("graphql/get_movie_by_id.graphql", variables)
+        val response = graphQLRestTemplate.perform("graphql/get_movie_by_id.graphql", variables)
         assertTrue(response.isOk)
 
         val actual = response.get("$.data.movie", MovieTo::class.java)
@@ -44,7 +45,7 @@ class MovieQueryResolverTest : AbstractTest() {
         val expectedMovie1 = MovieTo(createdMovie.id, "Test Movie", "Original Name", false, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16", createdMovie.registered)
         val expectedMovie2 = MovieTo(createdMovie2.id, "Test Movie 2", "Original Name", false, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16", createdMovie2.registered)
 
-        val response = graphQLTestTemplate.postForResource("graphql/get_latest_movies.graphql")
+        val response = graphQLRestTemplate.postForResource("graphql/get_latest_movies.graphql")
         assertTrue(response.isOk)
 
         with (response.get("$.data.page1", PagedMovie::class.java)) {
@@ -68,7 +69,7 @@ class MovieQueryResolverTest : AbstractTest() {
         val createdMovie2 = moviesService.createMovie(CreateMoviesTo("Original Movie", "Original Movie", null, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"))
         val expectedMovie2 = MovieTo(createdMovie2.id, "Original Movie", "Original Movie", false, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16", createdMovie2.registered)
 
-        val response = graphQLTestTemplate.postForResource("graphql/find_movie.graphql")
+        val response = graphQLRestTemplate.postForResource("graphql/find_movie.graphql")
         assertTrue(response.isOk)
 
         with (response.get("$.data.byName", PagedMovie::class.java)) {

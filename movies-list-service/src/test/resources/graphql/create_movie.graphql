@@ -1,0 +1,24 @@
+mutation {
+    addMovie(newMovie: {
+        name: "Test Movie",
+        originalName: "Original Name",
+        about: "About",
+        country: "US",
+        genres: ["ACTION"],
+        premiere: "2020-02-07",
+        age: "16+",
+        time: "1:16"
+    }) {
+        id,
+        name,
+        originalName,
+        hasAvatar,
+        about,
+        country,
+        genres,
+        premiere,
+        age,
+        time,
+        registered
+    }
+}
