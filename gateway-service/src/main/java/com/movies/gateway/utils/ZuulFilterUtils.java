@@ -2,7 +2,6 @@ package com.movies.gateway.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.CharStreams;
 import com.movies.common.user.UserTo;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
@@ -12,10 +11,14 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StreamUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipException;
 
 @Slf4j
 public class ZuulFilterUtils {
@@ -29,7 +32,7 @@ public class ZuulFilterUtils {
 
     public static void addResponseBodyToContext() throws ZuulException {
         RequestContext ctx = RequestContext.getCurrentContext();
-        try (InputStream responseDataStream = new GZIPInputStream(getResponseDataStream())) {
+        try (InputStream responseDataStream = getResponseDataStream()) {
             String responseData = StreamUtils.copyToString(responseDataStream, StandardCharsets.UTF_8);
             ctx.setResponseBody(responseData);
         } catch (IOException e) {
@@ -50,7 +53,15 @@ public class ZuulFilterUtils {
 
         byte[] byteArray = outputStream.toByteArray();
         ctx.setResponseDataStream(new ByteArrayInputStream(byteArray));
-        return new ByteArrayInputStream(byteArray);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArray);
+
+        InputStream result;
+        try {
+            result = ctx.getResponseGZipped() ? new GZIPInputStream(inputStream) : inputStream;
+        } catch (ZipException e) {
+            result = inputStream;
+        }
+        return result;
     }
 
     public static UserTo parseResponseAsUserTo(ObjectMapper objectMapper) throws ZuulException {
