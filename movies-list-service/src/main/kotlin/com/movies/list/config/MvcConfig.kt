@@ -21,6 +21,7 @@ import java.util.*
 @EnableWebMvc
 @Configuration
 class MvcConfig : WebMvcConfigurer {
+    @Bean
     fun objectMapper(): ObjectMapper {
         val objectMapper = ObjectMapper();
 

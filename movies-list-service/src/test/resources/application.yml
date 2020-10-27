@@ -16,3 +16,7 @@ logging:
           mongodb:
             core:
               MongoTemplate: DEBUG
+
+eureka:
+  client:
+    enabled: false

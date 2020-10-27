@@ -5,3 +5,7 @@ security:
       userAuthorizationUri: http://localhost:8030/uaa/oauth/authorize
       clientId: testClient
       clientSecret: password
+
+eureka:
+  client:
+    enabled: false
