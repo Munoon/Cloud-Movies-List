@@ -6,7 +6,6 @@ import com.movies.common.user.UserRoles;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
@@ -42,8 +41,6 @@ public class TestUtil {
         DefaultOAuth2AccessToken accessToken = new DefaultOAuth2AccessToken("DEFAULT_USER");
         mockHttpSession.setAttribute("scopedTarget.oauth2ClientContext", new DefaultOAuth2ClientContext(accessToken));
         mockHttpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContextImpl(oAuth2Authentication));
-
-        SecurityContextHolder.getContext().setAuthentication(oAuth2Authentication);
 
         return request -> {
             request.setSession(mockHttpSession);

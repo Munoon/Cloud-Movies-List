@@ -28,7 +28,7 @@ class MovieMutationResolverTest : AbstractTest() {
         val headers = HttpHeaders()
                 .apply { add("Authorization", "${OAuth2AccessToken.BEARER_TYPE} ${accessToken.value}") }
 
-        val response = graphQLRestTemplate.postForResource("graphql/create_movie.graphql", headers)
+        val response = graphQLRestTemplate.perform("graphql/create_movie.graphql", headers = headers)
         assertTrue(response.isOk)
         val createdMovie = response.get("$.data.addMovie", MovieTo::class.java)
 

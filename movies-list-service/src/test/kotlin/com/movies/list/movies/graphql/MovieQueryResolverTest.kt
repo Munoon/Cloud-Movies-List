@@ -45,7 +45,7 @@ class MovieQueryResolverTest : AbstractTest() {
         val expectedMovie1 = MovieTo(createdMovie.id, "Test Movie", "Original Name", false, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16", createdMovie.registered)
         val expectedMovie2 = MovieTo(createdMovie2.id, "Test Movie 2", "Original Name", false, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16", createdMovie2.registered)
 
-        val response = graphQLRestTemplate.postForResource("graphql/get_latest_movies.graphql")
+        val response = graphQLRestTemplate.perform("graphql/get_latest_movies.graphql")
         assertTrue(response.isOk)
 
         with (response.get("$.data.page1", PagedMovie::class.java)) {
@@ -69,7 +69,7 @@ class MovieQueryResolverTest : AbstractTest() {
         val createdMovie2 = moviesService.createMovie(CreateMoviesTo("Original Movie", "Original Movie", null, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"))
         val expectedMovie2 = MovieTo(createdMovie2.id, "Original Movie", "Original Movie", false, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16", createdMovie2.registered)
 
-        val response = graphQLRestTemplate.postForResource("graphql/find_movie.graphql")
+        val response = graphQLRestTemplate.perform("graphql/find_movie.graphql")
         assertTrue(response.isOk)
 
         with (response.get("$.data.byName", PagedMovie::class.java)) {
