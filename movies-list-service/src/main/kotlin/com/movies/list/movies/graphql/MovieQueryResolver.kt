@@ -1,6 +1,5 @@
 package com.movies.list.movies.graphql
 
-import com.movies.common.movie.SmallMovieTo
 import com.movies.list.movies.MovieMapper
 import com.movies.list.movies.MoviesService
 import com.movies.list.movies.to.MovieTo
@@ -10,8 +9,11 @@ import graphql.kickstart.tools.GraphQLQueryResolver
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
+import org.springframework.validation.annotation.Validated
+import javax.validation.constraints.Max
 
 @Component
+@Validated
 class MovieQueryResolver(private val moviesService: MoviesService) : GraphQLQueryResolver {
     private val log = LoggerFactory.getLogger(MovieQueryResolver::class.java)
 
@@ -21,14 +23,14 @@ class MovieQueryResolver(private val moviesService: MoviesService) : GraphQLQuer
         return MovieMapper.INSTANCE.asMovieTo(movie)
     }
 
-    fun getLatestMovies(count: Int, page: Int): PagedMovie {
+    fun getLatestMovies(@Max(20) count: Int, page: Int): PagedMovie {
         log.info("Get latest movie (count: $count, page: $page) by user ${authUserIdOrAnonymous()}")
         val pageRequest = PageRequest.of(page, count)
         val page = moviesService.getPage(pageRequest).map { MovieMapper.INSTANCE.asMovieTo(it) }
         return PagedMovie(page.totalPages, page.totalElements, page.content)
     }
 
-    fun findMovies(findQuery: String, count: Int, page: Int): PagedMovie {
+    fun findMovies(findQuery: String, @Max(20) count: Int, page: Int): PagedMovie {
         log.info("Find movies by query '$findQuery' (count: $count, page: $page) by user ${authUserIdOrAnonymous()}")
         val pageRequest = PageRequest.of(page, count)
         val page = moviesService.findMovieByNameAndOriginalName(findQuery, pageRequest)

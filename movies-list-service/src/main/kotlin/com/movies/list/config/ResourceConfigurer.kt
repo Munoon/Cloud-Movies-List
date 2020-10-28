@@ -33,10 +33,6 @@ class ResourceConfigurer : ResourceServerConfigurerAdapter() {
                 .anyRequest().denyAll()
     }
 
-    override fun configure(resources: ResourceServerSecurityConfigurer) {
-        resources.tokenStore(tokenStore())
-    }
-
     @Bean
     fun accessTokenConverter(jwtAccessTokenConverter: JwtAccessTokenConverter): AccessTokenConverter {
         val accessTokenConverter = DefaultAccessTokenConverter()
@@ -62,7 +58,4 @@ class ResourceConfigurer : ResourceServerConfigurerAdapter() {
     fun restTemplate(): RestTemplate {
         return RestTemplate()
     }
-
-    @Bean
-    fun tokenStore(): TokenStore = InMemoryTokenStore()
 }
