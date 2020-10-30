@@ -1,9 +1,9 @@
 import useSWR from "swr";
-import { getMetaProperty } from "./misc";
-import { toast } from "react-toastify";
+import {getMetaProperty} from "./misc";
+import {toast} from "react-toastify";
 import React from "react";
-import { User } from "./store/user";
-import { GraphQLClient } from "graphql-request";
+import {User} from "./store/user";
+import {GraphQLClient} from "graphql-request";
 
 interface CustomRequestInit extends RequestInit {
     headers?: Record<string, string>;
@@ -65,7 +65,7 @@ export const fetcher = (input: RequestInfo, init: CustomRequestInit = { headers:
                     name: 'RequestException',
                     response: json,
                     data,
-                    useDefaultErrorParser: () => parseError(json, data)
+                    useDefaultErrorParser: () => parseError(json)
                 };
             }
             return json;
@@ -82,9 +82,9 @@ export const movieGraphQLClient = new GraphQLClient('/movies/graphql', {
     }
 });
 
-function parseError(error: ErrorInfo, data: Response) {
-    let messages = [];
-    if (error.details) {
+function parseError(error: ErrorInfo, prefix: string = "") {
+    let messages = prefix === '' ? [] : [prefix];
+    if (error.details && error.details.length !== 0) {
         messages.push(error.details.join(', '))
     }
     if (error.fields) {
@@ -95,11 +95,34 @@ function parseError(error: ErrorInfo, data: Response) {
     toast.error(getMultipleLinesToastElement(messages));
 }
 
+type GraphQLErrorParserType = { (errorInfo: ErrorInfo): void } | string
+export function parseGraphQLError(e: any, errorParser: Record<string, GraphQLErrorParserType> = {}) {
+    if (e.response.status === 200) {
+        e.response.errors.forEach((error: any) => {
+            if (error.extensions.errorInfo) {
+                const errorInfo = error.extensions.errorInfo as ErrorInfo;
+                const parser = errorParser[errorInfo.url]
+                if (parser) {
+                    if (typeof parser === "string") {
+                        parseError(errorInfo, parser)
+                    } else {
+                        parser(errorInfo)
+                    }
+                } else {
+                    parseError(errorInfo)
+                }
+            } else {
+                toast.error("Ошибка: " + error.message);
+            }
+        });
+    } else {
+        const errorInfo = JSON.parse(e.response.error)
+        parseError(errorInfo)
+    }
+}
+
 function getMultipleLinesToastElement(lines: string[]) {
     let linesInOneStr = lines.join('<br/>');
-    if (lines.length > 1) {
-        linesInOneStr = linesInOneStr.substr(5);
-    }
     return <div dangerouslySetInnerHTML={{ __html: linesInOneStr }}/>
 }
 

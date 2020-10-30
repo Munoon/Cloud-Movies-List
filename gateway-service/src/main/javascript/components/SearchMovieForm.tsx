@@ -1,5 +1,5 @@
 import React, {useRef, useState} from "react";
-import {movieGraphQLClient} from "./api";
+import {movieGraphQLClient, parseGraphQLError} from "./api";
 import {AsyncTypeahead, Highlighter} from "react-bootstrap-typeahead";
 import {Form, InputGroup} from "react-bootstrap";
 import {MovieImage} from "./MoviesComponents";
@@ -16,12 +16,12 @@ const SearchMovieForm = () => {
         setLoading(true);
 
         const variables = { query, page: 0 };
-        // TODO parse exception
         movieGraphQLClient.request(searchMovieGraphQLQuery, variables)
             .then(data => {
                 setOptions(data.findMovies.movies);
                 setLoading(false);
-            });
+            })
+            .catch(e => parseGraphQLError(e, { findMovies: 'Ошибка поиска' }));
     };
 
     const searchMovie = (e: React.MouseEvent<HTMLElement>) => {

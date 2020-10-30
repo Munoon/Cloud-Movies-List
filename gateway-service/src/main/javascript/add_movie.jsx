@@ -2,8 +2,7 @@ import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import Application from './components/Application';
 import {InputField} from "./components/misc";
-import {fetcher, movieGraphQLClient} from "./components/api";
-import {toast} from "react-toastify";
+import {fetcher, movieGraphQLClient, parseGraphQLError} from "./components/api";
 import FormCheck from "react-bootstrap/FormCheck";
 import {useForm} from "react-hook-form";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -38,8 +37,7 @@ const AddMovie = () => {
 
         movieGraphQLClient.request(addMovieQuery, sendData)
             .then(data => location.href = `/movie/${data.addMovie.id}`)
-            // TODO parse exception
-            .catch(e => toast.error('Ошибка создания фильма: ' + e.response.errors.map(error => error.message).join('; ')));
+            .catch(e => parseGraphQLError(e, { addMovie: 'Ошибка создания фильма' }));
     };
 
     const addFileHandler = e => {

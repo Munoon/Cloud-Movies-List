@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Application from './components/Application';
 import {getMetaProperty} from "./components/misc";
 import {MovieImage} from "./components/MoviesComponents";
-import {movieGraphQLClient} from "./components/api";
+import {movieGraphQLClient, parseGraphQLError} from "./components/api";
 import useSWR from "swr";
 import {gql} from "graphql-request/dist";
 
@@ -25,8 +25,11 @@ const getMovieQuery = gql`
 const graphQLMovieRequest = movieId => movieGraphQLClient.request(getMovieQuery, { movieId });
 
 const MoviePage = () => {
-    // TODO parse exception
     const { data, error } = useSWR(smallMovieInfo.id, graphQLMovieRequest);
+
+    if (error) {
+        parseGraphQLError(error, { movie: 'Ошибка запроса информации о фильме' });
+    }
 
     const movie = data && data.movie ? data.movie : null;
 

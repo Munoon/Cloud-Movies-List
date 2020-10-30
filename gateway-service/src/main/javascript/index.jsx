@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Application from './components/Application';
 import { connect } from "react-redux";
 import moviesStore, { addLatestMovie, latestMoviesLoading } from './components/store/movies'
-import { movieGraphQLClient } from "./components/api";
+import {movieGraphQLClient, parseGraphQLError} from "./components/api";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
@@ -29,9 +29,9 @@ const latestMoviesQuery = gql`
 
 const MainPage = connect(null, { addLatestMovie })(props => {
     useEffect(() => {
-        // TODO parse exception
         movieGraphQLClient.request(latestMoviesQuery, { page: 0 })
-            .then(data => props.addLatestMovie({ ...data.latestMovies, currentPage: 0 }));
+            .then(data => props.addLatestMovie({ ...data.latestMovies, currentPage: 0 }))
+            .catch(e => parseGraphQLError(e, { latestMovies: 'Ошибка загрузки новых фильмов' }));
     });
 
     return (
@@ -104,9 +104,9 @@ const LatestMoviesList = connect(({ moviesStore: { latestMovies, movies } }) => 
             const newPage = latestMovies.currentPage + 1;
             props.latestMoviesLoading();
 
-            // TODO parse exception
             movieGraphQLClient.request(latestMoviesQuery, { page: newPage })
-                .then(data => props.addLatestMovie({ ...data.latestMovies, currentPage: newPage }));
+                .then(data => props.addLatestMovie({ ...data.latestMovies, currentPage: newPage }))
+                .catch(e => parseGraphQLError(e, { latestMovies: 'Ошибка загрузки новых фильмов' }));
         }
     };
 
