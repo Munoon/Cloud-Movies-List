@@ -22,6 +22,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication
 import org.springframework.security.oauth2.provider.OAuth2Request
 import org.springframework.security.oauth2.provider.token.TokenStore
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter
+import org.springframework.test.web.servlet.request.RequestPostProcessor
 import java.util.*
 import org.mockito.Mockito.`when` as mockWhen
 
@@ -48,6 +49,14 @@ abstract class AbstractTest {
         mockWhen(tokenStore.readAccessToken(accessToken.value)).thenReturn(accessToken)
         mockWhen(tokenStore.readAuthentication(accessToken)).thenReturn(authentication)
         return accessToken
+    }
+
+    protected fun authUser(user: User = TestUtils.DEFAULT_USER, oAuth2Request: OAuth2Request = TestUtils.DEFAULT_OAUTH_REQUEST): RequestPostProcessor {
+        val accessToken = getAccessToken(user, oAuth2Request)
+        return RequestPostProcessor {
+            it.addHeader("Authorization", "${OAuth2AccessToken.BEARER_TYPE} ${accessToken.value}")
+            it
+        }
     }
 
     @Configuration

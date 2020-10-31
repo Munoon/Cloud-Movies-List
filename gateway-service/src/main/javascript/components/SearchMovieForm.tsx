@@ -21,7 +21,10 @@ const SearchMovieForm = () => {
                 setOptions(data.findMovies.movies);
                 setLoading(false);
             })
-            .catch(e => parseGraphQLError(e, { findMovies: 'Ошибка поиска' }));
+            .catch(e => {
+                parseGraphQLError(e, { findMovies: 'Ошибка поиска' });
+                setLoading(false);
+            });
     };
 
     const searchMovie = (e: React.MouseEvent<HTMLElement>) => {

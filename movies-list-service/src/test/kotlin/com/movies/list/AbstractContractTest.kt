@@ -1,5 +1,6 @@
 package com.movies.list
 
+import com.movies.list.controllers.AbstractWebTest
 import com.movies.list.movies.Movie
 import com.movies.list.movies.MoviesGenres
 import com.movies.list.movies.MoviesService
@@ -10,30 +11,21 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc
 import io.restassured.module.mockmvc.config.RestAssuredMockMvcConfig
 import org.junit.Before
 import org.junit.runner.RunWith
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit4.SpringRunner
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.web.context.WebApplicationContext
 import java.nio.charset.StandardCharsets
 import java.time.LocalDate
 import java.time.LocalDateTime
 import org.mockito.Mockito.`when` as mockWhen
 
 @RunWith(SpringRunner::class)
-abstract class AbstractContractTest : AbstractTest() {
-    @Autowired
-    private lateinit var webApplicationContext: WebApplicationContext;
-
+abstract class AbstractContractTest : AbstractWebTest() {
     @MockBean
     private lateinit var moviesService: MoviesService
 
     @Before
     fun setup() {
-        val mockMvc = MockMvcBuilders
-                .webAppContextSetup(webApplicationContext)
-                .build();
-
+        val mockMvc = getNewMockMvc()
         RestAssuredMockMvc.mockMvc(mockMvc)
         RestAssuredMockMvc.config = RestAssuredMockMvcConfig()
                 .encoderConfig(EncoderConfig(StandardCharsets.UTF_8.name(), StandardCharsets.UTF_8.name()))

@@ -4,7 +4,6 @@ import com.movies.list.mediaTemplate.MediaTemplate
 import com.movies.list.mediaTemplate.MediaTemplateRepository
 import com.movies.list.mediaTemplate.MediaTemplateTo
 import com.movies.list.utils.JsonUtil
-import com.movies.list.utils.TestUtils.defaultUser
 import org.assertj.core.api.Assertions
 import org.bson.types.Binary
 import org.junit.jupiter.api.Test
@@ -22,7 +21,7 @@ internal class MediaTemplateControllerTest : AbstractWebTest() {
 
         val result = mockMvc.perform(multipart("/templates/create")
                 .file("file", fileByteArray)
-                .with(defaultUser()))
+                .with(authUser()))
                 .andExpect(status().isOk)
                 .andReturn()
 
