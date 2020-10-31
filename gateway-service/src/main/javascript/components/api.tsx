@@ -97,7 +97,8 @@ function parseError(error: ErrorInfo, prefix: string = "") {
 
 type GraphQLErrorParserType = { (errorInfo: ErrorInfo): void } | string
 export function parseGraphQLError(e: any, errorParser: Record<string, GraphQLErrorParserType> = {}) {
-    if (e.response.status === 200) {
+    const responseStatus = e.response.status;
+    if (responseStatus >= 200 && responseStatus < 300) {
         e.response.errors.forEach((error: any) => {
             if (error.extensions.errorInfo) {
                 const errorInfo = error.extensions.errorInfo as ErrorInfo;
@@ -116,8 +117,7 @@ export function parseGraphQLError(e: any, errorParser: Record<string, GraphQLErr
             }
         });
     } else {
-        const errorInfo = JSON.parse(e.response.error)
-        parseError(errorInfo)
+        parseError(e.response)
     }
 }
 
