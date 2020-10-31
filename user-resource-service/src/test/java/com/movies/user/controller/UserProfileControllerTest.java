@@ -11,7 +11,6 @@ import com.movies.user.user.to.UpdateProfileTo;
 import com.movies.user.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Collections;
 
 import static com.movies.user.user.UserTestData.*;
-import static com.movies.user.util.TestUtils.defaultUser;
 import static com.movies.user.util.TestUtils.errorType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

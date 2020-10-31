@@ -3,14 +3,12 @@ package com.movies.user.controller;
 import com.movies.common.user.User;
 import com.movies.common.user.UserRoles;
 import com.movies.user.user.UserRepository;
-import com.movies.user.user.UserTestData;
 import com.movies.user.user.to.RegisterUserTo;
 import com.movies.user.util.JsonUtil;
 import com.movies.user.util.mapper.LocalUserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +16,6 @@ import java.util.stream.Collectors;
 
 import static com.movies.user.user.UserTestData.*;
 import static com.movies.user.util.JsonUtil.readFromJson;
-import static com.movies.user.util.TestUtils.defaultUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
