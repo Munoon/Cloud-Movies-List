@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom';
 import Application from "./components/Application";
 import {SearchMovieItem} from "./components/SearchMovieForm";
 import {connect, DefaultRootState} from "react-redux";
-import {movieGraphQLClient} from "./components/api";
-import {Form} from 'react-bootstrap';
+import {movieGraphQLClient, parseGraphQLError} from "./components/api";
+import {Form, InputGroup, Button} from 'react-bootstrap';
 import {MovieImage} from "./components/MoviesComponents";
 import {Highlighter} from "react-bootstrap-typeahead";
-import {renderGenres} from "./components/misc";
+import {LoadingInput, renderGenres} from "./components/misc";
 import {gql} from "graphql-request/dist";
 
 declare var query: string[];
@@ -41,7 +41,7 @@ interface SearchData {
 const addItems = (data: SearchStore): SearchStoreAction => ({ type: SearchStoreActionType.ADD, data });
 const setItems = (data: SearchStore): SearchStoreAction => ({ type: SearchStoreActionType.SET, data });
 
-const storeDefaultData: SearchStore = { data: { movies: [], totalPages: 0, totalElements: 0 }, query: query[0], currentPage: 0 };
+const storeDefaultData: SearchStore = { data: { movies: [], totalPages: 0, totalElements: 0 }, query: query ? query[0] : '', currentPage: 0 };
 
 function searchStore(state: SearchStore = storeDefaultData, action: SearchStoreAction): SearchStore {
     switch (action.type) {
@@ -85,21 +85,45 @@ const requestQuery = gql`
 
 const findMovies = (query: string, page: number): Promise<SearchData> => new Promise((resolve) =>
     movieGraphQLClient.request(requestQuery, { query, page })
-        .then(data => resolve(data.findMovies)));
+        .then(data => resolve(data.findMovies))
+        .catch(e => parseGraphQLError(e, { findMovies: 'Ошибка поиска' })))
 
 const SearchInput = connect(null, { setItems })((props: { setItems: typeof setItems }) => {
-    const [inputQuery, setQuery] = useState(query[0]);
+    const [inputQuery, setQuery] = useState(query ? query[0] : '');
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        makeRequest();
+    };
+
+    const makeRequest = () => {
+        setLoading(true);
+        findMovies(inputQuery, 0)
+            .then(data => props.setItems({ data, query: inputQuery, currentPage: 0 }))
+            .then(() => setLoading(false));
+    };
 
     useEffect(() => {
-        findMovies(inputQuery, 0)
-            .then(data => props.setItems({ data, query: query[0], currentPage: 0 }));
-    });
+        if (inputQuery && inputQuery.length >= 1) {
+            makeRequest();
+        }
+    }, []);
+
+    const buttonDisabled = loading || inputQuery.length < 1;
 
     return (
-        <Form.Control title='' name='query'
-                      type='text' placeholder='Название фильма'
-                      value={inputQuery}
-                      onChange={e => setQuery(e.target.value)} />
+        <div className='input-group'>
+            <LoadingInput loading={loading}>
+                <Form.Control title='' name='query'
+                              type='text' placeholder='Название фильма'
+                              value={inputQuery}
+                              onChange={e => setQuery(e.target.value)} />
+            </LoadingInput>
+            <InputGroup.Append>
+                <Button variant='primary' onClick={handleSubmit} disabled={buttonDisabled}>Поиск</Button>
+            </InputGroup.Append>
+        </div>
     );
 });
 
@@ -122,6 +146,11 @@ const ResultList = connect((data: StoreState) => ({ searchStore: data.searchStor
             {props.searchStore.data.movies.map(movie => (
                 <MovieItem movie={movie} key={movie.id} search={props.searchStore.query} />
             ))}
+            {props.searchStore.data.movies.length === 0 && (
+                <div className='text-center'>
+                    <span>Мы не нашли ни одного фильма</span>
+                </div>
+            )}
             {props.searchStore.currentPage + 1 < props.searchStore.data.totalPages && (
                 <div className='text-center'>
                     <a href='#' className={loading ? 'btn btn-link disabled' : ''} onClick={handleLoadMoreClick}>Загрузить ещё</a>

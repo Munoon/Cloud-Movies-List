@@ -4,7 +4,7 @@ import {AsyncTypeahead, Highlighter} from "react-bootstrap-typeahead";
 import {Form, InputGroup} from "react-bootstrap";
 import {MovieImage} from "./MoviesComponents";
 import Button from "react-bootstrap/Button";
-import {renderGenres} from "./misc";
+import {LoadingInput, renderGenres} from "./misc";
 import {gql} from "graphql-request/dist";
 
 const SearchMovieForm = () => {
@@ -49,15 +49,17 @@ const SearchMovieForm = () => {
                         onChange={handleChange}
                         // @ts-ignore
                         renderInput={({ inputRef, referenceElementRef, ...inputProps }) => (
-                            <Form.Control
-                                {...inputProps}
-                                ref={(ref: HTMLInputElement) => {
-                                    inputRef(ref);
-                                    referenceElementRef(ref);
-                                }}
-                                placeholder='Название фильма'
-                                className={inputProps.className}
-                            />
+                            <LoadingInput loading={loading}>
+                                <Form.Control
+                                    {...inputProps}
+                                    ref={(ref: HTMLInputElement) => {
+                                        inputRef(ref);
+                                        referenceElementRef(ref);
+                                    }}
+                                    placeholder='Название фильма'
+                                    className={inputProps.className}
+                                />
+                            </LoadingInput>
                         )}
                         renderMenuItemChildren={(movie, props) => (
                             <MovieItem movie={movie} search={props.text} />

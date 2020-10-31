@@ -1,6 +1,7 @@
 import React from 'react';
-import { UserRole } from './store/user';
-import { SearchMovieItem } from "./SearchMovieForm";
+import {UserRole} from './store/user';
+import {SearchMovieItem} from "./SearchMovieForm";
+import {Spinner} from 'react-bootstrap';
 
 export const getMetaProperty = (name: string): string => {
     let el = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
@@ -39,6 +40,17 @@ export const InputField =
         {props.error && props.error !== '' && (<div className='invalid-feedback'>{props.error}</div>)}
     </div>
 ));
+
+export const LoadingInput = (props: { loading: boolean, children: React.ReactNode }) => (
+    <div className='loading-input-container'>
+        {props.children}
+        {props.loading && (
+            <Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+            </Spinner>
+        )}
+    </div>
+);
 
 export const getErrorsCount = (errors: {}): number => {
     let errorsCount = 0;

@@ -9,7 +9,7 @@ import javax.validation.constraints.Size
 
 @NoArgsConstructor
 data class CreateMoviesTo(
-        @field:Length(min = 2)
+        @field:Length(min = 1)
         val name: String,
 
         @field:Length(min = 1, max = 40)

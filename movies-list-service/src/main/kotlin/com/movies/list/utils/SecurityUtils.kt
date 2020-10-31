@@ -14,8 +14,7 @@ object SecurityUtils {
     }
 
     fun getAuthorizedUser(): AuthorizedUser =
-        safeGet()
-                ?: throw UnauthorizedUserException("No authorized user found")
+        safeGet() ?: throw UnauthorizedUserException("No authorized user found")
 
     fun authUser(): UserTo = getAuthorizedUser().userTo
 

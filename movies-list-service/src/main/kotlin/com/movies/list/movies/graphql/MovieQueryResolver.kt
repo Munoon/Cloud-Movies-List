@@ -6,6 +6,7 @@ import com.movies.list.movies.to.MovieTo
 import com.movies.list.movies.to.PagedMovie
 import com.movies.list.utils.SecurityUtils.authUserIdOrAnonymous
 import graphql.kickstart.tools.GraphQLQueryResolver
+import org.hibernate.validator.constraints.Length
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
@@ -30,7 +31,7 @@ class MovieQueryResolver(private val moviesService: MoviesService) : GraphQLQuer
         return PagedMovie(page.totalPages, page.totalElements, page.content)
     }
 
-    fun findMovies(findQuery: String, @Max(20) count: Int, page: Int): PagedMovie {
+    fun findMovies(@Length(min = 1) findQuery: String, @Max(20) count: Int, page: Int): PagedMovie {
         log.info("Find movies by query '$findQuery' (count: $count, page: $page) by user ${authUserIdOrAnonymous()}")
         val pageRequest = PageRequest.of(page, count)
         val page = moviesService.findMovieByNameAndOriginalName(findQuery, pageRequest)
