@@ -32,8 +32,7 @@ export const fetcher = (input: RequestInfo, init: CustomRequestInit = { headers:
     if (init.headers === undefined) {
         init.headers = {};
     }
-
-    if (!init.addContentTypeHeader) {
+    if (init.addContentTypeHeader === undefined) {
         init.addContentTypeHeader = true;
     }
 

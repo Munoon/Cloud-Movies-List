@@ -8,6 +8,7 @@ import org.assertj.core.api.Assertions
 import org.bson.types.Binary
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -18,9 +19,10 @@ internal class MediaTemplateControllerTest : AbstractWebTest() {
     @Test
     fun createTemplate() {
         val fileByteArray = "FILE TEXT".toByteArray()
+        val file = MockMultipartFile("file", "image.png", "image/png", fileByteArray)
 
         val result = mockMvc.perform(multipart("/templates/create")
-                .file("file", fileByteArray)
+                .file(file)
                 .with(authUser()))
                 .andExpect(status().isOk)
                 .andReturn()

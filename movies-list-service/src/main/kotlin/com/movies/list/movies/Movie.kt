@@ -18,6 +18,7 @@ data class Movie(
         @Id
         var id: String?,
 
+        @NotNull
         @Length(min = 1, max = 40)
         var name: String,
 
@@ -32,16 +33,21 @@ data class Movie(
         @NotNull
         val country: CountryCode,
 
+        @NotNull
         @Size(min = 1)
         val genres: Set<MoviesGenres>,
 
+        @NotNull
         val premiere: LocalDate,
 
+        @NotNull
         @Length(min = 1, max = 10)
         val age: String,
 
+        @NotNull
         @Length(min = 1, max = 10)
         val time: String,
 
+        @NotNull
         var registered: LocalDateTime
 )
