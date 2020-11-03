@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 import HeaderNavBar from './HeaderNavBar';
 import { getErrorsCount, InputField } from './misc';
 import Modal from "react-bootstrap/Modal";
@@ -22,13 +22,13 @@ const onStoreInitialized = () => {
 };
 let store: Store = null;
 
-const Application: FunctionComponent<{ additionalStore?: ReducersMapObject }> = ({ children, additionalStore }) => {
+const Application: FunctionComponent<{ additionalStore?: ReducersMapObject, miniApplication?: boolean, indexPage?: string }> = ({ children, additionalStore, miniApplication  = false, indexPage = '/' }) => {
     if (store === null) {
         initializeStore(additionalStore);
     }
     return (
         <Provider store={store}>
-            <HeaderNavBar />
+            <HeaderNavBar indexPage={indexPage} miniApplication={miniApplication} />
             <div className='container'>
                 {children}
             </div>
@@ -71,6 +71,15 @@ const RegisterModal = React.forwardRef((props, ref: { current: RegisterModalRef 
     const [loading, setLoading] = useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = useState(defaultEmailErrorMessage);
     const { register, handleSubmit, errors } = useForm<RegisterUser>();
+
+    useEffect(() => {
+        if (location.hash === '#registration') {
+            setTimeout(() => {
+                setShow(true);
+                location.hash = '';
+            }, 500);
+        }
+    }, []);
 
     ref.current = {
         show: () => setShow(true),

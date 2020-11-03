@@ -20,3 +20,8 @@ spring:
     driver-class-name: org.postgresql.Driver
     schema: classpath:db/schema.sql
     data: classpath:db/data.sql
+
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Movies List</title>
+</head>
+<body style="text-align: center;">
+    <h1>Нам не удалось перенаправить вас на главную страницу!</h1>
+    <h2 style="margin-bottom: 0;">Пожалуйста, сделайте это вручную.</h2>
+    <h2 style="margin: 0 0 0 0;">Возможно, вам прийдётся выполнить авторизацию ещё-раз.</h2>
+    <h2 style="margin-top: 0;">Приносим свои извинения за предоставленные неудобства.</h2>
+
+    <form th:action="@{/logout}" method="post">
+        <button>Выйти из аккаунта</button>
+    </form>
+</body>
+</html>

@@ -2,7 +2,7 @@ oauth:
   client:
     id: testClient
     secret: "{noop}password"
-    redirectUri: http://localhost:8080/login,http://10.0.114.148:8080/login
+    redirectUri: http://localhost:8080/login
     authorizedGrantTypes: authorization_code,refresh_token
     scopes: user_info
     autoApprove: true
@@ -15,3 +15,7 @@ spring:
     username: ${databases.users.username}
     password: ${databases.users.password}
     initialization-mode: always
+
+eureka:
+  instance:
+    hostname: 127.0.0.1

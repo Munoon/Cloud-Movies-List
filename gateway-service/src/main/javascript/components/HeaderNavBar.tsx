@@ -13,20 +13,22 @@ import SearchMovieForm from "./SearchMovieForm";
 
 const connectUserProp = (state: { user: User }) => ({ user: state.user });
 
-const HeaderNavBar = connect(connectUserProp)((props: { user: User }) => {
+const HeaderNavBar = connect(connectUserProp)((props: { user: User, miniApplication: boolean, indexPage: string }) => {
     let userAuthenticated = props.user !== null;
     return (
         <Navbar bg="dark" expand="lg" className='navbar-dark'>
             <div className='container'>
-                <Navbar.Brand href="/" className='text-white'>Movies List</Navbar.Brand>
+                <Navbar.Brand href={props.indexPage} className='text-white'>Movies List</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse>
-                    <Nav className="mr-auto">
-                        {userAuthenticated && hasRole('ROLE_ADMIN') && <AdminNavItem />}
-                        <UserNavBarItem userAuthenticated={userAuthenticated} />
-                    </Nav>
-                </Navbar.Collapse>
-                <SearchMovieForm />
+                {!props.miniApplication && (
+                    <Navbar.Collapse>
+                        <Nav className="mr-auto">
+                            {userAuthenticated && hasRole('ROLE_ADMIN') && <AdminNavItem />}
+                            <UserNavBarItem userAuthenticated={userAuthenticated} />
+                        </Nav>
+                    </Navbar.Collapse>
+                )}
+                {!props.miniApplication && <SearchMovieForm />}
             </div>
         </Navbar>
     );

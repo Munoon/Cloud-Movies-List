@@ -23,7 +23,8 @@ module.exports = {
             'index.jsx', 'profile.jsx',
             'users.jsx', 'movie.jsx',
             'add_movie.jsx', 'search.tsx',
-            'error.jsx', 'style.scss'
+            'error.jsx', 'login.tsx',
+            'style.scss'
         ]),
         'js/shared.min.js': ['react-dom', jsFile('components/Application.tsx')]
     },

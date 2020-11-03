@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Movies List | Вход</title>
+</head>
+<body onload="document.f.username.focus();">
+    <h1>Вход</h1>
+    <form th:action="@{/login}" name="f" method="post">
+        <fieldset>
+            <h2>Логин и пароль:</h2>
+            <p>
+                <label for="username">Логин</label>
+                <input type="text" id="username" name="username"/>
+            </p>
+            <p>
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password"/>
+            </p>
+            <p>
+                <input name="submit" type="submit" value="Войти" />
+            </p>
+        </fieldset>
+    </form>
+</body>
+</html>
