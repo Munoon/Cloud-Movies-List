@@ -35,7 +35,7 @@ class PasswordValidatorTest extends AbstractTest {
 
     @Test
     void testValid() {
-        var object = new ValidationObject("pass");
+        var object = new ValidationObject("password");
         Set<ConstraintViolation<ValidationObject>> validate = validator.validate(object);
         assertThat(validate).hasSize(0);
     }

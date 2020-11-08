@@ -11,4 +11,9 @@ public class RequestException extends RuntimeException {
         super(message);
         this.responseStatus = responseStatus;
     }
+
+    public RequestException(String message, HttpStatus responseStatus, Throwable cause) {
+        super(message, cause);
+        this.responseStatus = responseStatus;
+    }
 }

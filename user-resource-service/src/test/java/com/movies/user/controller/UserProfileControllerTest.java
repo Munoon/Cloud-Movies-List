@@ -82,7 +82,7 @@ class UserProfileControllerTest extends AbstractWebTest {
     @Test
     void updatePassword() throws Exception {
         UpdatePasswordTo updatePasswordTo = new UpdatePasswordTo();
-        updatePasswordTo.setOldPassword("pass");
+        updatePasswordTo.setOldPassword("password");
         updatePasswordTo.setNewPassword("newPassword");
 
         mockMvc.perform(post("/profile/update/password")
@@ -110,7 +110,7 @@ class UserProfileControllerTest extends AbstractWebTest {
                 .andExpect(errorType(ErrorType.VALIDATION_ERROR, ErrorInfoField.class));
 
         User actual = userService.getById(DEFAULT_USER_ID);
-        assertThat(passwordEncoder.matches("pass", actual.getPassword())).isTrue();
+        assertThat(passwordEncoder.matches("password", actual.getPassword())).isTrue();
     }
 
     @Test
@@ -121,7 +121,7 @@ class UserProfileControllerTest extends AbstractWebTest {
         mockMvc.perform(delete("/profile")
                 .with(defaultUser())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(Collections.singletonMap("password", "pass"))))
+                .content(JsonUtil.writeValue(Collections.singletonMap("password", "password"))))
                 .andExpect(status().isOk());
 
         assertThat(userService.findAll(request)).hasSize(0);

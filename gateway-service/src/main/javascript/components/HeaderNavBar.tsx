@@ -19,16 +19,18 @@ const HeaderNavBar = connect(connectUserProp)((props: { user: User, miniApplicat
         <Navbar bg="dark" expand="lg" className='navbar-dark'>
             <div className='container'>
                 <Navbar.Brand href={props.indexPage} className='text-white'>Movies List</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 {!props.miniApplication && (
-                    <Navbar.Collapse>
-                        <Nav className="mr-auto">
-                            {userAuthenticated && hasRole('ROLE_ADMIN') && <AdminNavItem />}
-                            <UserNavBarItem userAuthenticated={userAuthenticated} />
-                        </Nav>
-                    </Navbar.Collapse>
+                    <>
+                        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                        <Navbar.Collapse>
+                            <Nav className="mr-auto">
+                                {userAuthenticated && hasRole('ROLE_ADMIN') && <AdminNavItem />}
+                                <UserNavBarItem userAuthenticated={userAuthenticated} />
+                            </Nav>
+                        </Navbar.Collapse>
+                        <SearchMovieForm />
+                    </>
                 )}
-                {!props.miniApplication && <SearchMovieForm />}
             </div>
         </Navbar>
     );

@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public ModelAndView notFoundExceptionHandler(HttpServletRequest req, Exception e) {
+    public ModelAndView globalExceptionHandler(HttpServletRequest req, Exception e) {
         log.error("Exception on request {}", req.getRequestURL(), e);
         return getErrorModel(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }

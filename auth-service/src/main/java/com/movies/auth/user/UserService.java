@@ -15,12 +15,18 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username)
+        User user = userRepository.findByEmail(username.toLowerCase())
                 .stream()
                 .map(LocalUserMapper.INSTANCE::asUser)
                 .findFirst()
                 .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found!"));
 
         return new AuthorizedUser(user);
+    }
+
+    public User getById(int id) {
+        return userRepository.findById(id)
+                .map(LocalUserMapper.INSTANCE::asUser)
+                .orElseThrow(() -> new UsernameNotFoundException("User with id '" + id + "' is not found!"));
     }
 }

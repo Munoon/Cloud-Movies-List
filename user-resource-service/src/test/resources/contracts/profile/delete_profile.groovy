@@ -10,9 +10,7 @@ Contract.make {
             contentType applicationJson()
             header("Authorization", "bearer DEFAULT_USER")
         }
-        body (
-                password: "pass"
-        )
+        body (password: "password")
     }
 
     response {

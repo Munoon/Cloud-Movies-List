@@ -29,7 +29,7 @@ public class UserService {
     }
 
     public User getByEmail(String email) {
-        return userRepository.findByEmail(email)
+        return userRepository.findByEmail(email.toLowerCase())
                 .map(LocalUserMapper.INSTANCE::asUser)
                 .orElseThrow(() -> new NotFoundException("User with email '" + email + "' is not found!"));
     }

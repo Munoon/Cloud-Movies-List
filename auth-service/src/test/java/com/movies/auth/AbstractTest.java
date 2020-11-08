@@ -2,6 +2,7 @@ package com.movies.auth;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 
 @ActiveProfiles("test")
 @SpringBootTest(properties = {
@@ -14,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
         "oauth.client.accessTokenValiditySeconds=" + TestConfigurationProperties.OAUTH_CLIENT_ACCESS_TOKEN_VALIDITY_SECONDS,
         "oauth.client.refreshTokenValiditySeconds=" + TestConfigurationProperties.OAUTH_CLIENT_REFRESH_TOKEN_VALIDITY_SECONDS
 })
+@Sql(scripts = { "classpath:db/data.sql" })
 public abstract class AbstractTest {
 
 }

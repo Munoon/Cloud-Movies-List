@@ -39,7 +39,7 @@ class LogoutUserFilterTest extends AbstractTest {
     @Test
     void logoutAfterUpdatingProfilePassword() throws Exception {
         Map<String, Object> body = new HashMap<>();
-        body.put("oldPassword", "pass");
+        body.put("oldPassword", "password");
         body.put("newPassword", "newPassword");
         UserTo expected = new UserTo(100, "Nikita", "Ivchenko", "munoongg@gmail.com", Set.of(UserRoles.ROLE_USER, UserRoles.ROLE_ADMIN));
 
@@ -56,7 +56,7 @@ class LogoutUserFilterTest extends AbstractTest {
     @Test
     void logoutAfterDeletingProfile() throws Exception {
         Map<String, Object> body = new HashMap<>();
-        body.put("password", "pass");
+        body.put("password", "password");
 
         mockMvc.perform(delete("/users/profile")
                 .contentType(MediaType.APPLICATION_JSON)

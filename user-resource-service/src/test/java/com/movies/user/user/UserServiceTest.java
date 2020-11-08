@@ -193,7 +193,7 @@ class UserServiceTest extends AbstractTest {
 
     @Test
     void testPassword() {
-        assertThat(userService.testPassword(DEFAULT_USER_ID, "pass")).isTrue();
+        assertThat(userService.testPassword(DEFAULT_USER_ID, "password")).isTrue();
         assertThat(userService.testPassword(DEFAULT_USER_ID, "unCorrectPass")).isFalse();
     }
 }

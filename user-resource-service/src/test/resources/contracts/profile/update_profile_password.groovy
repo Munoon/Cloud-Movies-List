@@ -11,7 +11,7 @@ Contract.make {
             header("Authorization", "bearer DEFAULT_USER")
         }
         body (
-                oldPassword: "pass",
+                oldPassword: "password",
                 newPassword: "newPassword"
         )
     }
