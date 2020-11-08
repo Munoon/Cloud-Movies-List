@@ -8,13 +8,11 @@ databases:
     url: jdbc:postgresql://localhost:5432/movies-users
     username: postgres
     password: password
-  movies:
-    host: localhost
-    port: 27017
-    authentication-database: admin
-    database: movies-list
-    username: mongodb
-    password: password
+
+oauth2:
+  client:
+    clientId: web
+    clientSecret: password
 
 jwt:
   keyValue: |

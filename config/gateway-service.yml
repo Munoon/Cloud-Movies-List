@@ -3,8 +3,8 @@ security:
     client:
       accessTokenUri: http://localhost:8030/uaa/oauth/token
       userAuthorizationUri: http://127.0.0.1:8030/uaa/oauth/authorize
-      clientId: testClient
-      clientSecret: password
+      clientId: ${oauth2.client.clientId}
+      clientSecret: ${oauth2.client.password}
 
 eureka:
   instance:

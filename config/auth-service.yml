@@ -1,13 +1,15 @@
-oauth:
-  client:
-    id: testClient
-    secret: "{noop}password"
-    redirectUri: http://localhost:8080/login
-    authorizedGrantTypes: authorization_code,refresh_token
-    scopes: user_info
-    autoApprove: true
-    accessTokenValiditySeconds: 3600
-    refreshTokenValiditySeconds: 86400
+oauth2:
+  clients:
+    - id: ${oauth2.client.clientId}
+      secret: ${oauth2.client.password}
+      redirectUri: http://localhost:8080/login
+      authorizedGrantTypes:
+        - authorization_code
+        - refresh_token
+      scopes: user_info
+      autoApprove: true
+      accessTokenValiditySeconds: 3600
+      refreshTokenValiditySeconds: 86400
 
 spring:
   datasource:

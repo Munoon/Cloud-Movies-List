@@ -7,9 +7,9 @@ security:
 spring:
   data:
     mongodb:
-      host: ${databases.movies.host}
-      port: ${databases.movies.port}
-      authentication-database: ${databases.movies.authentication-database}
-      database: ${databases.movies.database}
-      username: ${databases.movies.username}
-      password: ${databases.movies.password}
+      host: localhost
+      port: 27017
+      authentication-database: admin
+      database: movies-list
+      username: mongodb
+      password: password

@@ -1,6 +1,7 @@
 package com.movies.auth.config;
 
 import com.movies.auth.authentications.UserAuthenticationService;
+import com.movies.auth.oauth2.CustomClientDetailsService;
 import com.movies.auth.user.UserService;
 import com.movies.common.AuthorizedUser;
 import com.movies.common.user.CustomUserAuthenticationConverter;
@@ -33,26 +34,19 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     private final Environment environment;
     private final Resource storeFile;
     private final UserAuthenticationService userAuthenticationService;
+    private final CustomClientDetailsService customClientDetailsService;
 
-    public AuthServerConfig(UserService userService, Environment environment, @Value("${jwt.certificate.store.file}") Resource storeFile, UserAuthenticationService userAuthenticationService) {
+    public AuthServerConfig(UserService userService, Environment environment, @Value("${jwt.certificate.store.file}") Resource storeFile, UserAuthenticationService userAuthenticationService, CustomClientDetailsService customClientDetailsService) {
         this.userService = userService;
         this.environment = environment;
         this.storeFile = storeFile;
         this.userAuthenticationService = userAuthenticationService;
+        this.customClientDetailsService = customClientDetailsService;
     }
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients
-                .inMemory()
-                .withClient(environment.getRequiredProperty("oauth.client.id"))
-                .secret(environment.getRequiredProperty("oauth.client.secret"))
-                .redirectUris(environment.getRequiredProperty("oauth.client.redirectUri").split(","))
-                .authorizedGrantTypes(environment.getRequiredProperty("oauth.client.authorizedGrantTypes").split(","))
-                .scopes(environment.getRequiredProperty("oauth.client.scopes").split(","))
-                .autoApprove(environment.getRequiredProperty("oauth.client.autoApprove", Boolean.class))
-                .accessTokenValiditySeconds(environment.getRequiredProperty("oauth.client.accessTokenValiditySeconds", Integer.class))
-                .refreshTokenValiditySeconds(environment.getRequiredProperty("oauth.client.refreshTokenValiditySeconds", Integer.class));
+        clients.withClientDetails(customClientDetailsService);
     }
 
     @Override
