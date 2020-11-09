@@ -18,10 +18,10 @@ public class RootController {
     public String login(Model model) throws MalformedURLException {
         ServiceInstance gatewayServiceInstance = gatewayServiceHolder.getGatewayServiceInstance();
         if (gatewayServiceInstance == null) {
-            return "login_static";
+            return "static/login";
         }
 
         model.addAttribute("gatewayService", gatewayServiceInstance.getUri().toURL().toString());
-        return "login";
+        return "gateway/login";
     }
 }

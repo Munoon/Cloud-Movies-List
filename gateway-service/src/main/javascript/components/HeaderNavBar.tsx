@@ -1,36 +1,49 @@
 import React from 'react';
-import { hasRole } from './misc';
-import { REGISTER_MODAL_INSTANCE } from './Application';
+import {hasRole} from './misc';
+import {REGISTER_MODAL_INSTANCE} from './Application';
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import NavDropdown  from "react-bootstrap/NavDropdown";
+import NavDropdown from "react-bootstrap/NavDropdown";
 import Button from "react-bootstrap/Button";
-import { connect } from "react-redux";
-import { removeUser, User } from "./store/user";
-import { fetcher } from "./api";
-import { DropdownItemProps } from "react-bootstrap/DropdownItem";
+import {connect} from "react-redux";
+import {removeUser, User} from "./store/user";
+import {fetcher} from "./api";
+import {DropdownItemProps} from "react-bootstrap/DropdownItem";
 import SearchMovieForm from "./SearchMovieForm";
 
 const connectUserProp = (state: { user: User }) => ({ user: state.user });
 
 const HeaderNavBar = connect(connectUserProp)((props: { user: User, miniApplication: boolean, indexPage: string }) => {
     let userAuthenticated = props.user !== null;
+    let menuButtons;
+    if (props.miniApplication && userAuthenticated) {
+        menuButtons = (
+            <Navbar.Collapse>
+                <Nav className="mr-auto">
+                    <SmallUserInformation />
+                </Nav>
+            </Navbar.Collapse>
+        );
+    }
+    if (!props.miniApplication) {
+        menuButtons = (
+            <>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse>
+                    <Nav className="mr-auto">
+                        {userAuthenticated && hasRole('ROLE_ADMIN') && <AdminNavItem />}
+                        <UserNavBarItem userAuthenticated={userAuthenticated} />
+                    </Nav>
+                </Navbar.Collapse>
+                <SearchMovieForm />
+            </>
+        );
+    }
     return (
         <Navbar bg="dark" expand="lg" className='navbar-dark'>
             <div className='container'>
                 <Navbar.Brand href={props.indexPage} className='text-white'>Movies List</Navbar.Brand>
-                {!props.miniApplication && (
-                    <>
-                        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                        <Navbar.Collapse>
-                            <Nav className="mr-auto">
-                                {userAuthenticated && hasRole('ROLE_ADMIN') && <AdminNavItem />}
-                                <UserNavBarItem userAuthenticated={userAuthenticated} />
-                            </Nav>
-                        </Navbar.Collapse>
-                        <SearchMovieForm />
-                    </>
-                )}
+                {menuButtons}
             </div>
         </Navbar>
     );
@@ -62,6 +75,13 @@ const ProfileUserNavBarItem = connect(connectUserProp, { removeUser })((props: {
         </NavDropdown>
     )
 });
+
+const SmallUserInformation = connect(connectUserProp, null)((props: { user: User }) => (
+    <NavDropdown title={`${props.user.name} ${props.user.surname}`}
+                 id="userNavbarDropdown" className='text-white'>
+        <NavDropdown.Item disabled>{props.user.email}</NavDropdown.Item>
+    </NavDropdown>
+));
 
 const LoginUserNavBarItem = () => (
     <>
