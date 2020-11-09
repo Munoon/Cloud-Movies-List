@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import org.springframework.validation.annotation.Validated
+import javax.servlet.http.Part
 import javax.validation.Valid
 
 @Component
@@ -18,9 +19,9 @@ class MovieMutationResolver(private val moviesService: MoviesService): GraphQLMu
     private val log = LoggerFactory.getLogger(MovieMutationResolver::class.java)
 
     @PreAuthorize("hasRole('ADMIN')")
-    fun addMovie(@Valid createMoviesTo: CreateMoviesTo): MovieTo {
+    fun addMovie(@Valid createMoviesTo: CreateMoviesTo, avatar: Part?): MovieTo {
         log.info("Add movie $createMoviesTo by user ${authUserId()}")
-        val movie = moviesService.createMovie(createMoviesTo);
+        val movie = moviesService.createMovie(createMoviesTo, avatar);
         return MovieMapper.INSTANCE.asMovieTo(movie)
     }
 }

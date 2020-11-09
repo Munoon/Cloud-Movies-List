@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 import Application from './components/Application';
 import {InputField} from "./components/misc";
-import {fetcher, movieGraphQLClient, parseGraphQLError} from "./components/api";
+import {fetcher} from "./components/api";
 import FormCheck from "react-bootstrap/FormCheck";
 import {useForm} from "react-hook-form";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -11,52 +11,55 @@ import {gql} from "graphql-request/dist";
 
 const addMovieQuery = gql`
     mutation($name: String!, $originalName: String,
-        $avatarImageId: String, $about: String,
+        $avatar: Upload, $about: String,
         $country: String!, $genres: [String]!,
         $premiere: LocalDate!, $age: String, $time: String) {
         addMovie(newMovie: {
             name: $name,
             originalName: $originalName,
-            avatarImageId: $avatarImageId,
             about: $about,
             country: $country,
             genres: $genres,
             premiere: $premiere,
             age: $age,
             time: $time
-        }) { id }
+        }, avatar: $avatar) { id }
     }
 `;
 
 const AddMovie = () => {
-    const [avatarImageId, setAvatarImageId] = useState(null)
+    const [fileUploaded, setFileUploaded] = useState(null);
+    const fileInput = useRef(null);
     const { register, handleSubmit, errors } = useForm();
 
     const onSubmit = data => {
-        let sendData = { ...data, avatarImageId };
-
-        movieGraphQLClient.request(addMovieQuery, sendData)
-            .then(data => location.href = `/movie/${data.addMovie.id}`)
-            .catch(e => parseGraphQLError(e, { addMovie: 'Ошибка создания фильма' }));
-    };
-
-    const addFileHandler = e => {
         const formData = new FormData()
-        formData.append('file', e.target.files[0]);
-        setAvatarImageId(null);
+        formData.append('file', fileInput.current.files[0]);
+        formData.append('map', `{"file": ["variables.avatar"]}`);
+        formData.append('operations', JSON.stringify({
+            query: addMovieQuery,
+            variables: { ...data }
+        }));
 
-        fetcher('/movies/templates/create', {
+        fetcher('/movies/graphql', {
             method: 'POST',
             body: formData,
             addContentTypeHeader: false
-        }).then(data => setAvatarImageId(data.id))
-            .catch(e => e.useDefaultErrorParser());
+        }).then(({ data }) => {
+            if (data && data.addMovie) {
+                location.href = `/movie/${data.addMovie.id}`;
+            } else {
+                toast.error("Ошибка создания фильма");
+            }
+        }).catch(e => e.useDefaultErrorParser());
     };
 
     return (
         <Application>
             <form>
-                <input type="file" name='file' id='addAvatarFileInput' onChange={addFileHandler} hidden/>
+                <input type="file" name='file' id='addAvatarFileInput'
+                       ref={fileInput}
+                       onChange={() => setFileUploaded(false)} hidden/>
             </form>
 
             <form className='jumbotron mt-3' onSubmit={handleSubmit(onSubmit)}>
@@ -71,7 +74,7 @@ const AddMovie = () => {
 
                 <div>
                     <label htmlFor="addAvatarFileInput" className='btn btn-primary'>Добавить изображение</label>
-                    {avatarImageId !== null && <FontAwesomeIcon icon={faCheck} className='ml-1 text-success' />}
+                    {fileUploaded !== null && <FontAwesomeIcon icon={faCheck} className='ml-1 text-success' />}
                 </div>
 
                 <InputField

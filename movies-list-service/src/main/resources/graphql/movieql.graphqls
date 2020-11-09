@@ -5,6 +5,7 @@ schema {
 
 scalar LocalDate
 scalar LocalDateTime
+scalar Upload
 
 type Movie {
     id: ID!,
@@ -23,7 +24,6 @@ type Movie {
 input CreateMovie {
     name: String!,
     originalName: String,
-    avatarImageId: String,
     about: String,
     country: String!,
     genres: [String]!,
@@ -45,5 +45,5 @@ type Query {
 }
 
 type Mutation {
-    addMovie(newMovie: CreateMovie!): Movie
+    addMovie(newMovie: CreateMovie!, avatar: Upload): Movie
 }

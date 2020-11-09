@@ -1,7 +1,6 @@
 package com.movies.list.movies.graphql
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.graphql.spring.boot.test.GraphQLTestTemplate
 import com.movies.list.AbstractTest
 import com.movies.list.movies.MoviesGenres
 import com.movies.list.movies.MoviesService
@@ -25,7 +24,7 @@ class MovieQueryResolverTest : AbstractTest() {
 
     @Test
     fun getMovie() {
-        val movie = moviesService.createMovie(CreateMoviesTo("Name", "OName", null, "about", CountryCode.US, emptySet(), LocalDate.of(2019, 12, 27), "0+", "1:20"))
+        val movie = moviesService.createMovie(CreateMoviesTo("Name", "OName", "about", CountryCode.US, emptySet(), LocalDate.of(2019, 12, 27), "0+", "1:20"), null)
 
         val variables = ObjectMapper().createObjectNode()
                 .apply { put("id", movie.id) }
@@ -40,8 +39,8 @@ class MovieQueryResolverTest : AbstractTest() {
 
     @Test
     fun getLatestMovies() {
-        val createdMovie = moviesService.createMovie(CreateMoviesTo("Test Movie", "Original Name", null, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"))
-        val createdMovie2 = moviesService.createMovie(CreateMoviesTo("Test Movie 2", "Original Name", null, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"))
+        val createdMovie = moviesService.createMovie(CreateMoviesTo("Test Movie", "Original Name", "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"), null)
+        val createdMovie2 = moviesService.createMovie(CreateMoviesTo("Test Movie 2", "Original Name", "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"), null)
         val expectedMovie1 = MovieTo(createdMovie.id, "Test Movie", "Original Name", false, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16", createdMovie.registered)
         val expectedMovie2 = MovieTo(createdMovie2.id, "Test Movie 2", "Original Name", false, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16", createdMovie2.registered)
 
@@ -63,10 +62,10 @@ class MovieQueryResolverTest : AbstractTest() {
 
     @Test
     fun findMovies() {
-        val createdMovie = moviesService.createMovie(CreateMoviesTo("Test Movie", "Test Name", null, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"))
+        val createdMovie = moviesService.createMovie(CreateMoviesTo("Test Movie", "Test Name", "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"), null)
         val expectedMovie = MovieTo(createdMovie.id, "Test Movie", "Test Name", false, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16", createdMovie.registered)
 
-        val createdMovie2 = moviesService.createMovie(CreateMoviesTo("Original Movie", "Original Movie", null, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"))
+        val createdMovie2 = moviesService.createMovie(CreateMoviesTo("Original Movie", "Original Movie", "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"), null)
         val expectedMovie2 = MovieTo(createdMovie2.id, "Original Movie", "Original Movie", false, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16", createdMovie2.registered)
 
         val response = graphQLRestTemplate.perform("graphql/find_movie.graphql")

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.PropertyAccessor
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import graphql.kickstart.servlet.apollo.ApolloScalars
+import graphql.schema.GraphQLScalarType
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
@@ -46,6 +48,11 @@ class MvcConfig : WebMvcConfigurer {
         val arrayHttpMessageConverter = ByteArrayHttpMessageConverter()
         arrayHttpMessageConverter.supportedMediaTypes = getSupportedMediaTypes()
         return arrayHttpMessageConverter
+    }
+
+    @Bean
+    fun uploadScalar(): GraphQLScalarType {
+        return ApolloScalars.Upload
     }
 
     private fun getSupportedMediaTypes(): List<MediaType> {

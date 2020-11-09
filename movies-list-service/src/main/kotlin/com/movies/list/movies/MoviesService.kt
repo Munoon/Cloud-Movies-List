@@ -1,24 +1,22 @@
 package com.movies.list.movies
 
-import com.movies.list.mediaTemplate.MediaTemplateService
 import com.movies.list.movies.to.CreateMoviesTo
 import com.movies.list.utils.exception.NotFoundException
+import org.bson.types.Binary
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import javax.servlet.http.Part
 
 @Service
-class MoviesService(
-        private val moviesRepository: MoviesRepository,
-        private val mediaTemplateService: MediaTemplateService
-) {
-    fun createMovie(createMoviesTo: CreateMoviesTo): Movie {
+class MoviesService(private val moviesRepository: MoviesRepository) {
+    fun createMovie(createMoviesTo: CreateMoviesTo, avatar: Part?): Movie {
         var movie = MovieMapper.INSTANCE.asMovie(createMoviesTo);
-        if (createMoviesTo.avatarImageId !== null) {
-            val template = mediaTemplateService.getById(createMoviesTo.avatarImageId)
-            movie = movie.copy(avatar = template.media)
+        if (avatar != null) {
+            val avatarBytes = avatar.inputStream.readAllBytes()
+            movie = movie.copy(avatar = Binary(avatarBytes))
         }
         return moviesRepository.save(movie);
     }

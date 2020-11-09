@@ -15,8 +15,6 @@ data class CreateMoviesTo(
         @field:Length(min = 1, max = 40)
         val originalName: String?,
 
-        val avatarImageId: String?,
-
         @field:Length(max = 300)
         val about: String?,
 

@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 internal class MovieMapperTest {
     @Test
     internal fun asMovie() {
-        val movie = MovieMapper.INSTANCE.asMovie(CreateMoviesTo("Test Name", "Original Name", null, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.now(), "16+", "1:12:23"))
+        val movie = MovieMapper.INSTANCE.asMovie(CreateMoviesTo("Test Name", "Original Name", "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.now(), "16+", "1:12:23"))
         assertMatch(movie, Movie(null, "Test Name", "Original Name", null, "About", CountryCode.US, setOf(MoviesGenres.ACTION), movie.premiere, "16+", "1:12:23", movie.registered))
     }
 
