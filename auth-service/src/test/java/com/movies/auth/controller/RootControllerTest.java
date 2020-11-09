@@ -23,7 +23,7 @@ class RootControllerTest extends AbstractWebTest {
 
         mockMvc.perform(get("/login"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("login_static"));
+                .andExpect(view().name("static/login"));
     }
 
     @Test
@@ -33,7 +33,7 @@ class RootControllerTest extends AbstractWebTest {
 
         mockMvc.perform(get("/login"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("login"))
+                .andExpect(view().name("gateway/login"))
                 .andExpect(model().attribute("gatewayService", "http://localhost:8080"));
     }
 }

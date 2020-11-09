@@ -25,7 +25,7 @@ class GlobalExceptionHandlerTest extends AbstractTest {
         when(gatewayServiceHolder.getGatewayServiceInstance()).thenReturn(null);
 
         String result = globalExceptionHandler.noHandlerFoundExceptionHandler();
-        assertThat(result).isEqualTo("redirect_error");
+        assertThat(result).isEqualTo("static/redirect_error");
     }
 
     @Test
