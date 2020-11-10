@@ -10,7 +10,7 @@ import javax.validation.constraints.Size
 
 @KotlinBuilder
 @NoArgsConstructor
-data class CreateMoviesTo(
+data class CreateMovieTo(
         @field:Length(min = 1)
         val name: String,
 

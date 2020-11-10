@@ -1,6 +1,6 @@
 package com.movies.list.movies
 
-import com.movies.list.movies.to.CreateMoviesTo
+import com.movies.list.movies.to.CreateMovieTo
 import com.movies.list.utils.exception.NotFoundException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -11,8 +11,8 @@ import javax.servlet.http.Part
 
 @Service
 class MoviesService(private val moviesRepository: MoviesRepository) {
-    fun createMovie(createMoviesTo: CreateMoviesTo, avatar: Part?): Movie {
-        val movie = createMoviesTo.asMovie(avatar)
+    fun createMovie(createMovieTo: CreateMovieTo, avatar: Part?): Movie {
+        val movie = createMovieTo.asMovie(avatar)
         return moviesRepository.save(movie);
     }
 

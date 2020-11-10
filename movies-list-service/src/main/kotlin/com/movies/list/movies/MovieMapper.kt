@@ -1,7 +1,7 @@
 package com.movies.list.movies
 
 import com.movies.common.movie.SmallMovieTo
-import com.movies.list.movies.to.CreateMoviesTo
+import com.movies.list.movies.to.CreateMovieTo
 import com.movies.list.movies.to.MovieTo
 import org.bson.types.Binary
 import org.mapstruct.Mapper
@@ -17,7 +17,7 @@ abstract class MovieMapper {
             Mapping(target = "avatar", expression = "java(null)"),
             Mapping(target = "registered", expression = "java(java.time.LocalDateTime.now())")
     )
-    abstract fun asMovie(createMoviesTo: CreateMoviesTo): Movie
+    abstract fun asMovie(createMovieTo: CreateMovieTo): Movie
 
     @Mapping(target = "hasAvatar", expression = "java(movie.getAvatar() != null)")
     abstract fun asMovieTo(movie: Movie): MovieTo
@@ -25,8 +25,8 @@ abstract class MovieMapper {
     @Mapping(target = "hasAvatar", expression = "java(movie.getAvatar() != null)")
     abstract fun asSmallMovie(movie: Movie): SmallMovieTo
 
-    fun asMovie(createMoviesTo: CreateMoviesTo, avatar: Part?): Movie {
-        val movie = asMovie(createMoviesTo)
+    fun asMovie(createMovieTo: CreateMovieTo, avatar: Part?): Movie {
+        val movie = asMovie(createMovieTo)
         return if (avatar != null) movie.copy(avatar = Binary(avatar.inputStream.readAllBytes()))
             else movie
     }
@@ -36,6 +36,6 @@ abstract class MovieMapper {
     }
 }
 
-fun CreateMoviesTo.asMovie(avatar: Part?): Movie = MovieMapper.INSTANCE.asMovie(this, avatar)
+fun CreateMovieTo.asMovie(avatar: Part?): Movie = MovieMapper.INSTANCE.asMovie(this, avatar)
 fun Movie.asMovieTo(): MovieTo = MovieMapper.INSTANCE.asMovieTo(this)
 fun Movie.asSmallMovie(): SmallMovieTo = MovieMapper.INSTANCE.asSmallMovie(this)

@@ -2,7 +2,7 @@ package com.movies.list.movies.graphql
 
 import com.movies.list.movies.MoviesService
 import com.movies.list.movies.asMovieTo
-import com.movies.list.movies.to.CreateMoviesTo
+import com.movies.list.movies.to.CreateMovieTo
 import com.movies.list.movies.to.MovieTo
 import com.movies.list.utils.SecurityUtils.authUserId
 import graphql.kickstart.tools.GraphQLMutationResolver
@@ -19,9 +19,9 @@ class MovieMutationResolver(private val moviesService: MoviesService): GraphQLMu
     private val log = LoggerFactory.getLogger(MovieMutationResolver::class.java)
 
     @PreAuthorize("hasRole('ADMIN')")
-    fun addMovie(@Valid createMoviesTo: CreateMoviesTo, avatar: Part?): MovieTo {
-        log.info("Add movie $createMoviesTo by user ${authUserId()}")
-        val movie = moviesService.createMovie(createMoviesTo, avatar);
+    fun addMovie(@Valid createMovieTo: CreateMovieTo, avatar: Part?): MovieTo {
+        log.info("Add movie $createMovieTo by user ${authUserId()}")
+        val movie = moviesService.createMovie(createMovieTo, avatar);
         return movie.asMovieTo()
     }
 }

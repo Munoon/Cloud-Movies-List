@@ -2,7 +2,7 @@ package com.movies.list.movies
 
 import com.movies.common.movie.SmallMovieTo
 import com.movies.list.movies.MoviesTestData.assertMatch
-import com.movies.list.movies.to.CreateMoviesTo
+import com.movies.list.movies.to.CreateMovieTo
 import com.movies.list.movies.to.MovieTo
 import com.neovisionaries.i18n.CountryCode
 import org.assertj.core.api.Assertions.assertThat
@@ -15,12 +15,12 @@ import java.time.LocalDateTime
 internal class MovieMapperTest {
     @Test
     internal fun asMovie() {
-        val movie = CreateMoviesTo("Test Name", "Original Name", "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.now(), "16+", "1:12:23")
+        val movie = CreateMovieTo("Test Name", "Original Name", "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.now(), "16+", "1:12:23")
                 .asMovie(null)
         assertMatch(movie, Movie(null, "Test Name", "Original Name", null, "About", CountryCode.US, setOf(MoviesGenres.ACTION), movie.premiere, "16+", "1:12:23", movie.registered))
 
         val avatar = "AVATAR".toByteArray();
-        val movie2 = CreateMoviesTo("Test Name", "Original Name", "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.now(), "16+", "1:12:23")
+        val movie2 = CreateMovieTo("Test Name", "Original Name", "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.now(), "16+", "1:12:23")
                 .asMovie(MockPart("avatar", avatar))
         assertMatch(movie2, Movie(null, "Test Name", "Original Name", Binary(avatar), "About", CountryCode.US, setOf(MoviesGenres.ACTION), movie.premiere, "16+", "1:12:23", movie.registered))
     }
