@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import HeaderNavBar from './HeaderNavBar';
-import { getErrorsCount, InputField } from './misc';
+import {getErrorsCount, InputField, PasswordField} from './misc';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { useForm } from "react-hook-form";
@@ -154,9 +154,8 @@ const RegisterModal = React.forwardRef((props, ref: { current: RegisterModalRef 
                         })}
                         />
 
-                    <InputField
-                        id='registerPasswordInput' type='password' title='Пароль'
-                        name='password'
+                    <PasswordField
+                        placeholder='Пароль'
                         ref={register({ minLength: 8, required: true })}
                         error={getError(errors.password?.type, {
                             minLength: 'Пароль должен содержать хотя-бы 8 символов'

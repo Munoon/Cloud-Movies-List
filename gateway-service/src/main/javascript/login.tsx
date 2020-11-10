@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import Application from "./components/Application";
-import {getErrorsCount, getMetaProperty, InputField} from "./components/misc";
+import {getErrorsCount, getMetaProperty, InputField, PasswordField} from "./components/misc";
 import {useForm} from "react-hook-form";
 import Spinner from "react-bootstrap/Spinner";
 import {Button} from 'react-bootstrap';
@@ -48,10 +48,7 @@ const LoginForm = (props: { gatewayServiceUrl: string }) => {
                 type='text'
                 ref={register({ required: true })} />
 
-            <InputField
-                title='Пароль'
-                name='password'
-                type='password'
+            <PasswordField
                 ref={register({ required: true, minLength: 8 })}
                 error={getError('password', {
                     minLength: 'Пароль должен содержать хотя-бы 8 символов',
@@ -73,7 +70,7 @@ const SuccessLoggedOutMessage = () => <LoginMessage variant='success'
                                                     text='Вы успешно вышли из аккаунта!' />;
 
 const LoginErrorMessage = () => <LoginMessage variant='danger'
-                                              text={'Ошибка входа! Возможно, вы ввели неверный логин или пароль.'} />;
+                                              text='Ошибка входа! Возможно, вы ввели неверный логин или пароль.' />;
 
 interface LoginMessageProps {
     text: string;

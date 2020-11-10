@@ -1,7 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {UserRole} from './store/user';
 import {SearchMovieItem} from "./SearchMovieForm";
-import {Spinner} from 'react-bootstrap';
+import {Button, Spinner} from 'react-bootstrap';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 
 export const getMetaProperty = (name: string): string => {
     let el = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
@@ -28,16 +30,20 @@ interface InputFiledProps {
     value?: string;
     placeholder?: string;
     error?: string;
+    children?: React.ReactNode
 }
 
 export const InputField =
     React.forwardRef<HTMLInputElement, InputFiledProps>((props, ref) => (
     <div className="mb-3">
         <label htmlFor={props.id} className="form-label">{props.title}</label>
-        <input type={props.type} name={props.name} id={props.id} placeholder={props.placeholder}
-               className={'form-control' + ((props.error && props.error !== '') ? ' is-invalid' : '')}
-               ref={ref} defaultValue={props.value} />
-        {props.error && props.error !== '' && (<div className='invalid-feedback'>{props.error}</div>)}
+        <div className='input-group'>
+            <input type={props.type} name={props.name} id={props.id} placeholder={props.placeholder}
+                   className={'form-control' + ((props.error && props.error !== '') ? ' is-invalid' : '')}
+                   ref={ref} defaultValue={props.value} />
+            {props.children}
+            {props.error && props.error !== '' && (<div className='invalid-feedback'>{props.error}</div>)}
+        </div>
     </div>
 ));
 
@@ -66,6 +72,35 @@ export const hasRole = (role: UserRole): boolean => {
     let roles = getUserRoles();
     return roles.includes(role);
 }
+
+interface PasswordFieldProps {
+    title?: string
+    name?: string
+    error?: string
+    placeholder?: string
+}
+export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldProps>((props, ref) => {
+    const [showPass, setShowPass] = useState(false);
+
+    return (
+        <InputField
+            title={props.title || 'Пароль'}
+            name={props.name || 'password'}
+            placeholder={props.placeholder}
+            type={showPass ? 'text' : 'password'}
+            ref={ref}
+            error={props.error}>
+
+            <div className='input-group-append'>
+                <Button onMouseDown={() => setShowPass(true)}
+                        onMouseUp={() => setShowPass(false)}
+                        className='box-shadowing-none' variant='primary'>
+                    <FontAwesomeIcon icon={faEye} />
+                </Button>
+            </div>
+        </InputField>
+    );
+});
 
 export const mapGenreEnumToString = (genre: string): string => ({
     ABSURDIST: 'Абсурдист',

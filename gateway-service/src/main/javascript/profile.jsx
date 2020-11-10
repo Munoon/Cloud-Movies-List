@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import Application from "./components/Application";
 import { useForm } from "react-hook-form";
-import { getErrorsCount, getMetaProperty, InputField } from "./components/misc";
+import {getErrorsCount, getMetaProperty, InputField, PasswordField} from "./components/misc";
 import Spinner from "react-bootstrap/Spinner";
 import { fetcher } from "./components/api";
 import { toast } from "react-toastify";
@@ -188,30 +188,27 @@ const UpdatePasswordForm = connect(null, { removeUser })(props => {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <h4>Изменение пароля</h4>
-            <InputField
-                id='oldPasswordInput' type='password'
-                name='oldPassword' title='Старый пароль'
+            <PasswordField
+                title='Старый пароль'
+                name='oldPassword'
                 ref={register({ required: true })}
-                error={errors.oldPassword && errors.oldPassword.type === 'serverError' && errors.oldPassword.message}
-            />
+                error={errors.oldPassword && errors.oldPassword.type === 'serverError' && errors.oldPassword.message} />
 
-            <InputField
-                id='newPasswordInput' type='password'
-                name='newPassword' title='Новый пароль'
+            <PasswordField
+                title='Новый пароль'
+                name='newPassword'
                 ref={register({ minLength: 8, required: true })}
                 error={getError('newPassword', {
                     minLength: 'Пароль должен содержать более 8 символов'
-                })}
-            />
+                })} />
 
-            <InputField
-                id='newPasswordConfirmInput' type='password'
-                name='confirmNewPassword' title='Подтвердите новый пароль'
+            <PasswordField
+                title='Подтвердите новый пароль'
+                name='confirmNewPassword'
                 ref={register({ required: true, validate: checkSamePassword })}
                 error={getError('confirmNewPassword', {
                     validate: 'Пароли не совпадают'
-                })}
-            />
+                })} />
 
             <div>
                 <button type='submit' className='btn btn-primary' disabled={loading || getErrorsCount(errors) !== 0}>Сохранить</button>
@@ -246,11 +243,7 @@ const DeleteProfile = connect(null, { removeUser })(props => {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <InputField
-                id='deleteAccountPassword' type='password'
-                name='password' title='Пароль от аккаунта'
-                ref={register({ required: true })}
-            />
+            <PasswordField title='Пароль от аккаунта' ref={register({ required: true })} />
 
             <div>
                 <button className='btn btn-danger'>Удалить аккаунт</button>
