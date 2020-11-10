@@ -1,7 +1,7 @@
 package com.movies.list.movies.graphql
 
-import com.movies.list.movies.MovieMapper
 import com.movies.list.movies.MoviesService
+import com.movies.list.movies.asMovieTo
 import com.movies.list.movies.to.CreateMoviesTo
 import com.movies.list.movies.to.MovieTo
 import com.movies.list.utils.SecurityUtils.authUserId
@@ -22,6 +22,6 @@ class MovieMutationResolver(private val moviesService: MoviesService): GraphQLMu
     fun addMovie(@Valid createMoviesTo: CreateMoviesTo, avatar: Part?): MovieTo {
         log.info("Add movie $createMoviesTo by user ${authUserId()}")
         val movie = moviesService.createMovie(createMoviesTo, avatar);
-        return MovieMapper.INSTANCE.asMovieTo(movie)
+        return movie.asMovieTo()
     }
 }

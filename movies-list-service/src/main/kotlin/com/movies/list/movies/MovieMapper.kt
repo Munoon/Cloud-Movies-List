@@ -3,28 +3,39 @@ package com.movies.list.movies
 import com.movies.common.movie.SmallMovieTo
 import com.movies.list.movies.to.CreateMoviesTo
 import com.movies.list.movies.to.MovieTo
-import java.time.LocalDateTime
+import org.bson.types.Binary
+import org.mapstruct.Mapper
+import org.mapstruct.Mapping
+import org.mapstruct.Mappings
+import org.mapstruct.factory.Mappers
+import javax.servlet.http.Part
 
-interface MovieMapper {
-    fun asMovie(createMoviesTo: CreateMoviesTo): Movie
-    fun asMovieTo(movie: Movie): MovieTo
-    fun asSmallMovie(movie: Movie): SmallMovieTo
+@Mapper
+abstract class MovieMapper {
+    @Mappings(
+            Mapping(target = "id", expression = "java(null)"),
+            Mapping(target = "avatar", expression = "java(null)"),
+            Mapping(target = "registered", expression = "java(java.time.LocalDateTime.now())")
+    )
+    abstract fun asMovie(createMoviesTo: CreateMoviesTo): Movie
+
+    @Mapping(target = "hasAvatar", expression = "java(movie.getAvatar() != null)")
+    abstract fun asMovieTo(movie: Movie): MovieTo
+
+    @Mapping(target = "hasAvatar", expression = "java(movie.getAvatar() != null)")
+    abstract fun asSmallMovie(movie: Movie): SmallMovieTo
+
+    fun asMovie(createMoviesTo: CreateMoviesTo, avatar: Part?): Movie {
+        val movie = asMovie(createMoviesTo)
+        return if (avatar != null) movie.copy(avatar = Binary(avatar.inputStream.readAllBytes()))
+            else movie
+    }
 
     companion object {
-        // TODO refactor this with mapstruct
-        val INSTANCE = object: MovieMapper {
-            override fun asMovie(createMoviesTo: CreateMoviesTo) =
-                    Movie(null, createMoviesTo.name, createMoviesTo.originalName,
-                            null, createMoviesTo.about, createMoviesTo.country, createMoviesTo.genres,
-                            createMoviesTo.premiere, createMoviesTo.age, createMoviesTo.time, LocalDateTime.now())
-
-            override fun asMovieTo(movie: Movie) =
-                    MovieTo(movie.id, movie.name, movie.originalName,
-                            movie.avatar != null, movie.about, movie.country, movie.genres,
-                            movie.premiere, movie.age, movie.time, movie.registered)
-
-            override fun asSmallMovie(movie: Movie): SmallMovieTo =
-                    SmallMovieTo(movie.id, movie.name, movie.avatar !== null, movie.registered)
-        }
+        internal val INSTANCE = Mappers.getMapper(MovieMapper::class.java)!!
     }
 }
+
+fun CreateMoviesTo.asMovie(avatar: Part?): Movie = MovieMapper.INSTANCE.asMovie(this, avatar)
+fun Movie.asMovieTo(): MovieTo = MovieMapper.INSTANCE.asMovieTo(this)
+fun Movie.asSmallMovie(): SmallMovieTo = MovieMapper.INSTANCE.asSmallMovie(this)

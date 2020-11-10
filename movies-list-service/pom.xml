@@ -16,6 +16,7 @@
         <java.version>11</java.version>
         <spring.cloud.contract.version>2.1.1.RELEASE</spring.cloud.contract.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
+        <mapstruct.kotlin.processor>1.4.0.0</mapstruct.kotlin.processor>
     </properties>
 
     <dependencies>
@@ -76,6 +77,12 @@
             <groupId>com.zhokhov.graphql</groupId>
             <artifactId>graphql-datetime-spring-boot-starter</artifactId>
             <version>2.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.pozo</groupId>
+            <artifactId>mapstruct-kotlin</artifactId>
+            <version>${mapstruct.kotlin.processor}</version>
         </dependency>
 
         <dependency>
@@ -142,6 +149,31 @@
                         <version>${kotlin.version}</version>
                     </dependency>
                 </dependencies>
+                <executions>
+                    <execution>
+                        <id>kapt</id>
+                        <goals>
+                            <goal>kapt</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>src/main/kotlin</sourceDir>
+                            </sourceDirs>
+                            <annotationProcessorPaths>
+                                <annotationProcessorPath>
+                                    <groupId>com.github.pozo</groupId>
+                                    <artifactId>mapstruct-kotlin-processor</artifactId>
+                                    <version>${mapstruct.kotlin.processor}</version>
+                                </annotationProcessorPath>
+                                <annotationProcessorPath>
+                                    <groupId>org.mapstruct</groupId>
+                                    <artifactId>mapstruct-processor</artifactId>
+                                    <version>${mapstruct.version}</version>
+                                </annotationProcessorPath>
+                            </annotationProcessorPaths>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

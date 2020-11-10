@@ -1,8 +1,8 @@
 package com.movies.list.controllers
 
 import com.movies.common.movie.SmallMovieTo
-import com.movies.list.movies.MovieMapper
 import com.movies.list.movies.MoviesService
+import com.movies.list.movies.asSmallMovie
 import com.movies.list.utils.SecurityUtils
 import com.movies.list.utils.exception.NotFoundException
 import org.slf4j.LoggerFactory
@@ -24,7 +24,7 @@ class MovieController(private val moviesService: MoviesService) {
     fun getMovieById(@PathVariable id: String): SmallMovieTo {
         log.info("User ${SecurityUtils.authUserIdOrAnonymous()} get movie with id $id")
         val movie = moviesService.getById(id)
-        return MovieMapper.INSTANCE.asSmallMovie(movie)
+        return movie.asSmallMovie()
     }
 
     @GetMapping("/avatar")

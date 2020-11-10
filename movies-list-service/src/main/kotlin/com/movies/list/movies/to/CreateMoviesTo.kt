@@ -1,5 +1,6 @@
 package com.movies.list.movies.to
 
+import com.github.pozo.KotlinBuilder
 import com.movies.list.movies.MoviesGenres
 import com.neovisionaries.i18n.CountryCode
 import lombok.NoArgsConstructor
@@ -7,6 +8,7 @@ import org.hibernate.validator.constraints.Length
 import java.time.LocalDate
 import javax.validation.constraints.Size
 
+@KotlinBuilder
 @NoArgsConstructor
 data class CreateMoviesTo(
         @field:Length(min = 1)

@@ -28,7 +28,7 @@ public class ResourceConfigurer extends ResourceServerConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                     .and()
                 .authorizeRequests()
-                    .antMatchers("/actuator/**", "/microservices/**").permitAll() // TODO change this
+                    .antMatchers("/actuator/**", "/microservices/**").permitAll()
                     .antMatchers("/register", "/test/email/*").permitAll()
                     .anyRequest().authenticated();
     }

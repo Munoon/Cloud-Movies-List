@@ -1,7 +1,9 @@
 package com.movies.list.movies.graphql
 
+import com.movies.list.movies.Movie
 import com.movies.list.movies.MovieMapper
 import com.movies.list.movies.MoviesService
+import com.movies.list.movies.asMovieTo
 import com.movies.list.movies.to.MovieTo
 import com.movies.list.movies.to.PagedMovie
 import com.movies.list.utils.SecurityUtils.authUserIdOrAnonymous
@@ -21,21 +23,20 @@ class MovieQueryResolver(private val moviesService: MoviesService) : GraphQLQuer
     fun getMovie(id: String): MovieTo {
         log.info("Get movie $id by user ${authUserIdOrAnonymous()}")
         val movie = moviesService.getById(id)
-        return MovieMapper.INSTANCE.asMovieTo(movie)
+        return movie.asMovieTo()
     }
 
     fun getLatestMovies(@Max(20) count: Int, page: Int): PagedMovie {
         log.info("Get latest movie (count: $count, page: $page) by user ${authUserIdOrAnonymous()}")
         val pageRequest = PageRequest.of(page, count)
-        val page = moviesService.getPage(pageRequest).map { MovieMapper.INSTANCE.asMovieTo(it) }
-        return PagedMovie(page.totalPages, page.totalElements, page.content)
+        val pageData = moviesService.getPage(pageRequest).map(Movie::asMovieTo)
+        return PagedMovie(pageData.totalPages, pageData.totalElements, pageData.content)
     }
 
     fun findMovies(@Length(min = 1) findQuery: String, @Max(20) count: Int, page: Int): PagedMovie {
         log.info("Find movies by query '$findQuery' (count: $count, page: $page) by user ${authUserIdOrAnonymous()}")
         val pageRequest = PageRequest.of(page, count)
-        val page = moviesService.findMovieByNameAndOriginalName(findQuery, pageRequest)
-                .map { MovieMapper.INSTANCE.asMovieTo(it) }
-        return PagedMovie(page.totalPages, page.totalElements, page.content)
+        val pageData = moviesService.findMovieByNameAndOriginalName(findQuery, pageRequest).map(Movie::asMovieTo)
+        return PagedMovie(pageData.totalPages, pageData.totalElements, pageData.content)
     }
 }

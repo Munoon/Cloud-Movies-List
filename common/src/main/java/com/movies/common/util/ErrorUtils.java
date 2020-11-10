@@ -9,7 +9,7 @@ public class ErrorUtils {
         Throwable result = t;
         Throwable cause;
 
-        while (null != (cause = result.getCause()) && (result != cause)) {
+        while (null != (cause = result.getCause()) && !result.equals(cause)) {
             result = cause;
         }
         return result;

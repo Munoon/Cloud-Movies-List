@@ -1,5 +1,6 @@
 package com.movies.list.movies
 
+import com.github.pozo.KotlinBuilder
 import com.neovisionaries.i18n.CountryCode
 import lombok.NoArgsConstructor
 import org.bson.types.Binary
@@ -8,10 +9,10 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDate
 import java.time.LocalDateTime
-import javax.validation.constraints.Max
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
+@KotlinBuilder
 @NoArgsConstructor
 @Document(collection = "movies")
 data class Movie(

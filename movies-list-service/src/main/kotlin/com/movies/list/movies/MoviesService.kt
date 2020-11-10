@@ -2,7 +2,6 @@ package com.movies.list.movies
 
 import com.movies.list.movies.to.CreateMoviesTo
 import com.movies.list.utils.exception.NotFoundException
-import org.bson.types.Binary
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -13,11 +12,7 @@ import javax.servlet.http.Part
 @Service
 class MoviesService(private val moviesRepository: MoviesRepository) {
     fun createMovie(createMoviesTo: CreateMoviesTo, avatar: Part?): Movie {
-        var movie = MovieMapper.INSTANCE.asMovie(createMoviesTo);
-        if (avatar != null) {
-            val avatarBytes = avatar.inputStream.readAllBytes()
-            movie = movie.copy(avatar = Binary(avatarBytes))
-        }
+        val movie = createMoviesTo.asMovie(avatar)
         return moviesRepository.save(movie);
     }
 

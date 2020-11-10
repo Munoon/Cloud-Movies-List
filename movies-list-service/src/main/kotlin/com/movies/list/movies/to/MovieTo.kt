@@ -1,5 +1,6 @@
 package com.movies.list.movies.to
 
+import com.github.pozo.KotlinBuilder
 import com.movies.list.movies.MoviesGenres
 import com.neovisionaries.i18n.CountryCode
 import org.bson.types.Binary
@@ -7,6 +8,7 @@ import org.springframework.data.annotation.Id
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+@KotlinBuilder
 data class MovieTo(
         var id: String?,
 

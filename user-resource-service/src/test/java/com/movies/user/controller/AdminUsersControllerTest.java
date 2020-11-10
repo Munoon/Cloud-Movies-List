@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.movies.user.user.UserTestData.*;
-import static com.movies.user.util.TestUtils.*;
+import static com.movies.user.util.TestUtils.errorType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
