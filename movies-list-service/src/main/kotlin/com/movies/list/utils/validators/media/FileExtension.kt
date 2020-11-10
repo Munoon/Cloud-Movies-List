@@ -1,6 +1,6 @@
 package com.movies.list.utils.validators.media
 
-import org.springframework.web.multipart.MultipartFile
+import javax.servlet.http.Part
 import javax.validation.Constraint
 import javax.validation.ConstraintValidator
 import javax.validation.ConstraintValidatorContext
@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 
 @MustBeDocumented
 @Retention(AnnotationRetention.RUNTIME)
-@Constraint(validatedBy = [MultipartFileExtensionValidator::class])
+@Constraint(validatedBy = [PartFileExtensionValidator::class])
 @Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 annotation class FileExtension(
         val value: Array<String>,
@@ -18,11 +18,12 @@ annotation class FileExtension(
         val payload: Array<KClass<out Payload>> = []
 )
 
-class MultipartFileExtensionValidator : ConstraintValidator<FileExtension, MultipartFile> {
+class PartFileExtensionValidator : ConstraintValidator<FileExtension, Part> {
     private lateinit var extensions: List<String>
 
-    override fun isValid(file: MultipartFile, context: ConstraintValidatorContext): Boolean {
-        val name = file.originalFilename ?: file.name
+    override fun isValid(file: Part?, context: ConstraintValidatorContext): Boolean {
+        file ?: return true
+        val name = file.submittedFileName ?: file.name
         if (!name.contains(".")) {
             return false
         }

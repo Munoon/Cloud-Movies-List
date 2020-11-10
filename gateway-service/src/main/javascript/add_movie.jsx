@@ -8,6 +8,7 @@ import {useForm} from "react-hook-form";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck} from "@fortawesome/free-solid-svg-icons/faCheck";
 import {gql} from "graphql-request/dist";
+import {toast} from "react-toastify";
 
 const addMovieQuery = gql`
     mutation($name: String!, $originalName: String,
@@ -34,8 +35,10 @@ const AddMovie = () => {
 
     const onSubmit = data => {
         const formData = new FormData()
-        formData.append('file', fileInput.current.files[0]);
-        formData.append('map', `{"file": ["variables.avatar"]}`);
+        if (fileInput.current.files[0] !== undefined) {
+            formData.append('file', fileInput.current.files[0]);
+            formData.append('map', `{"file": ["variables.avatar"]}`);
+        }
         formData.append('operations', JSON.stringify({
             query: addMovieQuery,
             variables: { ...data }

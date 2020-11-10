@@ -1,6 +1,6 @@
 package com.movies.list.utils.validators.media
 
-import org.springframework.web.multipart.MultipartFile
+import javax.servlet.http.Part
 import javax.validation.Constraint
 import javax.validation.ConstraintValidator
 import javax.validation.ConstraintValidatorContext
@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 
 @MustBeDocumented
 @Retention(AnnotationRetention.RUNTIME)
-@Constraint(validatedBy = [MultipartFileContentTypeValidator::class])
+@Constraint(validatedBy = [PartFileContentTypeValidator::class])
 @Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 annotation class ContentType(
         val value: Array<String>,
@@ -18,11 +18,11 @@ annotation class ContentType(
         val payload: Array<KClass<out Payload>> = []
 )
 
-class MultipartFileContentTypeValidator : ConstraintValidator<ContentType, MultipartFile> {
+class PartFileContentTypeValidator : ConstraintValidator<ContentType, Part> {
     private lateinit var contentTypes: List<String>
 
-    override fun isValid(file: MultipartFile, context: ConstraintValidatorContext) =
-            contentTypes.contains(file.contentType)
+    override fun isValid(file: Part?, context: ConstraintValidatorContext) =
+            if (file != null) contentTypes.contains(file.contentType) else true
 
     override fun initialize(constraintAnnotation: ContentType) {
         this.contentTypes = constraintAnnotation.value.toList()

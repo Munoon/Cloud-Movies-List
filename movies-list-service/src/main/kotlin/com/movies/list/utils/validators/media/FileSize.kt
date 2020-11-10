@@ -4,6 +4,7 @@ import org.bson.types.Binary
 import org.springframework.util.unit.DataSize
 import org.springframework.util.unit.DataUnit
 import org.springframework.web.multipart.MultipartFile
+import javax.servlet.http.Part
 import javax.validation.Constraint
 import javax.validation.ConstraintValidator
 import javax.validation.ConstraintValidatorContext
@@ -12,7 +13,7 @@ import kotlin.reflect.KClass
 
 @MustBeDocumented
 @Retention(AnnotationRetention.RUNTIME)
-@Constraint(validatedBy = [MultipartFileSizeValidator::class, BinaryFileSizeValidator::class])
+@Constraint(validatedBy = [MultipartFileSizeValidator::class, BinaryFileSizeValidator::class, PartFileSizeValidator::class])
 @Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 annotation class FileSize(
         val min: String = "0",
@@ -26,7 +27,8 @@ abstract class BaseFileSizeValidator<T> : ConstraintValidator<FileSize, T> {
     private lateinit var min: DataSize
     private var max: DataSize? = null
 
-    override fun isValid(file: T, context: ConstraintValidatorContext): Boolean {
+    override fun isValid(file: T?, context: ConstraintValidatorContext): Boolean {
+        file ?: return true
         val size = DataSize.of(getSize(file), DataUnit.BYTES)
         return !(size < min || (max != null && size > max!!))
     }
@@ -41,6 +43,10 @@ abstract class BaseFileSizeValidator<T> : ConstraintValidator<FileSize, T> {
 
 class MultipartFileSizeValidator : BaseFileSizeValidator<MultipartFile>() {
     override fun getSize(file: MultipartFile) = file.size
+}
+
+class PartFileSizeValidator : BaseFileSizeValidator<Part>() {
+    override fun getSize(file: Part): Long = file.size
 }
 
 class BinaryFileSizeValidator : BaseFileSizeValidator<Binary>() {

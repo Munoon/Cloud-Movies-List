@@ -1,6 +1,7 @@
 package com.movies.list.movies
 
 import com.github.pozo.KotlinBuilder
+import com.movies.list.utils.validators.media.FileSize
 import com.neovisionaries.i18n.CountryCode
 import lombok.NoArgsConstructor
 import org.bson.types.Binary
@@ -19,36 +20,37 @@ data class Movie(
         @Id
         var id: String?,
 
-        @NotNull
-        @Length(min = 1, max = 40)
+        @field:NotNull
+        @field:Length(min = 1, max = 40)
         var name: String,
 
-        @Length(min = 1, max = 40)
+        @field:Length(min = 1, max = 40)
         val originalName: String?,
 
+        @field:FileSize(max = "1MB", message = "Максимальный размер аватарки - 1 MB")
         val avatar: Binary?,
 
-        @Length(max = 300)
+        @field:Length(max = 300)
         val about: String?,
 
-        @NotNull
+        @field:NotNull
         val country: CountryCode,
 
-        @NotNull
-        @Size(min = 1)
+        @field:NotNull
+        @field:Size(min = 1)
         val genres: Set<MoviesGenres>,
 
-        @NotNull
+        @field:NotNull
         val premiere: LocalDate,
 
-        @NotNull
-        @Length(min = 1, max = 10)
+        @field:NotNull
+        @field:Length(min = 1, max = 10)
         val age: String,
 
-        @NotNull
-        @Length(min = 1, max = 10)
+        @field:NotNull
+        @field:Length(min = 1, max = 10)
         val time: String,
 
-        @NotNull
+        @field:NotNull
         var registered: LocalDateTime
 )
