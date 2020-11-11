@@ -17,6 +17,11 @@
         <spring.cloud.contract.version>2.1.1.RELEASE</spring.cloud.contract.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <mapstruct.kotlin.processor>1.4.0.0</mapstruct.kotlin.processor>
+        <graphql.spring-boot.starter.version>7.1.0</graphql.spring-boot.starter.version>
+        <graphql.java-tools.version>6.2.0</graphql.java-tools.version>
+        <graphql.spring-boot.datetime.version>2.0.0</graphql.spring-boot.datetime.version>
+        <graphql.spring-boot.test.version>8.0.0</graphql.spring-boot.test.version>
+        <nv-i18n.version>1.22</nv-i18n.version>
     </properties>
 
     <dependencies>
@@ -60,23 +65,23 @@
         <dependency>
             <groupId>com.graphql-java-kickstart</groupId>
             <artifactId>graphql-spring-boot-starter</artifactId>
-            <version>7.1.0</version>
+            <version>${graphql.spring-boot.starter.version}</version>
         </dependency>
         <dependency>
             <groupId>com.graphql-java-kickstart</groupId>
             <artifactId>graphql-java-tools</artifactId>
-            <version>6.2.0</version>
+            <version>${graphql.java-tools.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.neovisionaries</groupId>
             <artifactId>nv-i18n</artifactId>
-            <version>1.22</version>
+            <version>${nv-i18n.version}</version>
         </dependency>
         <dependency>
             <groupId>com.zhokhov.graphql</groupId>
             <artifactId>graphql-datetime-spring-boot-starter</artifactId>
-            <version>2.0.0</version>
+            <version>${graphql.spring-boot.datetime.version}</version>
         </dependency>
 
         <dependency>
@@ -103,7 +108,7 @@
         <dependency>
             <groupId>com.graphql-java-kickstart</groupId>
             <artifactId>graphql-spring-boot-starter-test</artifactId>
-            <version>8.0.0</version>
+            <version>${graphql.spring-boot.test.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

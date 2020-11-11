@@ -12,6 +12,12 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <maven.plugins.frontend.version>1.10.0</maven.plugins.frontend.version>
+        <node.version>v12.18.2</node.version>
+        <npm.version>6.14.5</npm.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -83,7 +89,7 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.10.0</version>
+                <version>${maven.plugins.frontend.version}</version>
 
                 <configuration>
                     <installDirectory>target</installDirectory>
@@ -96,8 +102,8 @@
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v12.18.2</nodeVersion>
-                            <npmVersion>6.14.5</npmVersion>
+                            <nodeVersion>${node.version}</nodeVersion>
+                            <npmVersion>${npm.version}</npmVersion>
                         </configuration>
                     </execution>
 

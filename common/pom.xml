@@ -19,6 +19,7 @@
         <spring.security.oauth.version>2.3.6.RELEASE</spring.security.oauth.version>
         <junit.version>5.7.0-M1</junit.version>
         <assertj.version>3.16.1</assertj.version>
+        <maven.compiler-plugin.version>3.5.1</maven.compiler-plugin.version>
     </properties>
 
     <dependencies>
@@ -70,7 +71,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>${maven.compiler-plugin.version}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
