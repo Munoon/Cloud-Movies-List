@@ -7,10 +7,10 @@ Service, provided movies list with ability for users to add movies to favorites 
 
 ## Used technologies
 Java 14, Maven, Kotlin,
-Spring Boot, Spring Security, Spring Cloud, Spring Actuator, Spring Cloud Config, Spring Data JPA, Spring Hateoas, Spring Cloud Contract,
+Spring Boot, Spring Security, Spring Cloud, Spring Actuator, Spring Cloud Config, Spring Data JPA, Spring Hateoas, Spring Cloud Contract, Spring Cache,
 Rest API, GraphQL, oAuth 2, oAuth Authorization Server, oAuth Resource Server,
 Netflix Eureka, Netflix Zuul, Netflix Feign, Hibernate, JUnit 5, RabbitMQ, thymeleaf,
-PostgreSQL, MongoDB, JWT, JSON,
+PostgreSQL, MongoDB, Redis, JWT, JSON,
 JavaScript (including ES6), TypeScript, Node JS, npm, Webpack, React, React Hook Form, Redux, React Redux, SWR, graphql-request, Bootstrap (and Bootswatch), babel, sass.
 
 ## Microservices
@@ -35,7 +35,7 @@ Storage all info about users and provide API to make CRUD operations with them. 
 **Can be launched in multiple instances.** \
 Package: **user-resource-service** \
 Working port: **random** (you may watch at eureka dashboard) \
-Requirements: **RabbitMQ, PostgreSQL** (for storing users) \
+Requirements: **RabbitMQ**, **PostgreSQL** (for storing users), **Redis** (for caching users) \
 Launch order: **Any time after eureka service**
 
 ### 4. Authorization service
@@ -43,14 +43,14 @@ Giving ability for users to login. \
 Package: **auth-service** \
 Working port: **8030** \
 Base URL path: **/uaa** \
-Requirements: **RabbitMQ, PostgreSQL** (for storing users) \
+Requirements: **RabbitMQ**, **PostgreSQL** (for storing users) \
 Launch order: **Any time after eureka service**
 
 ### 5. Movies list service
 Working with movies. Admin can make CRUD with them, users can read them and add to favourite and so on. \
 Package: **movies-list-service** \
 Working port: **random** (you may watch at eureka dashboard) \
-Requirements: **RabbitMQ, RabbitMQ** (for storing movies) \
+Requirements: **RabbitMQ**, **RabbitMQ** (for storing movies) \
 Launch order: **Any time after eureka service**
 
 ### 6. Gateway service
@@ -75,6 +75,11 @@ Launch order: **Any time after eureka service**
     ```
     // Docker run example
     $ docker run -it --rm --name cloud-movies-rabbitmq -p 5672:5672 -p 15672:15672 -d rabbitmq:3-management
+    ```
+4. [Redis](https://redis.io/) - for caching users.
+    ```
+    // Docker run example
+    $ docker run --name cloud-movies-redis -p 6379:6379 -d redis
     ```
 
 ## How to launch
