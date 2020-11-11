@@ -92,4 +92,6 @@ const LoginMessage = (props: LoginMessageProps) => {
                 children={props.text} />
 }
 
-ReactDOM.render(<LoginPage />, document.getElementById('root'));
+document.addEventListener('DOMContentLoaded', () => {
+    ReactDOM.render(<LoginPage />, document.getElementById('root'));
+});

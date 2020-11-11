@@ -14,4 +14,6 @@ const ErrorPage = () => (
     </Application>
 );
 
-ReactDOM.render(<ErrorPage />, document.getElementById('root'));
+document.addEventListener('DOMContentLoaded', () => {
+    ReactDOM.render(<ErrorPage />, document.getElementById('root'));
+});

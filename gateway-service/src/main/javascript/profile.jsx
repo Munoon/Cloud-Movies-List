@@ -253,4 +253,6 @@ const DeleteProfile = connect(null, { removeUser })(props => {
     );
 });
 
-ReactDOM.render(<ProfilePage />, document.getElementById('root'));
+document.addEventListener('DOMContentLoaded', () => {
+    ReactDOM.render(<ProfilePage />, document.getElementById('root'));
+});

@@ -354,4 +354,6 @@ let USERS_TABLE_INSTANCE = React.createRef();
 let UPDATE_USER_MODAL_INSTANCE = null;
 let REGISTER_USER_MODAL_INSTANCE = React.createRef();
 
-ReactDOM.render(<UsersPage />, document.getElementById('root'));
+document.addEventListener('DOMContentLoaded', () => {
+    ReactDOM.render(<UsersPage />, document.getElementById('root'));
+});
