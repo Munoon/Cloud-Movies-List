@@ -7,6 +7,8 @@ import com.movies.user.user.to.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import static com.movies.user.user.UserTestData.*;
 import static java.util.Collections.singleton;
@@ -68,6 +70,10 @@ class UserServiceCacheTest extends AbstractTest {
         assertMatch(user, getCache(DEFAULT_USER_ID));
         assertMatch(user, getCache(DEFAULT_USER_EMAIL));
 
+        PageRequest request = PageRequest.of(0, 1);
+        Page<User> result = service.findAll(request);
+        assertMatch(getCache(request), result);
+
         UpdateProfileTo updateProfileTo = new UpdateProfileTo();
         updateProfileTo.setName("NewName");
         updateProfileTo.setSurname("NewSurname");
@@ -75,6 +81,7 @@ class UserServiceCacheTest extends AbstractTest {
 
         assertMatch(updated, getCache(DEFAULT_USER_ID));
         assertMatch(updated, getCache(DEFAULT_USER_EMAIL));
+        assertThat(getCache(request)).isNull();
     }
 
     @Test
@@ -84,6 +91,10 @@ class UserServiceCacheTest extends AbstractTest {
         assertMatch(user, getCache(DEFAULT_USER_ID));
         assertMatch(user, getCache(DEFAULT_USER_EMAIL));
 
+        PageRequest request = PageRequest.of(0, 1);
+        Page<User> result = service.findAll(request);
+        assertMatch(getCache(request), result);
+
         final String newEmail = "newemail@gmail.com";
         UpdateEmailTo updateEmailTo = new UpdateEmailTo();
         updateEmailTo.setEmail(newEmail);
@@ -91,6 +102,7 @@ class UserServiceCacheTest extends AbstractTest {
         assertMatch(updated, getCache(DEFAULT_USER_ID));
         assertMatch(updated, getCache(newEmail));
         assertThat(getCache(DEFAULT_USER_EMAIL)).isNull();
+        assertThat(getCache(request)).isNull();
     }
 
     @Test
@@ -100,11 +112,16 @@ class UserServiceCacheTest extends AbstractTest {
         assertMatch(user, getCache(DEFAULT_USER_ID));
         assertMatch(user, getCache(DEFAULT_USER_EMAIL));
 
+        PageRequest request = PageRequest.of(0, 1);
+        Page<User> result = service.findAll(request);
+        assertMatch(getCache(request), result);
+
         UpdatePasswordTo updatePasswordTo = new UpdatePasswordTo();
         updatePasswordTo.setNewPassword("password");
         User updated = service.updateUser(DEFAULT_USER_ID, updatePasswordTo);
         assertMatch(updated, getCache(DEFAULT_USER_ID));
         assertMatch(updated, getCache(DEFAULT_USER_EMAIL));
+        assertThat(getCache(request)).isNull();
     }
 
     @Test
@@ -113,6 +130,10 @@ class UserServiceCacheTest extends AbstractTest {
         service.getByEmail(DEFAULT_USER_EMAIL);
         assertMatch(user, getCache(DEFAULT_USER_ID));
         assertMatch(user, getCache(DEFAULT_USER_EMAIL));
+
+        PageRequest request = PageRequest.of(0, 1);
+        Page<User> result = service.findAll(request);
+        assertMatch(getCache(request), result);
 
         final String newEmail = "newemail@gmail.com";
         AdminUpdateUserTo adminUpdateUserTo = new AdminUpdateUserTo();
@@ -124,6 +145,7 @@ class UserServiceCacheTest extends AbstractTest {
         assertMatch(updated, getCache(DEFAULT_USER_ID));
         assertMatch(updated, getCache(newEmail));
         assertThat(getCache(DEFAULT_USER_EMAIL)).isNull();
+        assertThat(getCache(request)).isNull();
     }
 
     @Test
@@ -132,20 +154,37 @@ class UserServiceCacheTest extends AbstractTest {
         service.getByEmail(DEFAULT_USER_EMAIL);
         assertMatch(user, getCache(DEFAULT_USER_ID));
 
+        PageRequest request = PageRequest.of(0, 1);
+        Page<User> result = service.findAll(request);
+        assertMatch(getCache(request), result);
+
         service.deleteUserById(DEFAULT_USER_ID);
         assertThat(getCache(DEFAULT_USER_ID)).isNull();
         assertThat(getCache(DEFAULT_USER_EMAIL)).isNull();
+        assertThat(getCache(request)).isNull();
+    }
+
+    @Test
+    void findAll() {
+        PageRequest pageRequest = PageRequest.of(0, 1);
+        assertThat(getCache(pageRequest)).isNull();
+        Page<User> result = service.findAll(pageRequest);
+        assertMatch(getCache(pageRequest), result);
     }
 
     private User getCache(int id) {
-        return getCache("user", id);
+        return getCache("user", id, User.class);
     }
 
     private User getCache(String email) {
-        return getCache("user_email", email);
+        return getCache("user_email", email, User.class);
     }
 
-    private User getCache(String name, Object key) {
-        return requireNonNull(cacheManager.getCache(name)).get(key, User.class);
+    private Page<User> getCache(PageRequest request) {
+        return (Page<User>) getCache("users_list", request, Page.class);
+    }
+
+    private <T> T getCache(String name, Object key, Class<T> returnType) {
+        return requireNonNull(cacheManager.getCache(name)).get(key, returnType);
     }
 }

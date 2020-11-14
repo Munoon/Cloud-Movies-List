@@ -25,20 +25,26 @@ public class UserService {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
-    @Caching(put = {
-            @CachePut(value = "user", key = "#result.id"),
-            @CachePut(value = "user_email", key = "#result.email")
-    })
+    @Caching(
+            put = {
+                @CachePut(value = "user", key = "#result.id"),
+                @CachePut(value = "user_email", key = "#result.email")
+            },
+            evict = @CacheEvict(value = "users_list", allEntries = true)
+    )
     public User createUser(RegisterUserTo registerUserTo) {
         UserEntity user = LocalUserMapper.INSTANCE.toUserEntity(registerUserTo, passwordEncoder);
         userRepository.save(user);
         return LocalUserMapper.INSTANCE.asUser(user);
     }
 
-    @Caching(put = {
-            @CachePut(value = "user", key = "#result.id"),
-            @CachePut(value = "user_email", key = "#result.email")
-    })
+    @Caching(
+            put = {
+                @CachePut(value = "user", key = "#result.id"),
+                @CachePut(value = "user_email", key = "#result.email")
+            },
+            evict = @CacheEvict(value = "users_list", allEntries = true)
+    )
     public User createUser(AdminCreateUserTo adminCreateUserTo) {
         UserEntity user = LocalUserMapper.INSTANCE.toUserEntity(adminCreateUserTo, passwordEncoder);
         userRepository.save(user);
@@ -58,10 +64,13 @@ public class UserService {
         return LocalUserMapper.INSTANCE.asUser(userEntity);
     }
 
-    @Caching(put = {
-            @CachePut(value = "user", key = "#id"),
-            @CachePut(value = "user_email", key = "#result.email")
-    })
+    @Caching(
+            put = {
+                @CachePut(value = "user", key = "#id"),
+                @CachePut(value = "user_email", key = "#result.email")
+            },
+            evict = @CacheEvict(value = "users_list", allEntries = true)
+    )
     public User updateUser(int id, UpdateProfileTo updateProfileTo) {
         UserEntity userEntity = getUserEntityById(id);
         LocalUserMapper.INSTANCE.updateEntity(updateProfileTo, userEntity);
@@ -69,10 +78,13 @@ public class UserService {
         return LocalUserMapper.INSTANCE.asUser(updated);
     }
 
-    @Caching(put = {
-            @CachePut(value = "user", key = "#id"),
-            @CachePut(value = "user_email", key = "#result.email")
-    })
+    @Caching(
+            put = {
+                @CachePut(value = "user", key = "#id"),
+                @CachePut(value = "user_email", key = "#result.email")
+            },
+            evict = @CacheEvict(value = "users_list", allEntries = true)
+    )
     public User updateUser(int id, UpdateEmailTo updateEmailTo) {
         UserEntity userEntity = getUserEntityById(id);
         userEmailCache(c -> c.evict(userEntity.getEmail()));
@@ -81,10 +93,13 @@ public class UserService {
         return LocalUserMapper.INSTANCE.asUser(updated);
     }
 
-    @Caching(put = {
-            @CachePut(value = "user", key = "#id"),
-            @CachePut(value = "user_email", key = "#result.email")
-    })
+    @Caching(
+            put = {
+                @CachePut(value = "user", key = "#id"),
+                @CachePut(value = "user_email", key = "#result.email")
+            },
+            evict = @CacheEvict(value = "users_list", allEntries = true)
+    )
     public User updateUser(int id, UpdatePasswordTo updatePasswordTo) {
         UserEntity userEntity = getUserEntityById(id);
         LocalUserMapper.INSTANCE.updateEntity(updatePasswordTo, userEntity, passwordEncoder);
@@ -92,10 +107,13 @@ public class UserService {
         return LocalUserMapper.INSTANCE.asUser(updated);
     }
 
-    @Caching(put = {
-            @CachePut(value = "user", key = "#id"),
-            @CachePut(value = "user_email", key = "#result.email")
-    })
+    @Caching(
+            put = {
+                @CachePut(value = "user", key = "#id"),
+                @CachePut(value = "user_email", key = "#result.email")
+            },
+            evict = @CacheEvict(value = "users_list", allEntries = true)
+    )
     public User updateUser(int id, AdminUpdateUserTo userTo) {
         UserEntity userEntity = getUserEntityById(id);
         userEmailCache(c -> c.evict(userEntity.getEmail()));
@@ -109,12 +127,16 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("User with id '" + id + "' is not found!"));
     }
 
+    @Cacheable("users_list")
     public Page<User> findAll(Pageable pageable) {
         return userRepository.findAll(pageable)
                 .map(LocalUserMapper.INSTANCE::asUser);
     }
 
-    @CacheEvict(value = "user", key = "#id")
+    @Caching(evict = {
+            @CacheEvict(value = "user", key = "#id"),
+            @CacheEvict(value = "users_list", allEntries = true)
+    })
     public void deleteUserById(int id) {
         UserEntity userEntity = getUserEntityById(id);
         userEmailCache(c -> c.evict(userEntity.getEmail()));
