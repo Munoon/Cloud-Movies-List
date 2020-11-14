@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.cache.CacheManager
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -31,6 +32,9 @@ abstract class AbstractTest {
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
 
+    @Autowired
+    private lateinit var cacheManager: CacheManager
+
     @MockBean
     @Qualifier("jwtTokenStore")
     private lateinit var tokenStore: TokenStore
@@ -38,6 +42,7 @@ abstract class AbstractTest {
     @BeforeEach
     fun clearDb() {
         mongoTemplate.db.drop();
+        cacheManager.cacheNames.forEach { cacheManager.getCache(it)!!.clear() }
     }
 
     protected fun getAccessToken(user: User = TestUtils.DEFAULT_USER, oAuth2Request: OAuth2Request = TestUtils.DEFAULT_OAUTH_REQUEST): OAuth2AccessToken {

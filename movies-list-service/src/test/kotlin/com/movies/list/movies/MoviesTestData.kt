@@ -6,7 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.springframework.test.web.servlet.ResultMatcher
 
 object MoviesTestData {
-    fun assertMatch(actual: Movie, expected: Movie) {
+    fun assertMatch(actual: Movie?, expected: Movie) {
         assertThat(actual).isEqualToIgnoringGivenFields(expected, "registered")
     }
 

@@ -13,3 +13,9 @@ spring:
       database: movies-list
       username: mongodb
       password: password
+
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
