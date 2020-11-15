@@ -8,6 +8,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
+import org.springframework.cache.interceptor.SimpleKey
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import java.time.LocalDate
@@ -28,6 +29,9 @@ internal class MoviesServiceCacheTest : AbstractTest() {
         val page = moviesService.getPage(request)
         assertThat(cacheManager.getCache("movies_list")!!.get(request, Page::class.java)).isEqualTo(page)
 
+        moviesService.count()
+        assertThat(getCountCache()).isEqualTo(1L)
+
         val findQuery = "test";
         val find = moviesService.findMovieByNameAndOriginalName(findQuery, request)
         val findCacheKey = "${findQuery.hashCode()}-${request.hashCode()}"
@@ -37,6 +41,7 @@ internal class MoviesServiceCacheTest : AbstractTest() {
         assertMatch(getCache(movie.id!!), movie)
         assertThat(cacheManager.getCache("movies_list")!!.get(request)).isNull()
         assertThat(cacheManager.getCache("movies_find")!!.get(findCacheKey)).isNull()
+        assertThat(getCountCache()).isNull()
     }
 
     @Test
@@ -66,5 +71,13 @@ internal class MoviesServiceCacheTest : AbstractTest() {
         assertThat(cacheManager.getCache("movies_find")!!.get(cacheKey, Page::class.java)).isEqualTo(find)
     }
 
+    @Test
+    fun count() {
+        assertThat(getCountCache()).isNull()
+        moviesService.count()
+        assertThat(getCountCache()).isEqualTo(0L)
+    }
+
     private fun getCache(id: String) = cacheManager.getCache("movies")!!.get(id, Movie::class.java)
+    private fun getCountCache(): Any? = cacheManager.getCache("movies_count")!!.get(SimpleKey.EMPTY)?.get()
 }

@@ -8,6 +8,7 @@ import org.bson.types.Binary
 import org.hibernate.validator.constraints.Length
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
+import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.validation.constraints.NotNull
@@ -53,4 +54,4 @@ data class Movie(
 
         @field:NotNull
         var registered: LocalDateTime
-)
+) : Serializable

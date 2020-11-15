@@ -19,7 +19,8 @@ class MoviesService(private val moviesRepository: MoviesRepository) {
             put = [ CachePut(value = ["movies"], key = "#result.id") ],
             evict = [
                 CacheEvict(value = ["movies_list"], allEntries = true),
-                CacheEvict(value = ["movies_find"], allEntries = true)
+                CacheEvict(value = ["movies_find"], allEntries = true),
+                CacheEvict(value = ["movies_count"], allEntries = true)
             ]
     )
     fun createMovie(createMovieTo: CreateMovieTo, avatar: Part?): Movie {
@@ -47,6 +48,9 @@ class MoviesService(private val moviesRepository: MoviesRepository) {
     fun findMovieByNameAndOriginalName(query: String, pageable: Pageable): Page<Movie> {
         return moviesRepository.findByNameOrOriginalName(query, pageable)
     }
+
+    @Cacheable("movies_count")
+    fun count(): Long = moviesRepository.count()
 
     companion object {
         private val SORT_BY_REGISTERED = Sort.by(Sort.Direction.DESC, "registered")

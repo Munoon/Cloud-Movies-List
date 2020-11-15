@@ -7,6 +7,7 @@ import com.movies.user.user.to.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.interceptor.SimpleKey;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -24,6 +25,12 @@ class UserServiceCacheTest extends AbstractTest {
 
     @Test
     void registerUser() {
+        PageRequest pageRequest = PageRequest.of(0, 1);
+        Page<User> pages = service.findAll(pageRequest);
+        assertMatch(getCache(pageRequest), pages);
+        service.count();
+        assertThat(getCountCache()).isEqualTo(1);
+
         var register = new RegisterUserTo();
         register.setName("Test");
         register.setSurname("Test");
@@ -33,10 +40,18 @@ class UserServiceCacheTest extends AbstractTest {
 
         assertMatch(getCache(user.getId()), user);
         assertMatch(getCache(user.getEmail()), user);
+        assertThat(getCache(pageRequest)).isNull();
+        assertThat(getCountCache()).isNull();
     }
 
     @Test
     void createUser() {
+        PageRequest pageRequest = PageRequest.of(0, 1);
+        Page<User> pages = service.findAll(pageRequest);
+        assertMatch(getCache(pageRequest), pages);
+        service.count();
+        assertThat(getCountCache()).isEqualTo(1);
+
         AdminCreateUserTo adminCreateUserTo = new AdminCreateUserTo();
         adminCreateUserTo.setName("Name");
         adminCreateUserTo.setSurname("Surname");
@@ -47,6 +62,8 @@ class UserServiceCacheTest extends AbstractTest {
 
         assertMatch(getCache(user.getId()), user);
         assertMatch(getCache(user.getEmail()), user);
+        assertThat(getCache(pageRequest)).isNull();
+        assertThat(getCountCache()).isNull();
     }
 
     @Test
@@ -154,6 +171,9 @@ class UserServiceCacheTest extends AbstractTest {
         service.getByEmail(DEFAULT_USER_EMAIL);
         assertMatch(user, getCache(DEFAULT_USER_ID));
 
+        service.count();
+        assertThat(getCountCache()).isEqualTo(1);
+
         PageRequest request = PageRequest.of(0, 1);
         Page<User> result = service.findAll(request);
         assertMatch(getCache(request), result);
@@ -162,6 +182,7 @@ class UserServiceCacheTest extends AbstractTest {
         assertThat(getCache(DEFAULT_USER_ID)).isNull();
         assertThat(getCache(DEFAULT_USER_EMAIL)).isNull();
         assertThat(getCache(request)).isNull();
+        assertThat(getCountCache()).isNull();
     }
 
     @Test
@@ -170,6 +191,13 @@ class UserServiceCacheTest extends AbstractTest {
         assertThat(getCache(pageRequest)).isNull();
         Page<User> result = service.findAll(pageRequest);
         assertMatch(getCache(pageRequest), result);
+    }
+
+    @Test
+    void count() {
+        assertThat(getCountCache()).isNull();
+        service.count();
+        assertThat(getCountCache()).isEqualTo(1);
     }
 
     private User getCache(int id) {
@@ -182,6 +210,10 @@ class UserServiceCacheTest extends AbstractTest {
 
     private Page<User> getCache(PageRequest request) {
         return (Page<User>) getCache("users_list", request, Page.class);
+    }
+
+    private Long getCountCache() {
+        return getCache("users_count", SimpleKey.EMPTY, Long.class);
     }
 
     private <T> T getCache(String name, Object key, Class<T> returnType) {

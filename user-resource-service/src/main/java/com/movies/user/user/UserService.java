@@ -1,10 +1,12 @@
 package com.movies.user.user;
 
 import com.movies.common.user.User;
+import com.movies.user.config.MetricsConfig;
 import com.movies.user.user.to.*;
 import com.movies.user.util.exception.NotFoundException;
 import com.movies.user.util.mapper.LocalUserMapper;
-import lombok.AllArgsConstructor;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -19,22 +21,35 @@ import org.springframework.stereotype.Service;
 import java.util.function.Consumer;
 
 @Service
-@AllArgsConstructor
 public class UserService {
     private CacheManager cacheManager;
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private Counter registeredUsersCounter;
+    private Counter deletedUsersCounter;
+
+    public UserService(CacheManager cacheManager, UserRepository userRepository, PasswordEncoder passwordEncoder, MeterRegistry registry) {
+        this.cacheManager = cacheManager;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.registeredUsersCounter = registry.counter(MetricsConfig.USERS_REGISTERED_COUNTER_NAME);
+        this.deletedUsersCounter = registry.counter(MetricsConfig.USERS_DELETED_COUNTER_NAME);
+    }
 
     @Caching(
             put = {
                 @CachePut(value = "user", key = "#result.id"),
                 @CachePut(value = "user_email", key = "#result.email")
             },
-            evict = @CacheEvict(value = "users_list", allEntries = true)
+            evict = {
+                @CacheEvict(value = "users_list", allEntries = true),
+                @CacheEvict(value = "users_count", allEntries = true)
+            }
     )
     public User createUser(RegisterUserTo registerUserTo) {
         UserEntity user = LocalUserMapper.INSTANCE.toUserEntity(registerUserTo, passwordEncoder);
         userRepository.save(user);
+        registeredUsersCounter.increment();
         return LocalUserMapper.INSTANCE.asUser(user);
     }
 
@@ -43,7 +58,10 @@ public class UserService {
                 @CachePut(value = "user", key = "#result.id"),
                 @CachePut(value = "user_email", key = "#result.email")
             },
-            evict = @CacheEvict(value = "users_list", allEntries = true)
+            evict = {
+                @CacheEvict(value = "users_list", allEntries = true),
+                @CacheEvict(value = "users_count", allEntries = true)
+            }
     )
     public User createUser(AdminCreateUserTo adminCreateUserTo) {
         UserEntity user = LocalUserMapper.INSTANCE.toUserEntity(adminCreateUserTo, passwordEncoder);
@@ -135,12 +153,14 @@ public class UserService {
 
     @Caching(evict = {
             @CacheEvict(value = "user", key = "#id"),
-            @CacheEvict(value = "users_list", allEntries = true)
+            @CacheEvict(value = "users_list", allEntries = true),
+            @CacheEvict(value = "users_count", allEntries = true)
     })
     public void deleteUserById(int id) {
         UserEntity userEntity = getUserEntityById(id);
         userEmailCache(c -> c.evict(userEntity.getEmail()));
         userRepository.delete(id);
+        deletedUsersCounter.increment();
     }
 
     public boolean testEmail(String email) {
@@ -150,6 +170,11 @@ public class UserService {
     public boolean testPassword(int userId, String password) {
         User user = getById(userId);
         return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    @Cacheable("users_count")
+    public long count() {
+        return userRepository.count();
     }
 
     private void userEmailCache(Consumer<Cache> modifier) {

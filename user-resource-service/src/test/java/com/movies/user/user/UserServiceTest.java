@@ -196,4 +196,18 @@ class UserServiceTest extends AbstractTest {
         assertThat(userService.testPassword(DEFAULT_USER_ID, "password")).isTrue();
         assertThat(userService.testPassword(DEFAULT_USER_ID, "unCorrectPass")).isFalse();
     }
+
+    @Test
+    void count() {
+        assertThat(userService.count()).isEqualTo(1);
+
+        RegisterUserTo registerUserTo = new RegisterUserTo();
+        registerUserTo.setName("New");
+        registerUserTo.setSurname("User");
+        registerUserTo.setEmail("Test@example.com");
+        registerUserTo.setPassword("examplePassword");
+        userService.createUser(registerUserTo);
+
+        assertThat(userService.count()).isEqualTo(2);
+    }
 }

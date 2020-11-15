@@ -29,7 +29,7 @@ internal class MoviesServiceTest : AbstractTest() {
     }
 
     @Test
-    internal fun createMovieWithAvatar() {
+    fun createMovieWithAvatar() {
         val avatarFileText = "AVATAR";
         val createMovieTo = CreateMovieTo("Test Movie", "Original Name", "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16");
         val createdMovie = moviesService.createMovie(createMovieTo, MockPart("avatar", avatarFileText.toByteArray()))
@@ -38,7 +38,7 @@ internal class MoviesServiceTest : AbstractTest() {
     }
 
     @Test
-    internal fun getById() {
+    fun getById() {
         val createdMovie = moviesService.createMovie(CreateMovieTo("Test Movie", "Original Name", "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"), null)
         val movie = moviesService.getById(createdMovie.id!!);
         assertMatch(movie, Movie(createdMovie.id, "Test Movie", "Original Name", null, "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16", createdMovie.registered))
@@ -50,7 +50,7 @@ internal class MoviesServiceTest : AbstractTest() {
     }
 
     @Test
-    internal fun getPage() {
+    fun getPage() {
         val createdMovie = moviesService.createMovie(CreateMovieTo("Test Movie", "Original Name", "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"), null)
         val createdMovie2 = moviesService.createMovie(CreateMovieTo("Test Movie 2", "Original Name", "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"), null)
 
@@ -62,7 +62,7 @@ internal class MoviesServiceTest : AbstractTest() {
     }
 
     @Test
-    internal fun findMovieByNameAndOriginalName() {
+    fun findMovieByNameAndOriginalName() {
         val createdMovie = moviesService.createMovie(CreateMovieTo("Test Movie", "Original Name", "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"), null)
         val pageable = PageRequest.of(0, 10)
 
@@ -79,5 +79,12 @@ internal class MoviesServiceTest : AbstractTest() {
             assertThat(query.totalElements).isEqualTo(1L)
             assertThat(query.totalPages).isEqualTo(1L)
         }
+    }
+
+    @Test
+    fun count() {
+        assertThat(moviesService.count()).isEqualTo(0)
+        moviesService.createMovie(CreateMovieTo("Test Movie", "Original Name", "About", CountryCode.US, setOf(MoviesGenres.ACTION), LocalDate.of(2020, 2, 7), "16+", "1:16"), null)
+        assertThat(moviesService.count()).isEqualTo(1)
     }
 }
