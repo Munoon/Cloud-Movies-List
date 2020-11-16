@@ -1,0 +1,33 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:13.0
+    container_name: cloud-movies-postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=movies-users
+
+  mongo:
+    image: mongo:4.4.0
+    container_name: cloud-movies-mongo
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=movies-list
+      - MONGO_INITDB_ROOT_USERNAME=mongodb
+      - MONGO_INITDB_ROOT_PASSWORD=password
+
+  rabbit:
+    image: rabbitmq:3-management
+    container_name: cloud-movies-rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  redis:
+    image: redis:6.0
+    container_name: cloud-movies-redis
+    ports:
+      - 6379:6379

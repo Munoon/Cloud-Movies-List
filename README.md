@@ -63,10 +63,18 @@ Requirements: **RabbitMQ** \
 Launch order: **Any time after eureka service**
 
 ## Additional requirement
+For launching, you may use docker run command or docker-compose. \
+**Using docker-compose**: type this command in project root folder (near `docker-compose.yml` file)
+```
+$ docker-compose up -d
+```
+
+**Using docker run command**:
+
 1. [PostgreSQL](https://www.postgresql.org/) - users info storage.
     ```
     // Docker run example
-    $ docker run --name cloud-movies-postgres -p 5432:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=movies-users -d postgres
+    $ docker run --name cloud-movies-postgres -p 5432:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=movies-users -d postgres:13.0
     ```
 2. [MongoDB](https://www.mongodb.com/) - movies storage.
     ```
@@ -76,12 +84,12 @@ Launch order: **Any time after eureka service**
 3. [RabbitMQ](https://www.rabbitmq.com/) - for sending configuration updates.
     ```
     // Docker run example
-    $ docker run -it --rm --name cloud-movies-rabbitmq -p 5672:5672 -p 15672:15672 -d rabbitmq:3-management
+    $ docker run -it --name cloud-movies-rabbitmq -p 5672:5672 -p 15672:15672 -d rabbitmq:3-management
     ```
 4. [Redis](https://redis.io/) - for caching users.
     ```
     // Docker run example
-    $ docker run --name cloud-movies-redis -p 6379:6379 -d redis
+    $ docker run --name cloud-movies-redis -p 6379:6379 -d redis:6.0
     ```
 
 ## How to launch
