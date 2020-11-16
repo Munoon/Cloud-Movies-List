@@ -127,6 +127,4 @@ const MovieAvatar = ({ movie}) => (
     </a>
 );
 
-document.addEventListener('DOMContentLoaded', () => {
-    ReactDOM.render(<IndexPage />, document.getElementById('root'));
-});
+ReactDOM.render(<IndexPage />, document.getElementById('root'));

@@ -65,6 +65,4 @@ const MoviePage = () => {
     );
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    ReactDOM.render(<MoviePage />, document.getElementById('root'));
-});
+ReactDOM.render(<MoviePage />, document.getElementById('root'));

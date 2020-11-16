@@ -176,6 +176,4 @@ const MovieItem = ({ movie, search }: { movie: SearchMovieItem, search: string }
     </a>
 );
 
-document.addEventListener('DOMContentLoaded', () => {
-    ReactDOM.render(<SearchPage />, document.getElementById('root'));
-});
+ReactDOM.render(<SearchPage />, document.getElementById('root'));

@@ -151,6 +151,4 @@ const AddMovie = () => {
     );
 }
 
-document.getElementById('DOMContentLoaded', () => {
-    ReactDOM.render(<AddMovie />, document.getElementById('root'));
-});
+ReactDOM.render(<AddMovie />, document.getElementById('root'));
