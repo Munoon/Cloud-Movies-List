@@ -85,6 +85,14 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>4.0.3</version>
+                <configuration>
+                    <dotGitDirectory>.git</dotGitDirectory>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

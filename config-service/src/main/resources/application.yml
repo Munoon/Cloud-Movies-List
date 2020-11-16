@@ -15,3 +15,10 @@ management:
     web:
       exposure:
         include: bus-refresh
+
+info:
+  project:
+    name: @project.name@
+    version: @project.version@
+    artifactId: @project.artifactId@
+    groupId: @project.groupId@

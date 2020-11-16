@@ -35,3 +35,10 @@ security:
   oauth2:
     resource:
       userInfoUri: http://user-resource-service/profile
+
+info:
+  project:
+    name: @project.name@
+    version: @project.version@
+    artifactId: @project.artifactId@
+    groupId: @project.groupId@

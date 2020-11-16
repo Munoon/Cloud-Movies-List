@@ -10,3 +10,10 @@ spring:
 
   hateoas:
     use-hal-as-default-json-media-type: false
+
+info:
+  project:
+    name: @project.name@
+    version: @project.version@
+    artifactId: @project.artifactId@
+    groupId: @project.groupId@
