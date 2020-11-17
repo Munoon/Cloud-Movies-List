@@ -13,7 +13,8 @@ Rest API, GraphQL, oAuth 2, oAuth Authorization Server, oAuth Resource Server, M
 Netflix Eureka, Netflix Zuul, Netflix Feign, Hibernate, JUnit 5, RabbitMQ, thymeleaf,
 PostgreSQL, MongoDB, Redis, JWT, JSON,
 JavaScript (including ES6), TypeScript, Node JS, npm, Webpack, React, React Hook Form, Redux, React Redux,
-SWR, graphql-request, Bootstrap (and Bootswatch), babel, sass.
+SWR, graphql-request, Bootstrap (and Bootswatch), babel, sass,
+Grafana, Graphite, Micrometer, Docker, Docker Compose.
 
 ## Microservices
 ### 1. Config service
