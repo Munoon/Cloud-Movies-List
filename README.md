@@ -91,6 +91,16 @@ $ docker-compose up -d
     // Docker run example
     $ docker run --name cloud-movies-redis -p 6379:6379 -d redis:6.0
     ```
+5. [Graphite](https://graphiteapp.org/) - storing metrics. (Uses docker network called `cloud-movies-actuator`)
+    ```
+    // Docker run example
+    $ docker run --name cloud-movies-graphite -p 2003:2003 -p 2004:2004 -p 2023:2023 -p 2024:2024 -p 8125:8125/udp -p 8126:8126 --network cloud-movies-actuator -d graphiteapp/graphite-statsd
+    ```
+6. [Grafana](https://grafana.com/) - dashboard for displaying metrics. After launching you may visit it using address `http://localhost:3000` with user **admin** and password **admin**. You may import dashboard using `grafana/Main-dashboard.json` file. If you launch it with docker-compose - it configures datasource's automatically, but, if you run it via docker run command, you should configure it manually. To configure datasource, add Grafana datasource with url `http://cloud-movies-graphite:8080`. (Uses docker network called `cloud-movies-actuator`)
+    ```
+    // Docker run example
+    $ docker run --name cloud-movies-grafana -p 3000:3000 --network cloud-movies-actuator -d grafana/grafana
+    ```
 
 ## How to launch
 1. For launching, you need Java 11, Maven and application, indicated in 'Additional requirement'.

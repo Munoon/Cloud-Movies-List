@@ -39,6 +39,10 @@ eureka:
       defaultZone: "http://${services.eureka-service.username}:${services.eureka-service.password}@localhost:8020/eureka"
 
 management:
+  metrics:
+    export:
+      graphite:
+        step: 1s
   endpoints:
     web:
       exposure:

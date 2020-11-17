@@ -31,3 +31,24 @@ services:
     container_name: cloud-movies-redis
     ports:
       - 6379:6379
+
+  graphite:
+    image: graphiteapp/graphite-statsd
+    container_name: cloud-movies-graphite
+    ports:
+      - 2003:2003
+      - 2004:2004
+      - 2023:2023
+      - 2024:2024
+      - 8125:8125/udp
+      - 8126:8126
+
+  graphana:
+    image: grafana/grafana
+    container_name: cloud-movies-grafana
+    ports:
+      - 3000:3000
+    links:
+      - "graphite:graphite"
+    volumes:
+      - ./grafana/provisioning/:/etc/grafana/provisioning/

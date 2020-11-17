@@ -52,6 +52,10 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-graphite</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.movies</groupId>
             <artifactId>common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
