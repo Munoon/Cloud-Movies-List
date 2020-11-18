@@ -8,7 +8,7 @@ Service, provided movies list with ability for users to add movies to favorites 
 ## Used technologies
 Java 14, Maven, Kotlin,
 Spring Boot, Spring Security, Spring Cloud, Spring Actuator, Spring Cloud Config,
-Spring Data JPA, Spring Hateoas, Spring Cloud Contract, Spring Cache,
+Spring Data JPA, Spring Hateoas, Spring Cloud Contract, Spring Cache, Spring Sleuth, Zipkin
 Rest API, GraphQL, oAuth 2, oAuth Authorization Server, oAuth Resource Server, Micrometer,
 Netflix Eureka, Netflix Zuul, Netflix Feign, Hibernate, JUnit 5, RabbitMQ, thymeleaf,
 PostgreSQL, MongoDB, Redis, JWT, JSON,
@@ -19,7 +19,7 @@ Grafana, Graphite, Micrometer, Docker, Docker Compose.
 ## Microservices
 ### 1. Config service
 Storage all config and provide it to other microservices. \
-Profiles: **git** (for getting config files from git), **native** (for getting config files from local file system) \
+Profiles: **git** (for getting config files from the git), **native** (for getting config files from local file system) \
 Package: **config-service** \
 Working port: **8010** \
 Requirements: **RabbitMQ** (should be in each microservice, allow sending configuration updates for each microservice) \
@@ -92,12 +92,17 @@ $ docker-compose up -d
     // Docker run example
     $ docker run --name cloud-movies-redis -p 6379:6379 -d redis:6.0
     ```
-5. [Graphite](https://graphiteapp.org/) - storing metrics. (Uses docker network called `cloud-movies-actuator`)
+5. [Zipkin](https://zipkin.io/) - distributed tracing system.
+    ```
+    // Docker run example
+    $ docker run --name cloud-movies-zipkin -p 9411:9411 -d openzipkin/zipkin
+    ```
+6. [Graphite](https://graphiteapp.org/) - storing metrics. (Uses docker network called `cloud-movies-actuator`)
     ```
     // Docker run example
     $ docker run --name cloud-movies-graphite -p 2003:2003 -p 2004:2004 -p 2023:2023 -p 2024:2024 -p 8125:8125/udp -p 8126:8126 --network cloud-movies-actuator -d graphiteapp/graphite-statsd
     ```
-6. [Grafana](https://grafana.com/) - dashboard for displaying metrics. After launching you may visit it using address `http://localhost:3000` with user **admin** and password **admin**. You may import dashboard using `grafana/Main-dashboard.json` file. If you launch it with docker-compose - it configures datasource's automatically, but, if you run it via docker run command, you should configure it manually. To configure datasource, add Grafana datasource with url `http://cloud-movies-graphite:8080`. (Uses docker network called `cloud-movies-actuator`)
+7. [Grafana](https://grafana.com/) - dashboard for displaying metrics. After launching, you may visit it using address `http://localhost:3000` with user **admin** and password **admin**. You may import dashboard using `grafana/Main-dashboard.json` file. If you launch it with docker-compose - it configures datasource's automatically, but, if you run it via docker run command, you should configure it manually. To configure datasource, add Grafana datasource with url `http://cloud-movies-graphite:8080`. (Uses docker network called `cloud-movies-actuator`)
     ```
     // Docker run example
     $ docker run --name cloud-movies-grafana -p 3000:3000 --network cloud-movies-actuator -d grafana/grafana

@@ -19,3 +19,9 @@ spring:
   redis:
     host: localhost
     port: 6379
+
+  zipkin:
+    enabled: true
+    sender:
+      type: web
+    base-url: ${zipkin.base-url}

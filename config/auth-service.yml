@@ -18,6 +18,12 @@ spring:
     password: ${databases.users.password}
     initialization-mode: always
 
+  zipkin:
+    enabled: true
+    sender:
+      type: web
+    base-url: ${zipkin.base-url}
+
 eureka:
   instance:
     hostname: 127.0.0.1

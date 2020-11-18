@@ -9,3 +9,10 @@ security:
 eureka:
   instance:
     hostname: localhost
+
+spring:
+  zipkin:
+    enabled: true
+    sender:
+      type: web
+    base-url: ${zipkin.base-url}

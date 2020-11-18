@@ -32,6 +32,12 @@ services:
     ports:
       - 6379:6379
 
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: cloud-movies-zipkin
+    ports:
+      - 9411:9411
+
   graphite:
     image: graphiteapp/graphite-statsd
     container_name: cloud-movies-graphite
