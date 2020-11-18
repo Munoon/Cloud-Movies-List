@@ -8,7 +8,7 @@ Service, provided movies list with ability for users to add movies to favorites 
 ## Used technologies
 Java 14, Maven, Kotlin,
 Spring Boot, Spring Security, Spring Cloud, Spring Actuator, Spring Cloud Config,
-Spring Data JPA, Spring Hateoas, Spring Cloud Contract, Spring Cache, Spring Sleuth, Zipkin
+Spring Data JPA, Spring Hateoas, Spring Cloud Contract, Spring Cache, Spring Sleuth, Zipkin,
 Rest API, GraphQL, oAuth 2, oAuth Authorization Server, oAuth Resource Server, Micrometer,
 Netflix Eureka, Netflix Zuul, Netflix Feign, Hibernate, JUnit 5, RabbitMQ, thymeleaf,
 PostgreSQL, MongoDB, Redis, JWT, JSON,
