@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Lazy;
 
 @Configuration
 public class MetricsConfig {
-    public static final String USERS_REGISTERED_COUNTER_NAME = "users.registered.count";
-    public static final String USERS_DELETED_COUNTER_NAME = "users.deleted.count";
+    public static final String USERS_REGISTERED_COUNTER_NAME = "users.registered";
+    public static final String USERS_DELETED_COUNTER_NAME = "users.deleted";
     public static final String USERS_COUNT_NAME = "users.count";
 
     @Bean

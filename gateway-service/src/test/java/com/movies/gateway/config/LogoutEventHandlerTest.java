@@ -2,6 +2,8 @@ package com.movies.gateway.config;
 
 import com.movies.gateway.AbstractTest;
 import com.movies.gateway.authentication.UserAuthenticationService;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -11,6 +13,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.authentication.event.LogoutSuccessEvent;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -21,8 +24,15 @@ class LogoutEventHandlerTest extends AbstractTest {
     @MockBean
     private UserAuthenticationService service;
 
+    @Autowired
+    private MeterRegistry meterRegistry;
+
     @Test
     void logoutTest() {
+        Counter counter = meterRegistry.get(MetricsConfig.USER_LOGOUT_COUNTER_NAME).counter();
+        assertThat(counter).isNotNull();
+        double startValue = counter.count();
+
         final String jwtToken = "TestToken";
         TestingAuthenticationToken token = new TestingAuthenticationToken(null, null);
 
@@ -36,5 +46,6 @@ class LogoutEventHandlerTest extends AbstractTest {
         eventPublisher.publishEvent(new LogoutSuccessEvent(token));
 
         verify(service, times(1)).logoutByToken(jwtToken);
+        assertThat(counter.count()).isEqualTo(startValue + 1);
     }
 }

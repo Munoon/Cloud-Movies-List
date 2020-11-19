@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 1,
   "links": [],
   "panels": [
     {
@@ -113,7 +113,9 @@
       }
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "users.deleted.count.count": "red"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
@@ -163,13 +165,19 @@
           "queryType": "randomWalk",
           "refCount": 0,
           "refId": "A",
-          "target": "users.registered.count.count"
+          "target": "users.registered.count",
+          "textEditor": true
         },
         {
           "refCount": 0,
           "refId": "B",
-          "target": "users.deleted.count.count",
-          "textEditor": false
+          "target": "users.deleted.count",
+          "textEditor": true
+        },
+        {
+          "refCount": 0,
+          "refId": "C",
+          "target": "users.registered"
         }
       ],
       "thresholds": [],
@@ -177,6 +185,114 @@
       "timeRegions": [],
       "timeShift": null,
       "title": "Registered - Deleted users",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "account.login.success.count": "green",
+        "account.login.un_success.count": "red",
+        "account.logout.success.count": "blue"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Graphite",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 8,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "refCount": 0,
+          "refId": "A",
+          "target": "account.login.un_success.count"
+        },
+        {
+          "refCount": 0,
+          "refId": "B",
+          "target": "account.login.success.count"
+        },
+        {
+          "refCount": 0,
+          "refId": "C",
+          "target": "account.logout.success.count"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Login - Logout",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -323,5 +439,5 @@
   "timezone": "",
   "title": "Main",
   "uid": "9U_I82TGz",
-  "version": 2
+  "version": 5
 }
