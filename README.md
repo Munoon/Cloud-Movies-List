@@ -22,7 +22,7 @@ Storage all config and provide it to other microservices. \
 Profiles: **git** (for getting config files from the git), **native** (for getting config files from local file system) \
 Package: **config-service** \
 Working port: **8010** \
-Requirements: **RabbitMQ** (should be in each microservice, allow sending configuration updates for each microservice) \
+Requirements: **RabbitMQ** (should be in each microservice, allow sending configuration updates for each microservice), **Graphite** (for sending metrics), (Optional: Logstash) \
 Launch order: **ALWAYS FIRST** \
 PS: if you use native file system, provide **CONFIG_FILES_PATH** environment property with location to path, where all configuration files placing
 
@@ -30,7 +30,7 @@ PS: if you use native file system, provide **CONFIG_FILES_PATH** environment pro
 Giving ability for microservices to communicate with each other. \
 Package: **eureka-service** \
 Working port: **8020** \
-Requirements: **RabbitMQ** \
+Requirements: **RabbitMQ**, **Graphite** (for sending metrics), (Optional: Logstash) \
 Launch order: **ALWAYS SECOND**
 
 ### 3. User resource service
@@ -38,7 +38,7 @@ Storage all info about users and provide API to make CRUD operations with them. 
 **Can be launched in multiple instances.** \
 Package: **user-resource-service** \
 Working port: **random** (you may watch at eureka dashboard) \
-Requirements: **RabbitMQ**, **PostgreSQL** (for storing users), **Redis** (for caching users) \
+Requirements: **RabbitMQ**, **PostgreSQL** (for storing users), **Redis** (for caching users), **Graphite** (for sending metrics), **Zipkin** (for storing requests), (Optional: Logstash) \
 Launch order: **Any time after eureka service**
 
 ### 4. Authorization service
@@ -46,21 +46,21 @@ Giving ability for users to login. \
 Package: **auth-service** \
 Working port: **8030** \
 Base URL path: **/uaa** \
-Requirements: **RabbitMQ**, **PostgreSQL** (for storing users) \
+Requirements: **RabbitMQ**, **PostgreSQL** (for storing users), **Graphite** (for sending metrics), **Zipkin** (for storing requests), (Optional: Logstash) \
 Launch order: **Any time after eureka service**
 
 ### 5. Movies list service
 Working with movies. Admin can make CRUD with them, users can read them and add to favourite and so on. \
 Package: **movies-list-service** \
 Working port: **random** (you may watch at eureka dashboard) \
-Requirements: **RabbitMQ**, **RabbitMQ** (for storing movies) \
+Requirements: **RabbitMQ**, **MongoDB** (for storing movies), **Graphite** (for sending metrics), **Zipkin** (for storing requests), (Optional: Logstash) \
 Launch order: **Any time after eureka service**
 
 ### 6. Gateway service
 Service for clients that giving access to communicate with other microservices. \
 Package: **gateway-service** \
 Working port: **8080** \
-Requirements: **RabbitMQ** \
+Requirements: **RabbitMQ**, **Graphite** (for sending metrics), **Zipkin** (for storing requests), (Optional: Logstash) \
 Launch order: **Any time after eureka service**
 
 ## Additional requirement
@@ -68,6 +68,10 @@ For launching, you may use docker run command or docker-compose. \
 **Using docker-compose**: type this command in project root folder (near `docker-compose.yml` file)
 ```
 $ docker-compose up -d
+```
+Or, run minimal containers:
+```
+$ docker-compose up -d postgres mongo rabbit redis graphite zipkin
 ```
 
 **Using docker run command**:
