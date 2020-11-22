@@ -107,6 +107,21 @@ $ docker-compose up -d
     // Docker run example
     $ docker run --name cloud-movies-grafana -p 3000:3000 --network cloud-movies-actuator -d grafana/grafana
     ```
+8. [Elasticsearch](https://www.elastic.co/) - for storing logs.
+    ```
+    // Docker run example
+    $ docker run --name cloud-movies-elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -d docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+    ```
+6. [Logstash](https://www.elastic.co/logstash) - for sending logs to the server.
+    ```
+    // Docker run example
+    $ docker run --name cloud-movies-logstash --link cloud-movies-elasticsearch:elasticsearch -v `pwd`/logstash.conf:/usr/share/logstash/pipeline/logstash.conf -v `pwd`/logs:/usr/share/logstash/logs -d docker.elastic.co/logstash/logstash:7.10.0
+    ```
+7. [Kibana](https://www.elastic.co/kibana) - for managing logs.
+    ```
+    // Docker run example
+    $ docker run --name cloud-movies-kibana --link cloud-movies-elasticsearch:elasticsearch -p 5601:5601 -e "ELASTICSEARCH_HOSTS:http://elasticsearch:9200" -d docker.elastic.co/kibana/kibana:7.10.0
+    ```
 
 ## How to launch
 1. For launching, you need Java 11, Maven and application, indicated in 'Additional requirement'.

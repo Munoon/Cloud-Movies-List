@@ -23,6 +23,7 @@
         <mapstruct.version>1.3.1.Final</mapstruct.version>
         <spring-cloud.version>Hoxton.SR6</spring-cloud.version>
         <spring.jwt.version>1.1.1.RELEASE</spring.jwt.version>
+        <logback.logstash.version>6.4</logback.logstash.version>
     </properties>
 
     <parent>
@@ -54,6 +55,11 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-graphite</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>${logback.logstash.version}</version>
         </dependency>
         <dependency>
             <groupId>com.movies</groupId>

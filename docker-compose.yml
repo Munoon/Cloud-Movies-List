@@ -32,6 +32,34 @@ services:
     ports:
       - 6379:6379
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+    container_name: cloud-movies-elasticsearch
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - "discovery.type=single-node"
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.10.0
+    container_name: cloud-movies-logstash
+    links:
+      - elasticsearch:elasticsearch
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./logs:/usr/share/logstash/logs
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.0
+    container_name: cloud-movies-kibana
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOSTS:http://elasticsearch:9200
+    links:
+      - elasticsearch:elasticsearch
+
   zipkin:
     image: openzipkin/zipkin
     container_name: cloud-movies-zipkin
@@ -55,6 +83,7 @@ services:
     ports:
       - 3000:3000
     links:
-      - "graphite:graphite"
+      - graphite:graphite
+      - elasticsearch:elasticsearch
     volumes:
       - ./grafana/provisioning/:/etc/grafana/provisioning/

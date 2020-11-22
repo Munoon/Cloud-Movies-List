@@ -6,3 +6,4 @@
 */.DS_Store
 ./target
 gateway-service/node_modules
+logs
