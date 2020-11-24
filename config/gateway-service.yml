@@ -12,7 +12,7 @@ eureka:
 
 spring:
   zipkin:
-    enabled: true
+    enabled: ${zipkin.enabled}
     sender:
       type: web
     base-url: ${zipkin.base-url}

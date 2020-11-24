@@ -17,7 +17,7 @@ spring:
     port: 6379
 
   zipkin:
-    enabled: true
+    enabled: ${zipkin.enabled}
     sender:
       type: web
     base-url: ${zipkin.base-url}
