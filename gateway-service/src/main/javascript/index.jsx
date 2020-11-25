@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
+import ReactDOMServer from 'react-dom/server';
 import Application from './components/Application';
 import { connect } from "react-redux";
 import moviesStore, { addLatestMovie, latestMoviesLoading } from './components/store/movies'
@@ -127,4 +128,8 @@ const MovieAvatar = ({ movie}) => (
     </a>
 );
 
-ReactDOM.render(<IndexPage />, document.getElementById('root'));
+if (!window.isServer) {
+    ReactDOM.hydrate(<IndexPage />, document.getElementById('root'));
+} else {
+    window.renderServer = () => ReactDOMServer.renderToString(<IndexPage />);
+}

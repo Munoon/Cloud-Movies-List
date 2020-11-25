@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
+import ReactDOMServer from 'react-dom/server';
 import Application from "./components/Application";
 import { useForm } from "react-hook-form";
 import {getErrorsCount, getMetaProperty, InputField, PasswordField} from "./components/misc";
@@ -253,4 +254,8 @@ const DeleteProfile = connect(null, { removeUser })(props => {
     );
 });
 
-ReactDOM.render(<ProfilePage />, document.getElementById('root'));
+if (!window.isServer) {
+    ReactDOM.hydrate(<ProfilePage />, document.getElementById('root'));
+} else {
+    window.renderServer = () => ReactDOMServer.renderToString(<ProfilePage />);
+}

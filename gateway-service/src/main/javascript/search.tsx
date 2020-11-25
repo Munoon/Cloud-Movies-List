@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
+import ReactDOMServer from 'react-dom/server';
 import Application from "./components/Application";
 import {SearchMovieItem} from "./components/SearchMovieForm";
 import {connect, DefaultRootState} from "react-redux";
@@ -176,4 +177,8 @@ const MovieItem = ({ movie, search }: { movie: SearchMovieItem, search: string }
     </a>
 );
 
-ReactDOM.render(<SearchPage />, document.getElementById('root'));
+if (!window.isServer) {
+    ReactDOM.hydrate(<SearchPage />, document.getElementById('root'));
+} else {
+    window.renderServer = () => ReactDOMServer.renderToString(<SearchPage />);
+}

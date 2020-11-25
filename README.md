@@ -11,8 +11,8 @@ Spring Boot, Spring Security, Spring Cloud, Spring Actuator, Spring Cloud Config
 Spring Data JPA, Spring Hateoas, Spring Cloud Contract, Spring Cache, Spring Sleuth, Zipkin,
 Rest API, GraphQL, oAuth 2, oAuth Authorization Server, oAuth Resource Server, Micrometer,
 Netflix Eureka, Netflix Zuul, Netflix Feign, Hibernate, JUnit 5, RabbitMQ, thymeleaf,
-PostgreSQL, MongoDB, Redis, JWT, JSON,
-JavaScript (including ES6), TypeScript, Node JS, npm, Webpack, React, React Hook Form, Redux, React Redux,
+PostgreSQL, MongoDB, Redis, JWT, JSON, GraalVM,
+JavaScript (including ES6), TypeScript, Node JS, npm, Webpack, React, React Server Rendering, React Hook Form, Redux, React Redux,
 SWR, graphql-request, Bootstrap (and Bootswatch), babel, sass,
 Grafana, Graphite, Micrometer, Docker, Docker Compose.
 
@@ -62,6 +62,7 @@ Package: **gateway-service** \
 Working port: **8080** \
 Requirements: **RabbitMQ**, (Optional: Logstash, Graphite, Zipkin) \
 Launch order: **Any time after eureka service**
+JVM: **GraalVM**
 
 ## Additional requirement
 For launching, you may use docker run command or docker-compose. \

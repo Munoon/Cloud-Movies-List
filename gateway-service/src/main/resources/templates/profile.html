@@ -4,6 +4,6 @@
     <script th:src="@{/static/js/profile.min.js}" defer></script>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root" th:utext="${@reactRenderService.render('profile.min.js')}"></div>
 </body>
 </html>

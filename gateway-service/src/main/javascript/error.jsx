@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ReactDOMServer from 'react-dom/server';
 import Application from './components/Application';
 import { getMetaProperty } from "./components/misc";
 
@@ -14,4 +15,8 @@ const ErrorPage = () => (
     </Application>
 );
 
-ReactDOM.render(<ErrorPage />, document.getElementById('root'));
+if (!window.isServer) {
+    ReactDOM.hydrate(<ErrorPage />, document.getElementById('root'));
+} else {
+    window.renderServer = () => ReactDOMServer.renderToString(<ErrorPage />);
+}

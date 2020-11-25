@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:with="query = ${param.query}">
 <head th:replace="~{fragments/headTag :: head(~{::script})}">
     <script th:src="@{/static/js/search.min.js}" defer></script>
     <script th:inline="javascript">
-        var query = /*[[${param.query}]]*/ '';
+        var query = /*[[${query}]]*/ '';
     </script>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root" th:utext="${@reactRenderService.renderWithGlobalVar('search.min.js', 'query=' + query)}"></div>
 </body>
 </html>

@@ -1,5 +1,6 @@
 import React, {useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
+import ReactDOMServer from 'react-dom/server';
 import Application from './components/Application';
 import {InputField} from "./components/misc";
 import {fetcher} from "./components/api";
@@ -151,4 +152,8 @@ const AddMovie = () => {
     );
 }
 
-ReactDOM.render(<AddMovie />, document.getElementById('root'));
+if (!window.isServer) {
+    ReactDOM.hydrate(<AddMovie />, document.getElementById('root'));
+} else {
+    window.renderServer = () => ReactDOMServer.renderToString(<AddMovie />);
+}

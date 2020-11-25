@@ -10,6 +10,11 @@
     </th:block>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root" th:utext="${@reactRenderService.render('movie.min.js',
+            'current_movie:id=' + movie.id,
+            'current_movie:name=' + movie.name,
+            'current_movie:hasAvatar=' + movie.hasAvatar,
+            'current_movie:registered=' + movie.registered
+    )}"></div>
 </body>
 </html>

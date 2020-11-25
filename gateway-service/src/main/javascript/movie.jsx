@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ReactDOMServer from 'react-dom/server';
 import Application from './components/Application';
 import {getMetaProperty} from "./components/misc";
 import {MovieImage} from "./components/MoviesComponents";
@@ -25,7 +26,7 @@ const getMovieQuery = gql`
 const graphQLMovieRequest = movieId => movieGraphQLClient.request(getMovieQuery, { movieId });
 
 const MoviePage = () => {
-    const { data, error } = useSWR(smallMovieInfo.id, graphQLMovieRequest);
+    const { data, error } = window.isServer ? {} : useSWR(smallMovieInfo.id, graphQLMovieRequest);
 
     if (error) {
         parseGraphQLError(error, { movie: 'Ошибка запроса информации о фильме' });
@@ -65,4 +66,8 @@ const MoviePage = () => {
     );
 }
 
-ReactDOM.render(<MoviePage />, document.getElementById('root'));
+if (!window.isServer) {
+    ReactDOM.hydrate(<MoviePage />, document.getElementById('root'));
+} else {
+    window.renderServer = () => ReactDOMServer.renderToString(<MoviePage />);
+}

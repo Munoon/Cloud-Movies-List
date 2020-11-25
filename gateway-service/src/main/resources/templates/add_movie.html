@@ -4,6 +4,6 @@
     <script th:src="@{/static/js/add_movie.min.js}" defer></script>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root" th:utext="${@reactRenderService.render('add_movie.min.js')}"></div>
 </body>
 </html>

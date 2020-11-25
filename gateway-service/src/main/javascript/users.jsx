@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import ReactDOMServer from 'react-dom/server';
 import Application from './components/Application';
 import { useTable, usePagination } from "react-table";
 import Table from "react-bootstrap/Table";
@@ -354,4 +355,8 @@ let USERS_TABLE_INSTANCE = React.createRef();
 let UPDATE_USER_MODAL_INSTANCE = null;
 let REGISTER_USER_MODAL_INSTANCE = React.createRef();
 
-ReactDOM.render(<UsersPage />, document.getElementById('root'));
+if (!window.isServer) {
+    ReactDOM.hydrate(<UsersPage/>, document.getElementById('root'));
+} else {
+    window.renderServer = () => ReactDOMServer.renderToString(<UsersPage />);
+}

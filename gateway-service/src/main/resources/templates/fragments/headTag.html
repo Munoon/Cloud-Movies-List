@@ -5,14 +5,15 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <meta name="_csrf_parameter" th:content="${_csrf.parameterName}">
 
-    <meta name="user:authenticated" th:content="${#authorization.expression('isAuthenticated()')}">
+    <meta th:name="${T(com.movies.gateway.FrontendProperties).USER_AUTHENTICATED}"
+          th:content="${#authorization.expression('isAuthenticated()')}">
 
-    <th:block sec:authorize="isAuthenticated()" th:with="user=${#authentication.principal.userTo}">
-        <meta name="user:id" th:content="${user.id}">
-        <meta name="user:name" th:content="${user.name}">
-        <meta name="user:surname" th:content="${user.surname}">
-        <meta name="user:email" th:content="${user.email}">
-        <meta name="user:roles" th:content="${user.roles}">
+    <th:block sec:authorize="isAuthenticated()" th:with="user = ${#authentication.principal.userTo}">
+        <meta th:name="${T(com.movies.gateway.FrontendProperties).USER_ID}" th:content="${user.id}">
+        <meta th:name="${T(com.movies.gateway.FrontendProperties).USER_NAME}" th:content="${user.name}">
+        <meta th:name="${T(com.movies.gateway.FrontendProperties).USER_SURNAME}" th:content="${user.surname}">
+        <meta th:name="${T(com.movies.gateway.FrontendProperties).USER_EMAIL}" th:content="${user.email}">
+        <meta th:name="${T(com.movies.gateway.FrontendProperties).USER_ROLES}" th:content="${user.roles}">
     </th:block>
 
     <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}">

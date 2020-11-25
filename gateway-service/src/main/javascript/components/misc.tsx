@@ -5,7 +5,19 @@ import {Button, Spinner} from 'react-bootstrap';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 
+declare global {
+    interface Window {
+        isServer: boolean
+        serverProperties: Record<string, string>
+        renderServer: () => string
+    }
+}
+
 export const getMetaProperty = (name: string): string => {
+    if (window.isServer) {
+        return window.serverProperties[name];
+    }
+
     let el = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
     return el ? el.content : null;
 }
